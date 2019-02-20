@@ -33,6 +33,61 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
   private _focusZoneProps: IFocusZoneProps;
   private _suggestionProps: IBaseFloatingPickerSuggestionProps;
 
+  // Header & footer items.
+
+  private showingSuggestedContactsHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.headerItem}>Suggested Contacts</div>;
+    },
+    shouldShow: () => this._shouldShowSuggestedContacts()
+  };
+
+  private noResultsHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.footerItem}>No results</div>;
+    },
+    shouldShow: () => {
+      return (
+        this._picker !== undefined &&
+        this._picker.floatingPicker !== undefined &&
+        this._picker.floatingPicker.current !== null &&
+        this._picker.floatingPicker.current.suggestions.length === 0
+      );
+    }
+  };
+
+  private searchMoreHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.footerItem}>Search for more</div>;
+    },
+    onExecute: () => {
+      this.setState({ searchMoreAvailable: false });
+    },
+    shouldShow: () => {
+      return this.state.searchMoreAvailable && !this._shouldShowSuggestedContacts();
+    },
+    ariaLabel: 'Search more'
+  };
+
+  private forceResolveHeaderFooterItem = {
+    renderItem: () => {
+      return (
+        <div className={styles.headerItem}>
+          Use this address: {this._picker && this._picker.inputElement && this._picker.inputElement ? this._picker.inputElement.value : ''}
+        </div>
+      );
+    },
+    shouldShow: () => {
+      return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value.indexOf('@') > -1;
+    },
+    onExecute: () => {
+      if (this._picker.floatingPicker.current !== null) {
+        this._picker.floatingPicker.current.forceResolveSuggestion();
+      }
+    },
+    ariaLabel: 'Use the typed address'
+  };
+
   constructor(props: {}) {
     super(props);
 
@@ -47,60 +102,8 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
 
     this._suggestionProps = {
       showRemoveButtons: true,
-      headerItemsProps: [
-        {
-          renderItem: () => {
-            return (
-              <div className={styles.headerItem}>
-                Use this address:{' '}
-                {this._picker && this._picker.inputElement && this._picker.inputElement ? this._picker.inputElement.value : ''}
-              </div>
-            );
-          },
-          shouldShow: () => {
-            return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value.indexOf('@') > -1;
-          },
-          onExecute: () => {
-            if (this._picker.floatingPicker.current !== null) {
-              this._picker.floatingPicker.current.forceResolveSuggestion();
-            }
-          },
-          ariaLabel: 'Use the typed address'
-        },
-        {
-          renderItem: () => {
-            return <div className={styles.headerItem}>Suggested Contacts</div>;
-          },
-          shouldShow: this._shouldShowSuggestedContacts
-        }
-      ],
-      footerItemsProps: [
-        {
-          renderItem: () => {
-            return <div className={styles.footerItem}>No results</div>;
-          },
-          shouldShow: () => {
-            return (
-              this._picker !== undefined &&
-              this._picker.floatingPicker !== undefined &&
-              this._picker.floatingPicker.current !== null &&
-              this._picker.floatingPicker.current.suggestions.length === 0
-            );
-          }
-        },
-        {
-          renderItem: () => {
-            return <div className={styles.footerItem}>Search for more</div>;
-          },
-          onExecute: () => {
-            this.setState({ searchMoreAvailable: false });
-          },
-          shouldShow: () => {
-            return this.state.searchMoreAvailable && !this._shouldShowSuggestedContacts();
-          },
-          ariaLabel: 'Search more'
-        }
-      ],
+      headerItemsProps: [this.forceResolveHeaderFooterItem, this.showingSuggestedContactsHeaderFooterItem],
+      footerItemsProps: [this.noResultsHeaderFooterItem, this.searchMoreHeaderFooterItem],
       shouldSelectFirstItem: () => {
         return !this._shouldShowSuggestedContacts();
       }
