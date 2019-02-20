@@ -62,22 +62,26 @@ export interface IBaseExtendedPickerProps<T> {
   /**
    * Function that specifies how the floating picker will appear.
    */
-  onRenderFloatingPicker: React.ComponentType<IBaseFloatingPickerProps<T>>;
+  onRenderFloatingPicker: React.ComponentType<Partial<IBaseFloatingPickerProps<T>>>;
 
   /**
    * Function that specifies how the floating picker will appear.
    */
-  onRenderSelectedItems: React.ComponentType<IBaseSelectedItemsListProps<T>>;
+  onRenderSelectedItems: React.ComponentType<Partial<IBaseSelectedItemsListProps<T>>>;
 
   /**
    * Floating picker properties
+   *
+   * @deprecated bind props in onRenderFloatingPicker instead.
    */
-  floatingPickerProps: IBaseFloatingPickerProps<T>;
+  floatingPickerProps?: IBaseFloatingPickerProps<T>;
 
   /**
    * Selected items list properties
+   *
+   * @deprecated bind props in onRenderSelectedItems instead.
    */
-  selectedItemsListProps: IBaseSelectedItemsListProps<T>;
+  selectedItemsListProps?: IBaseSelectedItemsListProps<T>;
 
   /**
    * Autofill input native props

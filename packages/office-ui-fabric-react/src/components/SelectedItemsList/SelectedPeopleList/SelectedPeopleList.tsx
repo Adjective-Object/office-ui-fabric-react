@@ -31,7 +31,7 @@ export interface ISelectedPeopleProps extends IBaseSelectedItemsListProps<IExten
   copyMenuItemText?: string;
   editMenuItemText?: string;
   getEditingItemText?: (item: IExtendedPersonaProps) => string;
-  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<IPersonaProps>>;
+  onRenderFloatingPicker?: React.ComponentType<Partial<IBaseFloatingPickerProps<IPersonaProps>>>;
   floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
 }
 

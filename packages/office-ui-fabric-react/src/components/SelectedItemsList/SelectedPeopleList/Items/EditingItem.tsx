@@ -16,7 +16,13 @@ const styles: any = stylesImport;
 export interface IEditingSelectedPeopleItemProps extends ISelectedPeopleItemProps {
   // tslint:disable-next-line:no-any
   onEditingComplete: (oldItem: any, newItem: any) => void;
-  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<IPersonaProps>>;
+  onRenderFloatingPicker?: React.ComponentType<Partial<IBaseFloatingPickerProps<IPersonaProps>>>;
+
+  /**
+   * custom props to be passed to the floating picker opened when editing the pill.
+   *
+   * @deprecated Instead of using this prop, bind this yourself inyour onRenderFloatingPicker.
+   */
   floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
   getEditingItemText?: (item: IExtendedPersonaProps) => string;
 }
@@ -64,8 +70,8 @@ export class EditingItem extends BaseComponent<IEditingSelectedPeopleItemProps, 
 
   private _renderEditingSuggestions = (): JSX.Element => {
     const FloatingPicker = this.props.onRenderFloatingPicker;
-    const floatingPickerProps = this.props.floatingPickerProps;
-    if (!FloatingPicker || !floatingPickerProps) {
+    const floatingPickerProps = this.props.floatingPickerProps || {};
+    if (!FloatingPicker) {
       return <></>;
     }
     return (

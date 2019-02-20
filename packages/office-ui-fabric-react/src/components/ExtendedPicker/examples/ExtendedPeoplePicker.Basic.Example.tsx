@@ -30,8 +30,6 @@ export interface IPeoplePickerExampleState {
 
 export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeoplePickerExampleState> {
   private _picker: ExtendedPeoplePicker;
-  private _floatingPickerProps: IBaseFloatingPickerProps<IPersonaProps>;
-  private _selectedItemsListProps: ISelectedPeopleProps;
   private _focusZoneProps: IFocusZoneProps;
   private _suggestionProps: IBaseFloatingPickerSuggestionProps;
 
@@ -107,36 +105,6 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
       }
     };
 
-    this._floatingPickerProps = {
-      suggestionsStore: new SuggestionsStore<IPersonaProps>(),
-      onResolveSuggestions: this._onFilterChanged,
-      getTextFromItem: this._getTextFromItem,
-      pickerSuggestionsProps: this._suggestionProps,
-      key: 'normal',
-      onRemoveSuggestion: this._onRemoveSuggestion,
-      onValidateInput: this._validateInput,
-      onZeroQuerySuggestion: this._returnMostRecentlyUsed,
-      showForceResolve: this._shouldShowForceResolve,
-      onInputChanged: this._onInputChanged,
-      onSuggestionsHidden: () => {
-        console.log('FLOATINGPICKER: hidden');
-      },
-      onSuggestionsShown: () => {
-        console.log('FLOATINGPICKER: shown');
-      }
-    };
-
-    this._selectedItemsListProps = {
-      onCopyItems: this._onCopyItems,
-      onExpandGroup: this._onExpandItem,
-      removeMenuItemText: 'Remove',
-      copyMenuItemText: 'Copy name',
-      editMenuItemText: 'Edit',
-      getEditingItemText: this._getEditingItemText,
-      onRenderFloatingPicker: FloatingPeoplePicker,
-      floatingPickerProps: this._floatingPickerProps
-    };
-
     this._focusZoneProps = {
       shouldInputLoseFocusOnArrowKey: this._shouldInputLoseFocusOnArrowKey,
       handleTabKey: FocusZoneTabbableElements.all
@@ -153,6 +121,37 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
     );
   }
 
+  private ExampleFloatingPicker = (overriddenProps: IBaseFloatingPickerProps<IPersonaProps>) => (
+    <FloatingPeoplePicker
+      suggestionsStore={new SuggestionsStore<IPersonaProps>()}
+      onResolveSuggestions={this._onFilterChanged}
+      getTextFromItem={this._getTextFromItem}
+      pickerSuggestionsProps={this._suggestionProps}
+      key={'normal'}
+      onRemoveSuggestion={this._onRemoveSuggestion}
+      onValidateInput={this._validateInput}
+      onZeroQuerySuggestion={this._returnMostRecentlyUsed}
+      showForceResolve={this._shouldShowForceResolve}
+      onInputChanged={this._onInputChanged}
+      onSuggestionsHidden={this._onSuggestionsHidden}
+      onSuggestionsShown={this._onSuggestionsShown}
+      {...overriddenProps}
+    />
+  );
+
+  private ExampleSelectedPeopleList = (overriddenProps: ISelectedPeopleProps) => (
+    <SelectedPeopleList
+      onCopyItems={this._onCopyItems}
+      onExpandGroup={this._onExpandItem}
+      removeMenuItemText={'Remove'}
+      copyMenuItemText={'Copy name'}
+      editMenuItemText={'Edit'}
+      getEditingItemText={this._getEditingItemText}
+      onRenderFloatingPicker={this.ExampleFloatingPicker}
+      {...overriddenProps}
+    />
+  );
+
   private _renderExtendedPicker(): JSX.Element {
     return (
       <ExtendedPeoplePicker
@@ -160,10 +159,8 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
         suggestionItems={this.state.controlledComponent ? this.state.suggestionItems : undefined}
         onItemAdded={this.state.controlledComponent ? this._onItemAdded : undefined}
         onItemsRemoved={this.state.controlledComponent ? this._onItemsRemoved : undefined}
-        floatingPickerProps={this._floatingPickerProps}
-        selectedItemsListProps={this._selectedItemsListProps}
-        onRenderFloatingPicker={FloatingPeoplePicker}
-        onRenderSelectedItems={SelectedPeopleList}
+        onRenderFloatingPicker={this.ExampleFloatingPicker}
+        onRenderSelectedItems={this.ExampleSelectedPeopleList}
         className={'ms-PeoplePicker'}
         key={'normal'}
         inputProps={{
@@ -176,6 +173,14 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
         focusZoneProps={this._focusZoneProps}
       />
     );
+  }
+
+  private _onSuggestionsHidden() {
+    console.log('FLOATINGPICKER: hidden');
+  }
+
+  private _onSuggestionsShown() {
+    console.log('FLOATINGPICKER: shown');
   }
 
   private _toggleControlledComponent = (ev: React.MouseEvent<HTMLElement>, toggleState: boolean): void => {
