@@ -10,8 +10,9 @@ import { IBaseExtendedPickerProps } from '../BaseExtendedPicker.types';
 
 export interface IPeoplePickerItemProps extends IPickerItemProps<IExtendedPersonaProps> {}
 
-export interface IExtendedPeoplePickerProps extends IBaseExtendedPickerProps<IPersonaProps> {}
-
-export class BaseExtendedPeoplePicker extends BaseExtendedPicker<IPersonaProps, IExtendedPeoplePickerProps> {}
+export class BaseExtendedPeoplePicker<TPersona extends IPersonaProps = IPersonaProps> extends BaseExtendedPicker<
+  IPersonaProps,
+  IBaseExtendedPickerProps<TPersona>
+> {}
 
 export class ExtendedPeoplePicker extends BaseExtendedPeoplePicker {}

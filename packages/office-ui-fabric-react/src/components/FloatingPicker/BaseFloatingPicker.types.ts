@@ -86,8 +86,14 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
   className?: string;
   /**
    * The properties that will get passed to the Suggestions component.
+   *
+   * @deprecated use onRenderSuggestionControl to set props instead.
    */
   pickerSuggestionsProps?: IBaseFloatingPickerSuggestionProps;
+  /**
+   * How to render the Suggestions control used by this floating picker.
+   */
+  onRenderSuggestionControl: React.ComponentType<Partial<ISuggestionsControlProps<T>>>;
   /**
    * A callback for when a persona is removed from the suggestion list
    */

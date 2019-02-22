@@ -19,31 +19,39 @@ export interface IExtendedPersonaProps extends IPersonaProps {
   isEditing?: boolean;
 }
 
-export interface ISelectedPeopleItemProps extends ISelectedItemProps<IExtendedPersonaProps> {
+export interface ISelectedPeopleItemProps<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps>
+  extends ISelectedItemProps<TPersona> {
   onExpandItem?: () => void;
-  renderPersonaCoin?: IRenderFunction<IPersonaProps>;
-  renderPrimaryText?: IRenderFunction<IPersonaProps>;
+  renderPersonaCoin?: IRenderFunction<TPersona>;
+  renderPrimaryText?: IRenderFunction<TPersona>;
 }
 
-export interface ISelectedPeopleProps extends IBaseSelectedItemsListProps<IExtendedPersonaProps> {
-  onExpandGroup?: (item: IExtendedPersonaProps) => void;
+export interface ISelectedPeopleProps<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps>
+  extends IBaseSelectedItemsListProps<TPersona> {
+  onExpandGroup?: (item: TPersona) => void;
   removeMenuItemText?: string;
   copyMenuItemText?: string;
   editMenuItemText?: string;
-  getEditingItemText?: (item: IExtendedPersonaProps) => string;
-  onRenderFloatingPicker?: React.ComponentType<Partial<IBaseFloatingPickerProps<IPersonaProps>>>;
-  floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
+  getEditingItemText?: (item: TPersona) => string;
+  onRenderFloatingPicker?: React.ComponentType<Partial<IBaseFloatingPickerProps<TPersona>>>;
+  /**
+   * @deprecated Use onRenderFloaingPicker to set props instead.
+   */
+  floatingPickerProps?: IBaseFloatingPickerProps<TPersona>;
 }
 
-export class BasePeopleSelectedItemsList extends BaseSelectedItemsList<IExtendedPersonaProps, ISelectedPeopleProps> {}
+export class BasePeopleSelectedItemsList<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends BaseSelectedItemsList<
+  TPersona,
+  ISelectedPeopleProps<TPersona>
+> {}
 
 /**
  * Standard People Picker.
  */
-export class SelectedPeopleList extends BasePeopleSelectedItemsList {
+export class SelectedPeopleList<TPersona extends IExtendedPersonaProps> extends BasePeopleSelectedItemsList<TPersona> {
   // tslint:disable-next-line:no-any
   public static defaultProps: any = {
-    onRenderItem: (props: ISelectedPeopleItemProps) => <ExtendedSelectedItem {...props} />
+    onRenderItem: (props: ISelectedPeopleItemProps<IExtendedPersonaProps>) => <ExtendedSelectedItem {...props} />
   };
 
   public replaceItem = (itemToReplace: IExtendedPersonaProps, itemsToReplaceWith: IExtendedPersonaProps[]): void => {
@@ -65,7 +73,7 @@ export class SelectedPeopleList extends BasePeopleSelectedItemsList {
   };
 
   // tslint:disable-next-line:no-any
-  private _renderItem(item: any, index: number): JSX.Element {
+  private _renderItem(item: TPersona, index: number): JSX.Element {
     const { removeButtonAriaLabel } = this.props;
     const props = {
       item,
@@ -75,13 +83,13 @@ export class SelectedPeopleList extends BasePeopleSelectedItemsList {
       onRemoveItem: () => this.removeItem(item),
       onItemChange: this.onItemChange,
       removeButtonAriaLabel: removeButtonAriaLabel,
-      onCopyItem: (itemToCopy: IExtendedPersonaProps) => this.copyItems([itemToCopy]),
+      onCopyItem: (itemToCopy: TPersona) => this.copyItems([itemToCopy]),
       onExpandItem: this.props.onExpandGroup ? () => (this.props.onExpandGroup as (item: IExtendedPersonaProps) => void)(item) : undefined,
       menuItems: this._createMenuItems(item)
     };
 
     const hasContextMenu = props.menuItems.length > 0;
-    if ((item as IExtendedPersonaProps).isEditing && hasContextMenu) {
+    if (item.isEditing && hasContextMenu) {
       return (
         <EditingItem
           {...props}
@@ -92,7 +100,7 @@ export class SelectedPeopleList extends BasePeopleSelectedItemsList {
         />
       );
     } else {
-      const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps) => JSX.Element;
+      const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps<TPersona>) => JSX.Element;
       const renderedItem = onRenderItem(props);
       return hasContextMenu ? (
         <SelectedItemWithContextMenu
@@ -138,7 +146,7 @@ export class SelectedPeopleList extends BasePeopleSelectedItemsList {
         key: 'Remove',
         text: this.props.removeMenuItemText,
         onClick: (ev: React.MouseEvent<HTMLElement>, menuItem: IContextualMenuItem) => {
-          this.removeItem(menuItem.data as ISelectedItemProps<IExtendedPersonaProps>);
+          this.removeItem(menuItem.data as ISelectedItemProps<TPersona>);
         },
         data: item
       });

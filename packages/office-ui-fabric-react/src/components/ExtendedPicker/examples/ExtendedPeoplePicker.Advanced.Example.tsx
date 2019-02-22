@@ -5,23 +5,95 @@ import { ExtendedPeoplePicker } from 'office-ui-fabric-react/lib/ExtendedPicker'
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { SuggestionsStore, FloatingPeoplePicker, IBaseFloatingPickerProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { ISelectedPeopleProps, SelectedPeopleList, IExtendedPersonaProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { IFocusZoneProps, FocusZoneTabbableElements } from 'office-ui-fabric-react/lib/FocusZone';
 // Helper imports to generate data for this particular examples. Not exported by any package.
-import { people, groupOne, groupTwo } from './PeopleExampleData';
+import { people, mru, groupOne, groupTwo } from './PeopleExampleData';
 import { ISuggestionsControlProps } from '../../FloatingPicker/Suggestions/Suggestions.types';
 import { SuggestionsControl } from '../../FloatingPicker/Suggestions/SuggestionsControl';
 
-export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
+import * as stylesImport from './ExtendedPeoplePicker.Basic.Example.scss';
+// tslint:disable-next-line:no-any
+const styles: any = stylesImport;
+
+export interface IPeoplePickerExampleState {
+  peopleList: IPersonaProps[];
+  mostRecentlyUsed: IPersonaProps[];
+  searchMoreAvailable: boolean;
+  currentlySelectedItems: IExtendedPersonaProps[];
+  suggestionItems: IPersonaProps[];
+  controlledComponent: boolean;
+}
+
+export class ExtendedPeoplePickerAdvancedExample extends React.Component<{}, IPeoplePickerExampleState> {
   private _picker: ExtendedPeoplePicker;
   private _focusZoneProps: IFocusZoneProps;
 
   // Header & footer items.
 
+  private showingSuggestedContactsHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.headerItem}>Suggested Contacts</div>;
+    },
+    shouldShow: () => this._shouldShowSuggestedContacts()
+  };
+
+  private noResultsHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.footerItem}>No results</div>;
+    },
+    shouldShow: () => {
+      return (
+        this._picker !== undefined &&
+        this._picker.floatingPicker !== undefined &&
+        this._picker.floatingPicker.current !== null &&
+        this._picker.floatingPicker.current.suggestions.length === 0
+      );
+    }
+  };
+
+  private searchMoreHeaderFooterItem = {
+    renderItem: () => {
+      return <div className={styles.footerItem}>Search for more</div>;
+    },
+    onExecute: () => {
+      this.setState({ searchMoreAvailable: false });
+    },
+    shouldShow: () => {
+      return this.state.searchMoreAvailable && !this._shouldShowSuggestedContacts();
+    },
+    ariaLabel: 'Search more'
+  };
+
+  private forceResolveHeaderFooterItem = {
+    renderItem: () => {
+      return (
+        <div className={styles.headerItem}>
+          Use this address: {this._picker && this._picker.inputElement && this._picker.inputElement ? this._picker.inputElement.value : ''}
+        </div>
+      );
+    },
+    shouldShow: () => {
+      return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value.indexOf('@') > -1;
+    },
+    onExecute: () => {
+      if (this._picker.floatingPicker.current !== null) {
+        this._picker.floatingPicker.current.forceResolveSuggestion();
+      }
+    },
+    ariaLabel: 'Use the typed address'
+  };
+
   constructor(props: {}) {
     super(props);
 
     this.state = {
-      searchMoreAvailable: true
+      peopleList: people,
+      mostRecentlyUsed: mru,
+      searchMoreAvailable: true,
+      currentlySelectedItems: [],
+      controlledComponent: false,
+      suggestionItems: []
     };
 
     this._focusZoneProps = {
@@ -34,6 +106,7 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
     return (
       <div>
         {this._renderExtendedPicker()}
+        <Toggle label="Controlled component" defaultChecked={false} onChange={this._toggleControlledComponent} />
         <PrimaryButton text="Set focus" onClick={this._onSetFocusButtonClicked} />
       </div>
     );
@@ -42,8 +115,8 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
   private ExampleSuggestionControl = (overriddenProps: ISuggestionsControlProps<IPersonaProps>) => (
     <SuggestionsControl
       showRemoveButtons={true}
-      headerItemsProps={[]}
-      footerItemsProps={[]}
+      headerItemsProps={[this.forceResolveHeaderFooterItem, this.showingSuggestedContactsHeaderFooterItem]}
+      footerItemsProps={[this.noResultsHeaderFooterItem, this.searchMoreHeaderFooterItem]}
       shouldSelectFirstItem={() => {
         return !this._shouldShowSuggestedContacts();
       }}
@@ -59,8 +132,8 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
       onRenderSuggestionControl={this.ExampleSuggestionControl}
       key={'normal'}
       onRemoveSuggestion={this._onRemoveSuggestion}
-      onValidateInput={this._isEmailAddress}
-      onZeroQuerySuggestion={this._getZeroQuerySuggestion}
+      onValidateInput={this._validateInput}
+      onZeroQuerySuggestion={this._returnMostRecentlyUsed}
       showForceResolve={this._shouldShowForceResolve}
       onInputChanged={this._onInputChanged}
       onSuggestionsHidden={this._onSuggestionsHidden}
@@ -85,6 +158,10 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
   private _renderExtendedPicker(): JSX.Element {
     return (
       <ExtendedPeoplePicker
+        selectedItems={this.state.controlledComponent ? this.state.currentlySelectedItems : undefined}
+        suggestionItems={this.state.controlledComponent ? this.state.suggestionItems : undefined}
+        onItemAdded={this.state.controlledComponent ? this._onItemAdded : undefined}
+        onItemsRemoved={this.state.controlledComponent ? this._onItemsRemoved : undefined}
         onRenderFloatingPicker={this.ExampleFloatingPicker}
         onRenderSelectedItems={this.ExampleSelectedPeopleList}
         className={'ms-PeoplePicker'}
@@ -178,8 +255,15 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
     return controlledComponent ? null : this._convertResultsToPromise(filteredPersonas);
   };
 
-  private _getZeroQuerySuggestion = (): IPersonaProps[] | Promise<IPersonaProps[]> | null =>
-    this._convertResultsToPromise(people.slice(0, 5));
+  private _returnMostRecentlyUsed = (currentPersonas: IPersonaProps[]): IPersonaProps[] | Promise<IPersonaProps[]> | null => {
+    const { controlledComponent } = this.state;
+    let { mostRecentlyUsed } = this.state;
+    mostRecentlyUsed = this._removeDuplicates(mostRecentlyUsed, this._picker.items);
+    if (controlledComponent) {
+      this.setState({ suggestionItems: mostRecentlyUsed });
+    }
+    return controlledComponent ? null : this._convertResultsToPromise(mostRecentlyUsed);
+  };
 
   private _onCopyItems(items: IExtendedPersonaProps[]): string {
     let copyText = '';
@@ -202,9 +286,6 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
     );
   };
 
-  /**
-   * IsShowingZeroQuery
-   */
   private _shouldShowSuggestedContacts = (): boolean => {
     return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '';
   };
@@ -241,7 +322,24 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}> {
     return new Promise<IPersonaProps[]>((resolve: any, reject: any) => setTimeout(() => resolve(results), 150));
   }
 
-  private _isEmailAddress = (input: string): boolean => input.indexOf('@') !== -1;
+  private _onItemAdded = (selectedSuggestion: IExtendedPersonaProps) => {
+    this.setState({ currentlySelectedItems: this.state.currentlySelectedItems.concat(selectedSuggestion) });
+  };
+
+  private _onItemsRemoved = (items: IExtendedPersonaProps[]): void => {
+    const newItems = this.state.currentlySelectedItems.filter(value => items.indexOf(value) === -1);
+    this.setState({ currentlySelectedItems: newItems });
+  };
+
+  private _validateInput = (input: string): boolean => {
+    if (input.indexOf('@') !== -1) {
+      return true;
+    } else if (input.length > 1) {
+      return false;
+    } else {
+      return false;
+    }
+  };
 
   private _getExpandedGroupItems(item: IExtendedPersonaProps): IExtendedPersonaProps[] {
     switch (item.text) {
