@@ -147,7 +147,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
   }
 
   protected renderSuggestions(): JSX.Element | null {
-    const TypedSuggestionsControl = this.SuggestionsControlOfProperType;
+    const TypedSuggestionsControl = this.props.onRenderSuggestionControl;
     return this.state.suggestionsVisible ? (
       <Callout
         className={styles.callout}
@@ -160,14 +160,12 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
         calloutWidth={this.props.calloutWidth ? this.props.calloutWidth : 0}
       >
         <TypedSuggestionsControl
-          onRenderSuggestion={this.props.onRenderSuggestionsItem}
           onSuggestionClick={this.onSuggestionClick}
           onSuggestionRemove={this.onSuggestionRemove}
           suggestions={this.suggestionStore.getSuggestions()}
           ref={this.suggestionsControl}
           completeSuggestion={this.completeSuggestion}
           shouldLoopSelection={false}
-          {...this.props.pickerSuggestionsProps}
         />
       </Callout>
     ) : null;

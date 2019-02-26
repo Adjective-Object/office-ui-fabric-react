@@ -50,7 +50,7 @@ export class PeopleSelectedItemsListExample extends React.Component<{}, IPeopleS
           selectedItems={this.state.controlledComponent ? this.state.currentSelectedItems : undefined}
           componentRef={this._setComponentRef}
           onCopyItems={this._onCopyItems}
-          onExpandGroup={this._onExpandItem}
+          onExpandGroup={this._onExpandGroup}
           copyMenuItemText={'Copy'}
           removeMenuItemText={'Remove'}
           selection={this.selection}
@@ -93,7 +93,7 @@ export class PeopleSelectedItemsListExample extends React.Component<{}, IPeopleS
     });
   };
 
-  private _onExpandItem = (item: IExtendedPersonaProps): void => {
+  private _onExpandGroup = (item: IExtendedPersonaProps): void => {
     if (this.state.controlledComponent) {
       const indexToExpand = this.state.currentSelectedItems.indexOf(item);
       this.setState({

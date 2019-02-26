@@ -2,23 +2,36 @@ import * as React from 'react';
 import { BaseComponent, KeyCodes, css } from '../../Utilities';
 import { Autofill } from '../../Autofill';
 import { IInputProps } from '../../Pickers';
-import * as stylesImport from './BaseExtendedPicker.scss';
-import { IBaseExtendedPickerProps, IBaseExtendedPicker } from './BaseExtendedPicker.types';
+import * as stylesImport from './UnifiedPicker.scss';
+import { IUnifiedPickerProps, IUnifiedPicker, UnifiedPickerFocusZoneProps } from './UnifiedPicker.types';
 import { IBaseFloatingPickerProps, BaseFloatingPicker } from '../../FloatingPicker';
 import { BaseSelectedItemsList, IBaseSelectedItemsListProps } from '../../SelectedItemsList';
-import { FocusZone, FocusZoneDirection } from '../../FocusZone';
+import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from '../../FocusZone';
 import { Selection, SelectionMode, SelectionZone } from '../../Selection';
+
 // tslint:disable-next-line:no-any
 const styles: any = stylesImport;
 
-export interface IBaseExtendedPickerState<T> {
+export interface IUnifiedPickerState<T> {
   queryString: string | null;
   selectedItems: T[] | null;
   suggestionItems: T[] | null;
 }
 
-export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extends BaseComponent<P, IBaseExtendedPickerState<T>>
-  implements IBaseExtendedPicker<T> {
+/**
+ * The focus zone that is used by default to wrap the whole unified picker
+ */
+const DefaultUnifiedPickerFocusZone = (overriddenProps: UnifiedPickerFocusZoneProps) => (
+  <FocusZone
+    shouldInputLoseFocusOnArrowKey={shouldFocusZoneInputLoseFocusOnArrowKey}
+    handleTabKey={FocusZoneTabbableElements.all}
+    {...overriddenProps}
+  />
+);
+
+const shouldFocusZoneInputLoseFocusOnArrowKey = () => false;
+
+export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
   public floatingPicker = React.createRef<BaseFloatingPicker<T, IBaseFloatingPickerProps<T>>>();
   public selectedItemsList = React.createRef<BaseSelectedItemsList<T, IBaseSelectedItemsListProps<T>>>();
 
@@ -26,7 +39,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
   protected input = React.createRef<Autofill>();
   protected selection: Selection;
 
-  constructor(basePickerProps: P) {
+  constructor(basePickerProps: IUnifiedPickerProps<T>) {
     super(basePickerProps);
 
     this.selection = new Selection({ onSelectionChanged: () => this.onSelectionChange() });
@@ -55,7 +68,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
     this.forceUpdate();
   }
 
-  public componentWillReceiveProps(newProps: P): void {
+  public componentWillReceiveProps(newProps: IUnifiedPickerProps<T>): void {
     if (newProps.selectedItems) {
       this.setState({ selectedItems: newProps.selectedItems });
     }
@@ -82,20 +95,21 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
   }
 
   public render(): JSX.Element {
-    const { className, inputProps, disabled, focusZoneProps } = this.props;
+    const { className, inputProps, disabled, onRenderFocusZone } = this.props;
     const activeDescendant =
       this.floatingPicker.current && this.floatingPicker.current.currentSelectedSuggestionIndex !== -1
         ? 'sug-' + this.floatingPicker.current.currentSelectedSuggestionIndex
         : undefined;
+    const FocusZoneComponent: React.ComponentType<UnifiedPickerFocusZoneProps> = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
 
     return (
       <div
         ref={this.root}
-        className={css('ms-BasePicker ms-BaseExtendedPicker', className ? className : '')}
+        className={css('ms-BasePicker ms-UnifiedPicker', className ? className : '')}
         onKeyDown={this.onBackspace}
         onCopy={this.onCopy}
       >
-        <FocusZone direction={FocusZoneDirection.bidirectional} {...focusZoneProps}>
+        <FocusZoneComponent direction={FocusZoneDirection.bidirectional}>
           <SelectionZone selection={this.selection} selectionMode={SelectionMode.multiple}>
             <div className={css('ms-BasePicker-text', styles.pickerText)} role={'list'}>
               {this.props.headerComponent}
@@ -121,7 +135,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
               )}
             </div>
           </SelectionZone>
-        </FocusZone>
+        </FocusZoneComponent>
         {this.renderFloatingPicker()}
       </div>
     );
@@ -145,7 +159,6 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
         inputElement={this.input.current ? this.input.current.inputElement : undefined}
         selectedItems={this.items}
         suggestionItems={this.props.suggestionItems ? this.props.suggestionItems : undefined}
-        {...this.props.floatingPickerProps || {}}
       />
     );
   }
@@ -158,7 +171,6 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
         selection={this.selection}
         selectedItems={this.props.selectedItems ? this.props.selectedItems : undefined}
         onItemsDeleted={this.props.selectedItems ? this.props.onItemsRemoved : undefined}
-        {...this.props.selectedItemsListProps || {}}
       />
     );
   }

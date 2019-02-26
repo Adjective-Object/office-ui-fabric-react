@@ -22,7 +22,7 @@ export interface IPickerItemProps<T> extends React.AllHTMLAttributes<HTMLElement
   selected?: boolean;
 
   /** Callback issued when the item is removed from the array of picked items. */
-  onRemoveItem?: () => void;
+  onRemoveItem?: (item: T) => void;
 
   /**
    * Internal Use only, gives a callback to the renderer to call when an item has changed.

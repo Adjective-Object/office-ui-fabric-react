@@ -6,7 +6,31 @@ import { IBaseSelectedItemsListProps } from '../../SelectedItemsList';
 import { IRefObject } from '../../Utilities';
 import { IFocusZoneProps } from '../../FocusZone';
 
-export interface IBaseExtendedPicker<T> {
+/**
+ * The slice of props that the unified picker will pass to the
+ * implementing floating picker component
+ */
+export type UnifiedPickerFloatingPickerProps<T> = Pick<
+  IBaseFloatingPickerProps<T>,
+  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'suggestionItems'
+>;
+
+/**
+ * The slice of props that the unified picker will pass to the
+ * implementing selected items component
+ */
+export type UnifiedPickerSelectedItemsProps<T> = Pick<
+  IBaseSelectedItemsListProps<T>,
+  'componentRef' | 'selection' | 'selectedItems' | 'onItemsDeleted'
+>;
+
+/**
+ * tge slice of props that the unified picker will pass to the
+ * implementing focusZone component
+ */
+export type UnifiedPickerFocusZoneProps = Pick<IFocusZoneProps, 'direction'>;
+
+export interface IUnifiedPicker<T> {
   /** Forces the picker to resolve */
   forceResolve?: () => void;
   /** Gets the current value of the input. */
@@ -18,11 +42,11 @@ export interface IBaseExtendedPicker<T> {
 // Type T is the type of the item that is displayed
 // and searched for by the people picker. For example, if the picker is
 // displaying persona's than type T could either be of Persona or Ipersona props
-export interface IBaseExtendedPickerProps<T> {
+export interface IUnifiedPickerProps<T> {
   /**
    * Ref of the component
    */
-  componentRef?: IRefObject<IBaseExtendedPicker<T>>;
+  componentRef?: IRefObject<IUnifiedPicker<T>>;
 
   /**
    * Header/title element for the picker
@@ -62,26 +86,12 @@ export interface IBaseExtendedPickerProps<T> {
   /**
    * Function that specifies how the floating picker will appear.
    */
-  onRenderFloatingPicker: React.ComponentType<Partial<IBaseFloatingPickerProps<T>>>;
+  onRenderFloatingPicker: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
 
   /**
    * Function that specifies how the floating picker will appear.
    */
-  onRenderSelectedItems: React.ComponentType<Partial<IBaseSelectedItemsListProps<T>>>;
-
-  /**
-   * Floating picker properties
-   *
-   * @deprecated bind props in onRenderFloatingPicker instead.
-   */
-  floatingPickerProps?: IBaseFloatingPickerProps<T>;
-
-  /**
-   * Selected items list properties
-   *
-   * @deprecated bind props in onRenderSelectedItems instead.
-   */
-  selectedItemsListProps?: IBaseSelectedItemsListProps<T>;
+  onRenderSelectedItems: React.ComponentType<UnifiedPickerSelectedItemsProps<T>>;
 
   /**
    * Autofill input native props
@@ -130,7 +140,7 @@ export interface IBaseExtendedPickerProps<T> {
   /**
    * Focus zone props
    */
-  focusZoneProps?: IFocusZoneProps;
+  onRenderFocusZone?: React.ComponentType<UnifiedPickerFocusZoneProps>;
 
   /**
    * Current rendered query string that's corealte to current rendered result

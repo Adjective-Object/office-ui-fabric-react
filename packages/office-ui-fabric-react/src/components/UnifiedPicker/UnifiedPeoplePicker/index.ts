@@ -1,0 +1,1 @@
+export { UnifiedPeoplePicker } from './UnifiedPeoplePicker';
