@@ -4,7 +4,7 @@ import { BaseState } from '../../utilities/BaseState';
 // Internal state will most likely include a subset of your ViewProps. This template just equates them to start with.
 export type IUnifiedPickerState = IUnifiedPickerViewProps;
 
-export class UnifiedPickerState extends BaseState<IUnifiedPickerProps, IUnifiedPickerViewProps, IUnifiedPickerState > {
+export class UnifiedPickerState extends BaseState<IUnifiedPickerProps, IUnifiedPickerViewProps, IUnifiedPickerState> {
   constructor(props: UnifiedPickerState['props']) {
     super(props, {
       // Mark controlledProps to ensure that they get priority when provided as a component prop.

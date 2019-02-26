@@ -425,20 +425,15 @@ export const AppDefinition: IAppDefinition = {
           key: 'Tooltip',
           name: 'Tooltip',
           url: '#/examples/Tooltip'
+        },
+        {
+          component: require<any>('./components/pages/UnifiedPeoplePickerPage').UnifiedPeoplePickerPage,
+          key: 'UnifiedPeoplePicker',
+          name: 'UnifiedPeoplePicker',
+          url: '#examples/unifiedpeoplepicker'
         }
       ],
       name: 'Basic components'
-    },
-    {
-      links: [
-        {
-          component: require<any>('./components/pages/ExtendedPeoplePickerPage').ExtendedPeoplePickerPage,
-          key: 'ExtendedPeoplePicker',
-          name: 'ExtendedPeoplePicker',
-          url: '#examples/extendedpeoplepicker'
-        }
-      ],
-      name: 'Extended components'
     },
     {
       links: [

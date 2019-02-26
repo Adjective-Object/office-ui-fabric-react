@@ -17,13 +17,21 @@ export const UnifiedPeoplePickerPageProps: IDocPageProps = {
       view: <UnifiedPeoplePickerBasicExample />
     }
   ],
-  propertiesTablesSources: [require<string>('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/BaseUnifiedPicker.types.ts')],
-  overview: require<string>('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/docs/UnifiedPeoplePickerOverview.md'),
+  propertiesTablesSources: [
+    require<string>('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/UnifiedPeoplePicker.types.ts')
+  ],
+  overview: require<
+    string
+  >('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/docs/UnifiedPeoplePickerOverview.md'),
   bestPractices: require<
     string
-  >('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/docs/UnifiedPeoplePickerBestPractices.md'),
-  dos: require<string>('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/docs/UnifiedPeoplePickerDos.md'),
-  donts: require<string>('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/docs/UnifiedPeoplePickerDonts.md'),
+  >('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/docs/UnifiedPeoplePickerBestPractices.md'),
+  dos: require<
+    string
+  >('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/docs/UnifiedPeoplePickerDos.md'),
+  donts: require<
+    string
+  >('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/docs/UnifiedPeoplePickerDonts.md'),
   isHeaderVisible: true,
   isFeedbackVisible: true
 };

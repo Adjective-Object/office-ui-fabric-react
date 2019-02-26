@@ -13,11 +13,7 @@ import { UnifiedPickerView } from './UnifiedPicker.view';
 // with snapshot tests exercising permutations of the props.
 describe('UnifiedPickerView', () => {
   it('renders status view prop correctly', () => {
-    const tree = renderer
-      .create(
-        <UnifiedPickerView status="statusProp" />
-      )
-      .toJSON();
+    const tree = renderer.create(<UnifiedPickerView status="statusProp" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

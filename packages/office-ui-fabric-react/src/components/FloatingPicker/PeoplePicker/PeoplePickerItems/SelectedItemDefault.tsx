@@ -3,13 +3,16 @@ import * as React from 'react';
 /* tslint:enable */
 import { css, getId } from '../../../../Utilities';
 import { Persona, PersonaSize, PersonaPresence } from '../../../../Persona';
-import { IPeoplePickerItemProps } from '../../../../ExtendedPicker';
 import { IconButton } from '../../../../Button';
 import * as stylesImport from './PickerItemsDefault.scss';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona';
+import { ISuggestionItemProps } from 'office-ui-fabric-react/lib/components/pickers';
 // tslint:disable-next-line:no-any
 const styles: any = stylesImport;
 
-export const SelectedItemDefault: (props: IPeoplePickerItemProps) => JSX.Element = (peoplePickerItemProps: IPeoplePickerItemProps) => {
+export const SelectedItemDefault: (props: ISuggestionItemProps<IPersonaProps>) => JSX.Element = (
+  peoplePickerItemProps: ISuggestionItemProps<IPersonaProps>
+) => {
   const { item, onRemoveItem, index, selected, removeButtonAriaLabel } = peoplePickerItemProps;
 
   const itemId = getId();

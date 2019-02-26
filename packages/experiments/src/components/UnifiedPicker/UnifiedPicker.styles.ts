@@ -1,13 +1,9 @@
-import {
-  IUnifiedPickerComponent,
-  IUnifiedPickerStylesReturnType,
-  IUnifiedPickerTokenReturnType
-} from './UnifiedPicker.types';
+import { IUnifiedPickerComponent, IUnifiedPickerStylesReturnType, IUnifiedPickerTokenReturnType } from './UnifiedPicker.types';
 import { getGlobalClassNames } from '../../Styling';
 
 const GlobalClassNames = {
   root: 'ms-UnifiedPicker',
-  text: 'ms-UnifiedPicker-text',
+  text: 'ms-UnifiedPicker-text'
 };
 
 const baseTokens: IUnifiedPickerComponent['tokens'] = {

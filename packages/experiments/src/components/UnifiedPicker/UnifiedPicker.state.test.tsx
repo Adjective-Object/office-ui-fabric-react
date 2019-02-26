@@ -10,7 +10,6 @@ const testView = () => {
 // to inputs and events as expected.
 describe('UnifiedPickerState', () => {
   it('initializes default state correctly', () => {
-
     const testUnifiedPickerState = mount(<UnifiedPickerState renderView={testView} />);
 
     expect(testUnifiedPickerState.state('text')).toBe('Default Text');

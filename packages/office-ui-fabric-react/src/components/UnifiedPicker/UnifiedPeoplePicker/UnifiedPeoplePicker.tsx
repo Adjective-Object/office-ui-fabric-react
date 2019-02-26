@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { IPersonaProps } from '../../Persona';
 import { UnifiedPicker } from '../UnifiedPicker';
-import { IUnifiedPickerProps, UnifiedPickerSelectedItemsProps } from '../UnifiedPicker.types';
-import { IEditingItemProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
-import { SuggestionsStore, FloatingPeoplePicker, BaseFloatingPickerSuggestionProps, IBaseFloatingPickerProps } from '../../FloatingPicker';
+import { IUnifiedPickerProps, UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
+import { IEditingItemProps, EditingItemFloatingPickerProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
+import {
+  SuggestionsStore,
+  FloatingPeoplePicker,
+  BaseFloatingPickerSuggestionProps,
+  IBaseFloatingPickerProps,
+  ISuggestionsControlProps
+} from '../../FloatingPicker';
 import { SelectedPeopleList, ISelectedPeopleProps } from '../../SelectedItemsList';
 import { SuggestionsControl } from '../../FloatingPicker/Suggestions/SuggestionsControl';
 
@@ -11,7 +17,7 @@ export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
 export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = React.ComponentType<PropsOf<TComponent> & TMoreProps>;
 
 /**
- * Expand the exact floating picker props that are passed through to the UnifiedPicker
+ * Expand the exact floating picker props that are passed through from the UnifiedPicker
  * so that if FloatingPicker is overridden, the consumer does not need to override the full
  * component subtree (e.g. the separately specified or default component)
  */
@@ -21,7 +27,7 @@ export type ComposableMainFloatingPicker<T> = WithMoreProps<
 >;
 
 /**
- * Expand the exact floating picker props that are passed through to the UnifiedPicker
+ * Expand the exact floating picker props that are passed through from the UnifiedPicker
  * so that if FloatingPicker is overridden, the consumer does not need to override the full
  * component subtree (e.g. the separately specified or default component)
  */
@@ -30,28 +36,39 @@ export type ComposableEditingItemFloatingPicker<T> = WithMoreProps<
   Pick<IBaseFloatingPickerProps<T>, 'onRenderSuggestionControl'>
 >;
 
+/**
+ * Expand the exact suggestion control props that are passed through from the FloatingPicker
+ * so that if SuggestionControl is overridden, the consumer does not need to override the full
+ * component subtree (e.g. the separately specified or default component)
+ */
+export type ComposableSuggestionControl<T> = React.ComponentType<
+  BaseFloatingPickerSuggestionProps<T> & Pick<ISuggestionsControlProps<T>, 'onRenderSuggestion'>
+>;
+
 export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
-  ////////////////////////////
-  // Coordinated Components //
-  ////////////////////////////
+  /////////////////////////////////////
+  // Coordinated Internal Components //
+  /////////////////////////////////////
+  headerComponent?: IUnifiedPickerProps<TPersona>['headerComponent'];
   onRenderFocusZone?: IUnifiedPickerProps<TPersona>['onRenderFocusZone'];
   onRenderMainFloatingPicker?: ComposableMainFloatingPicker<TPersona>;
   onRenderEditingItemFloatingPicker?: ComposableEditingItemFloatingPicker<TPersona>;
-  onRenderSuggestionControl?: IBaseFloatingPickerProps<TPersona>['onRenderSuggestionControl'];
+  onRenderSuggestionControl?: ComposableSuggestionControl<TPersona>;
+  onRenderSuggestionItem?: ISuggestionsControlProps<TPersona>['onRenderSuggestion'];
 
-  ////////////////
-  // Data Model //
-  ////////////////
-
+  ///////////////////////////
+  // Data Model (required) //
+  ///////////////////////////
   onResolveSuggestions: IBaseFloatingPickerProps<TPersona>['onResolveSuggestions'];
-  onValidateInput?: IBaseFloatingPickerProps<TPersona>['onValidateInput'];
 
+  ///////////////////////////
+  // Data model (optional) //
+  ///////////////////////////
+  onValidateInput?: IBaseFloatingPickerProps<TPersona>['onValidateInput'];
   onRemoveSuggestion?: IBaseFloatingPickerProps<TPersona>['onRemoveSuggestion'];
   onZeroQuerySuggestion?: IBaseFloatingPickerProps<TPersona>['onZeroQuerySuggestion'];
   shouldShowForceResolveSuggestion?: IBaseFloatingPickerProps<TPersona>['showForceResolve'];
   onExpandSelectedItem?: ISelectedPeopleProps<TPersona>['onExpandGroup'];
-
-  headerComponent?: IUnifiedPickerProps<TPersona>['headerComponent'];
 };
 
 export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.Component<UnifiedPeoplePickerProps<TPersona>> {
@@ -83,7 +100,9 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
   /**
    * the default selected items list
    */
-  private DefaultSuggestionControl = (overriddenProps: BaseFloatingPickerSuggestionProps<TPersona>) => (
+  private DefaultSuggestionControlInner: ComposableSuggestionControl<TPersona> = (
+    overriddenProps: PropsOf<ComposableSuggestionControl<TPersona>>
+  ) => (
     <SuggestionsControl
       showRemoveButtons={true}
       headerItemsProps={[]}
@@ -96,10 +115,18 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
   );
 
   /**
+   * the default selected items list
+   */
+  private SuggestionControl = (overriddenProps: BaseFloatingPickerSuggestionProps<TPersona>) => {
+    const Inner: ComposableSuggestionControl<TPersona> = this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
+    return <Inner onRenderSuggestion={this.props.onRenderSuggestionItem} {...overriddenProps} />;
+  };
+
+  /**
    * The floating picker that is used by default for both the
    * floating picker suggestion dropdown and the suggestion well floating picker.
    */
-  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<TPersona> & ComposableEditingItemFloatingPicker<TPersona> = (
+  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<TPersona> = (
     overriddenProps: PropsOf<ComposableMainFloatingPicker<TPersona>> | PropsOf<ComposableEditingItemFloatingPicker<TPersona>>
   ) => (
     <FloatingPeoplePicker
@@ -114,14 +141,15 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
     />
   );
 
-  private MainFloatingPicker = () => {
-    const Inner = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
-    return <Inner onRenderSuggestionControl={this.DefaultSuggestionControl} />;
+  private MainFloatingPicker = (overriddenProps: UnifiedPickerFloatingPickerProps<TPersona>) => {
+    const Inner: ComposableMainFloatingPicker<TPersona> = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
+    return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
 
-  private EditingItemFloatingPicker = () => {
-    const Inner = this.props.onRenderEditingItemFloatingPicker || this.DefaultFloatingPickerInner;
-    return <Inner onRenderSuggestionControl={this.DefaultSuggestionControl} />;
+  private EditingItemFloatingPicker = (overriddenProps: EditingItemFloatingPickerProps<TPersona>) => {
+    const Inner: ComposableEditingItemFloatingPicker<TPersona> =
+      this.props.onRenderEditingItemFloatingPicker || this.DefaultFloatingPickerInner;
+    return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
 
   /**
