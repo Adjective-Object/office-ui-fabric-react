@@ -4,9 +4,9 @@ import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona';
 import { people } from './PeopleExampleData';
 
 class ExampleSuggestionsModel {
-  peopleList = [...people];
+  private peopleList = [...people];
 
-  resolveSuggestions = (filterText: string, currentPersonas: IPersonaProps[]): Promise<IPersonaProps[]> | null => {
+  public resolveSuggestions = (filterText: string, currentPersonas: IPersonaProps[]): Promise<IPersonaProps[]> | null => {
     let filteredPersonas: IPersonaProps[] = [];
     if (filterText) {
       filteredPersonas = this._filterPersonasByText(filterText);
@@ -41,9 +41,9 @@ class ExampleSuggestionsModel {
 }
 
 export class UnifiedPeoplePickerBasicExample extends React.Component<{}> {
-  model = new ExampleSuggestionsModel();
+  private model = new ExampleSuggestionsModel();
 
-  render() {
+  public render() {
     return <UnifiedPeoplePicker onResolveSuggestions={this.model.resolveSuggestions} />;
   }
 }

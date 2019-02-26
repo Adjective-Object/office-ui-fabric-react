@@ -107,9 +107,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
       showRemoveButtons={true}
       headerItemsProps={[]}
       footerItemsProps={[]}
-      shouldSelectFirstItem={() => {
-        return !this._shouldShowSuggestedContacts();
-      }}
+      shouldSelectFirstItem={this._suggestionIsNotEmpty}
       {...overriddenProps}
     />
   );
@@ -195,8 +193,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
     this._picker = component;
   };
 
-  private _shouldShowSuggestedContacts = (): boolean => {
-    return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '';
+  private _suggestionIsNotEmpty = (): boolean => {
+    return !(this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '');
   };
 
   private _getTextFromItem(persona: TPersona): string {
