@@ -18,6 +18,8 @@ export interface IUnifiedPickerState<T> {
   suggestionItems: T[] | null;
 }
 
+const shouldFocusZoneInputLoseFocusOnArrowKey = () => false;
+
 /**
  * The focus zone that is used by default to wrap the whole unified picker
  */
@@ -29,10 +31,8 @@ const DefaultUnifiedPickerFocusZone = (overriddenProps: UnifiedPickerFocusZonePr
   />
 );
 
-const shouldFocusZoneInputLoseFocusOnArrowKey = () => false;
-
 export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
-  public floatingPicker = React.createRef<BaseFloatingPicker<T, IBaseFloatingPickerProps<T>>>();
+  public floatingPicker = React.createRef<BaseFloatingPicker<T>>();
   public selectedItemsList = React.createRef<BaseSelectedItemsList<T, IBaseSelectedItemsListProps<T>>>();
 
   protected root = React.createRef<HTMLDivElement>();

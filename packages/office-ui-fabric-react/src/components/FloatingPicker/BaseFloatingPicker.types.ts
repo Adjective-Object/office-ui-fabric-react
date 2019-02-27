@@ -51,6 +51,11 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
   inputElement?: HTMLInputElement | null;
 
   /**
+   * Function that specifies how an individual suggestion item will appear.
+   */
+  // tslint:disable-next-line:no-any
+  onRenderSuggestionsItem?: (props: T, itemProps: any) => JSX.Element;
+  /**
    * A callback for what should happen when a person types text into the input.
    * Returns the already selected items so the resolver can filter them out.
    * If used in conjunction with resolveDelay this will ony kick off after the delay throttle.
@@ -82,7 +87,7 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
   /**
    * How to render the Suggestions control used by this floating picker.
    */
-  onRenderSuggestionControl: React.ComponentType<BaseFloatingPickerSuggestionProps<T>>;
+  onRenderSuggestionControl?: React.ComponentType<BaseFloatingPickerSuggestionProps<T>>;
   /**
    * A callback for when a persona is removed from the suggestion list
    */
@@ -144,5 +149,5 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
  */
 export type BaseFloatingPickerSuggestionProps<T> = Pick<
   ISuggestionsControlProps<T>,
-  'onSuggestionClick' | 'onSuggestionRemove' | 'suggestions' | 'ref' | 'completeSuggestion' | 'shouldLoopSelection'
+  'onSuggestionClick' | 'onSuggestionRemove' | 'suggestions' | 'ref' | 'completeSuggestion' | 'shouldLoopSelection' | 'onRenderSuggestion'
 >;

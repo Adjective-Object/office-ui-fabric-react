@@ -33,10 +33,7 @@ function onResolveSuggestions(text: string): ISimple[] {
     .map((item: string) => ({ key: item, name: item }));
 }
 
-const BasePickerWithType = BaseFloatingPicker as new (props: IBaseFloatingPickerProps<ISimple>) => BaseFloatingPicker<
-  ISimple,
-  IBaseFloatingPickerProps<ISimple>
->;
+const BasePickerWithType = BaseFloatingPicker as new (props: IBaseFloatingPickerProps<ISimple>) => BaseFloatingPicker<ISimple>;
 
 const BaseSelectedItemsListWithType = BaseSelectedItemsList as new (props: IBaseSelectedItemsListProps<ISimple>) => BaseSelectedItemsList<
   ISimple,
@@ -71,14 +68,11 @@ export interface ISimple {
   name: string;
 }
 
-export type TypedBaseUnifiedPicker = UnifiedPicker<ISimple, IUnifiedPickerProps<ISimple>>;
+export type TypedBaseUnifiedPicker = UnifiedPicker<ISimple>;
 
 describe('Pickers', () => {
   describe('BasePicker', () => {
-    const BaseUnifiedPickerWithType: new (props: IUnifiedPickerProps<ISimple>) => UnifiedPicker<
-      ISimple,
-      IUnifiedPickerProps<ISimple>
-    > = UnifiedPicker;
+    const BaseUnifiedPickerWithType: new (props: IUnifiedPickerProps<ISimple>) => UnifiedPicker<ISimple> = UnifiedPicker;
 
     it('renders BaseUnifiedPicker correctly', () => {
       const component = renderer.create(

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { IPersonaProps } from '../../Persona';
+import { css } from '../../../Utilities';
+import { IPersonaProps } from '../../Persona/Persona.types';
 import { UnifiedPicker } from '../UnifiedPicker';
 import { IUnifiedPickerProps, UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
 import { IEditingItemProps, EditingItemFloatingPickerProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
@@ -9,8 +10,8 @@ import {
   BaseFloatingPickerSuggestionProps,
   IBaseFloatingPickerProps,
   ISuggestionsControlProps
-} from '../../FloatingPicker';
-import { SelectedPeopleList, ISelectedPeopleProps } from '../../SelectedItemsList';
+} from '../../FloatingPicker/index';
+import { SelectedPeopleList, ISelectedPeopleProps } from '../../SelectedItemsList/SelectedPeopleList/SelectedPeopleList';
 import { SuggestionsControl } from '../../FloatingPicker/Suggestions/SuggestionsControl';
 
 export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
@@ -46,6 +47,11 @@ export type ComposableSuggestionControl<T> = React.ComponentType<
 >;
 
 export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
+  /**
+   * Passed down to UnifiedPeoplePicker div. Required for fabric compliance.
+   */
+  className?: string;
+
   /////////////////////////////////////
   // Coordinated Internal Components //
   /////////////////////////////////////
@@ -84,7 +90,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
         onRenderFloatingPicker={this.MainFloatingPicker}
         onRenderSelectedItems={this.DefaultSelectedPeopleList}
         onRenderFocusZone={this.props.onRenderFocusZone}
-        className={'ms-PeoplePicker'}
+        className={css('ms-PeoplePicker', this.props.className)}
         key={'normal'}
         inputProps={{
           onBlur: (ev: React.FocusEvent<HTMLInputElement>) => console.log('onBlur called'),

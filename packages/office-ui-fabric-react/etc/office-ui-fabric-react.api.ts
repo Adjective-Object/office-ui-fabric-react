@@ -149,75 +149,12 @@ class BaseComponent<TProps extends IBaseProps = {}, TState = {}> extends React.C
 }
 
 // @public (undocumented)
-class BaseExtendedPeoplePicker extends BaseExtendedPicker<IPersonaProps, IExtendedPeoplePickerProps> {
+class BaseFloatingPeoplePicker extends BaseFloatingPicker<IPersonaProps> {
 }
 
 // @public (undocumented)
-class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extends BaseComponent<P, IBaseExtendedPickerState<T>>, implements IBaseExtendedPicker<T> {
-  constructor(basePickerProps: P);
-  // (undocumented)
-  protected _onSelectedItemsChanged: () => void;
-  // (undocumented)
-  protected _onSuggestionSelected: (item: T) => void;
-  // (undocumented)
-  protected canAddItems(): boolean;
-  // (undocumented)
-  clearInput(): void;
-  // (undocumented)
-  componentDidMount(): void;
-  // (undocumented)
-  componentWillReceiveProps(newProps: P): void;
-  // (undocumented)
-  floatingPicker: React.RefObject<BaseFloatingPicker<T, IBaseFloatingPickerProps<T>>>;
-  // (undocumented)
-  protected floatingPickerProps: IBaseFloatingPickerProps<T>;
-  // (undocumented)
-  focus(): void;
-  // (undocumented)
-  readonly highlightedItems: T[];
-  // (undocumented)
-  protected input: React.RefObject<Autofill>;
-  // (undocumented)
-  readonly inputElement: HTMLInputElement | null;
-  // (undocumented)
-  readonly items: any;
-  // (undocumented)
-  protected onBackspace: (ev: React.KeyboardEvent<HTMLElement>) => void;
-  // (undocumented)
-  protected onCopy: (ev: React.ClipboardEvent<HTMLElement>) => void;
-  // (undocumented)
-  protected onInputChange: (value: string) => void;
-  // (undocumented)
-  protected onInputClick: (ev: React.MouseEvent<HTMLInputElement | Autofill>) => void;
-  // (undocumented)
-  protected onInputFocus: (ev: React.FocusEvent<HTMLInputElement | Autofill>) => void;
-  // (undocumented)
-  protected onPaste: (ev: React.ClipboardEvent<HTMLInputElement | Autofill>) => void;
-  // (undocumented)
-  protected onSelectionChange: () => void;
-  // (undocumented)
-  render(): JSX.Element;
-  // (undocumented)
-  protected renderFloatingPicker(): JSX.Element;
-  // (undocumented)
-  protected renderSelectedItemsList(): JSX.Element;
-  // (undocumented)
-  protected root: React.RefObject<HTMLDivElement>;
-  // (undocumented)
-  selectedItemsList: React.RefObject<BaseSelectedItemsList<T, IBaseSelectedItemsListProps<T>>>;
-  // (undocumented)
-  protected selectedItemsListProps: IBaseSelectedItemsListProps<T>;
-  // (undocumented)
-  protected selection: Selection;
-}
-
-// @public (undocumented)
-class BaseFloatingPeoplePicker extends BaseFloatingPicker<IPersonaProps, IPeopleFloatingPickerProps> {
-}
-
-// @public (undocumented)
-class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extends BaseComponent<P, IBaseFloatingPickerState>, implements IBaseFloatingPicker {
-  constructor(basePickerProps: P);
+class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProps<T>, IBaseFloatingPickerState>, implements IBaseFloatingPicker {
+  constructor(basePickerProps: IBaseFloatingPickerProps<T>);
   // (undocumented)
   completeSuggestion: () => void;
   // (undocumented)
@@ -225,7 +162,7 @@ class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extends BaseC
   // (undocumented)
   componentDidUpdate(): void;
   // (undocumented)
-  componentWillReceiveProps(newProps: P): void;
+  componentWillReceiveProps(newProps: IBaseFloatingPickerProps<T>): void;
   // (undocumented)
   componentWillUnmount(): void;
   // (undocumented)
@@ -265,7 +202,7 @@ class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extends BaseC
   // (undocumented)
   readonly suggestions: any[];
   // (undocumented)
-  protected suggestionsControl: SuggestionsControl<T>;
+  protected suggestionsControl: React.RefObject<SuggestionsControl<T>>;
   // (undocumented)
   protected SuggestionsControlOfProperType: new (props: ISuggestionsControlProps<T>) => SuggestionsControl<T>;
   // (undocumented)
@@ -285,7 +222,7 @@ class BasePeoplePicker extends BasePicker<IPersonaProps, IPeoplePickerProps> {
 }
 
 // @public (undocumented)
-class BasePeopleSelectedItemsList extends BaseSelectedItemsList<IExtendedPersonaProps, ISelectedPeopleProps> {
+class BasePeopleSelectedItemsList<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends BaseSelectedItemsList<TPersona, ISelectedPeopleProps<TPersona>> {
 }
 
 // @public (undocumented)
@@ -427,7 +364,7 @@ class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> extends
   // (undocumented)
   protected onSelectionChanged: () => void;
   // (undocumented)
-  removeItem: (item: ISelectedItemProps<T>) => void;
+  removeItem: (item: T) => void;
   // (undocumented)
   removeItemAt: (index: number) => void;
   // (undocumented)
@@ -438,6 +375,7 @@ class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> extends
   render(): any;
   // (undocumented)
   protected renderItems: () => JSX.Element[];
+  replaceItem: (itemToReplace: T, itemsToReplaceWith: T[]) => void;
   // (undocumented)
   protected root: HTMLElement;
   // (undocumented)
@@ -1081,10 +1019,6 @@ class ExpandingCardBase extends BaseComponent<IExpandingCardProps, IExpandingCar
 enum ExpandingCardMode {
   compact = 0,
   expanded = 1
-}
-
-// @public (undocumented)
-class ExtendedPeoplePicker extends BaseExtendedPeoplePicker {
 }
 
 // @public (undocumented)
@@ -1757,49 +1691,6 @@ interface IBaseButtonState {
 }
 
 // @public (undocumented)
-interface IBaseExtendedPicker<T> {
-  focus: () => void;
-  forceResolve?: () => void;
-  items: T[] | undefined;
-}
-
-// @public (undocumented)
-interface IBaseExtendedPickerProps<T> {
-  className?: string;
-  componentRef?: IRefObject<IBaseExtendedPicker<T>>;
-  currentRenderedQueryString?: string;
-  defaultSelectedItems?: T[];
-  disabled?: boolean;
-  floatingPickerProps: IBaseFloatingPickerProps<T>;
-  focusZoneProps?: IFocusZoneProps;
-  headerComponent?: JSX.Element;
-  inputProps?: IInputProps;
-  itemLimit?: number;
-  onBlur?: React.FocusEventHandler<HTMLInputElement | Autofill>;
-  onChange?: (items?: T[]) => void;
-  onFocus?: React.FocusEventHandler<HTMLInputElement | Autofill>;
-  onItemAdded?: (addedItem: T) => void;
-  onItemSelected?: (selectedItem?: T) => T | PromiseLike<T>;
-  onItemsRemoved?: (removedItems: T[]) => void;
-  onPaste?: (pastedText: string) => T[];
-  onRenderFloatingPicker: React.ComponentType<IBaseFloatingPickerProps<T>>;
-  onRenderSelectedItems: React.ComponentType<IBaseSelectedItemsListProps<T>>;
-  selectedItems?: T[];
-  selectedItemsListProps: IBaseSelectedItemsListProps<T>;
-  suggestionItems?: T[];
-}
-
-// @public (undocumented)
-interface IBaseExtendedPickerState<T> {
-  // (undocumented)
-  queryString: string | null;
-  // (undocumented)
-  selectedItems: T[] | null;
-  // (undocumented)
-  suggestionItems: T[] | null;
-}
-
-// @public (undocumented)
 interface IBaseFloatingPicker {
   hidePicker: () => void;
   inputText: string;
@@ -1821,13 +1712,13 @@ interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> {
   onChange?: (item: T) => void;
   onInputChanged?: (filter: string) => void;
   onRemoveSuggestion?: (item: IPersonaProps) => void;
+  onRenderSuggestionControl?: React.ComponentType<BaseFloatingPickerSuggestionProps<T>>;
   onRenderSuggestionsItem?: (props: T, itemProps: any) => JSX.Element;
   onResolveSuggestions: (filter: string, selectedItems?: T[]) => T[] | PromiseLike<T[]> | null;
   onSuggestionsHidden?: () => void;
   onSuggestionsShown?: () => void;
   onValidateInput?: (input: string) => boolean;
   onZeroQuerySuggestion?: (selectedItems?: T[]) => T[] | PromiseLike<T[]> | null;
-  pickerSuggestionsProps?: IBaseFloatingPickerSuggestionProps;
   resolveDelay?: number;
   searchingText?: ((props: {
           input: string;
@@ -7777,10 +7668,6 @@ interface IExpandingCardStyles extends IBaseCardStyles {
 }
 
 // @public (undocumented)
-interface IExtendedPeoplePickerProps extends IBaseExtendedPickerProps<IPersonaProps> {
-}
-
-// @public (undocumented)
 interface IExtendedPersonaProps extends IPersonaProps {
   // (undocumented)
   blockRecipientRemoval?: boolean;
@@ -7789,7 +7676,7 @@ interface IExtendedPersonaProps extends IPersonaProps {
   // (undocumented)
   isEditing?: boolean;
   // (undocumented)
-  isValid: boolean;
+  isValid?: boolean;
   // (undocumented)
   shouldBlockSelection?: boolean;
 }
@@ -9237,10 +9124,6 @@ interface IPanelStyles {
 interface IPeopleFloatingPickerProps extends IBaseFloatingPickerProps<IPersonaProps> {
 }
 
-// @public (undocumented)
-interface IPeoplePickerItemProps extends IPickerItemProps<IExtendedPersonaProps> {
-}
-
 // @public
 interface IPeoplePickerItemSelectedProps extends IPickerItemProps<IPersonaProps & {
     ValidationState: ValidationState;
@@ -10041,7 +9924,7 @@ interface ISelectedItemProps<T> extends IPickerItemProps<T> {
 }
 
 // @public (undocumented)
-interface ISelectedPeopleItemProps extends ISelectedItemProps<IExtendedPersonaProps> {
+interface ISelectedPeopleItemProps<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends ISelectedItemProps<TPersona> {
   // (undocumented)
   onExpandItem?: () => void;
   // (undocumented)
@@ -10051,7 +9934,7 @@ interface ISelectedPeopleItemProps extends ISelectedItemProps<IExtendedPersonaPr
 }
 
 // @public (undocumented)
-interface ISelectedPeopleProps extends IBaseSelectedItemsListProps<IExtendedPersonaProps> {
+interface ISelectedPeopleProps<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends IBaseSelectedItemsListProps<TPersona> {
   // (undocumented)
   copyMenuItemText?: string;
   // (undocumented)
@@ -10063,7 +9946,7 @@ interface ISelectedPeopleProps extends IBaseSelectedItemsListProps<IExtendedPers
   // (undocumented)
   onExpandGroup?: (item: IExtendedPersonaProps) => void;
   // (undocumented)
-  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<IPersonaProps>>;
+  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<TPersona>>;
   // (undocumented)
   removeMenuItemText?: string;
 }
@@ -12059,7 +11942,7 @@ enum SelectableOptionMenuItemType {
 }
 
 // @public
-class SelectedPeopleList extends BasePeopleSelectedItemsList {
+class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends BasePeopleSelectedItemsList<TPersona> {
   // (undocumented)
   static defaultProps: any;
   // (undocumented)
@@ -12916,7 +12799,7 @@ module ZIndexes {
 // WARNING: Unsupported export: groupTwo
 // WARNING: Unsupported export: Fabric
 // WARNING: Unsupported export: Facepile
-// WARNING: Unsupported export: IBaseFloatingPickerSuggestionProps
+// WARNING: Unsupported export: BaseFloatingPickerSuggestionProps
 // WARNING: Unsupported export: FocusZoneTabbableElements
 // WARNING: Unsupported export: FocusZoneTabbableElements
 // WARNING: Unsupported export: Grid

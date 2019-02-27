@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as stylesImport from './BaseFloatingPicker.scss';
 import { BaseComponent, css, KeyCodes } from '../../Utilities';
 import { Callout, DirectionalHint } from '../../Callout';
-import { IBaseFloatingPicker, IBaseFloatingPickerProps } from './BaseFloatingPicker.types';
+import { IBaseFloatingPicker, IBaseFloatingPickerProps, BaseFloatingPickerSuggestionProps } from './BaseFloatingPicker.types';
 import { ISuggestionModel } from '../../Pickers';
 import { ISuggestionsControlProps } from './Suggestions/Suggestions.types';
 import { SuggestionsControl } from './Suggestions/SuggestionsControl';
@@ -16,7 +16,7 @@ export interface IBaseFloatingPickerState {
   didBind: boolean;
 }
 
-export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extends BaseComponent<P, IBaseFloatingPickerState>
+export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProps<T>, IBaseFloatingPickerState>
   implements IBaseFloatingPicker {
   protected selection: Selection;
 
@@ -28,7 +28,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
   ) => SuggestionsControl<T>;
   protected currentPromise: PromiseLike<T[]>;
 
-  constructor(basePickerProps: P) {
+  constructor(basePickerProps: IBaseFloatingPickerProps<T>) {
     super(basePickerProps);
 
     this.suggestionStore = basePickerProps.suggestionsStore;
@@ -117,7 +117,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
     this._unbindFromInputElement();
   }
 
-  public componentWillReceiveProps(newProps: P): void {
+  public componentWillReceiveProps(newProps: IBaseFloatingPickerProps<T>): void {
     if (newProps.suggestionItems) {
       this.updateSuggestions(newProps.suggestionItems);
     }
@@ -147,7 +147,8 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
   }
 
   protected renderSuggestions(): JSX.Element | null {
-    const TypedSuggestionsControl = this.props.onRenderSuggestionControl;
+    const TypedSuggestionsControl: React.ComponentType<BaseFloatingPickerSuggestionProps<T>> =
+      this.props.onRenderSuggestionControl || SuggestionsControl;
     return this.state.suggestionsVisible ? (
       <Callout
         className={styles.callout}
@@ -166,6 +167,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
           ref={this.suggestionsControl}
           completeSuggestion={this.completeSuggestion}
           shouldLoopSelection={false}
+          onRenderSuggestion={this.props.onRenderSuggestionsItem}
         />
       </Callout>
     ) : null;

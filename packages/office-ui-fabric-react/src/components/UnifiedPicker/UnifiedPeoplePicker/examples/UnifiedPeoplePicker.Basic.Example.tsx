@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
-import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Persona.types';
 import { people } from './PeopleExampleData';
 
 class ExampleSuggestionsModel {

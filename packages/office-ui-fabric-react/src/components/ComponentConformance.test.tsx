@@ -86,6 +86,9 @@ const requiredProps: { [key: string]: any } = {
   },
   Text: {
     children: 'TestText'
+  },
+  UnifiedPeoplePicker: {
+    onResolveSuggestions: () => []
   }
 };
 
@@ -131,7 +134,8 @@ const excludedComponents: string[] = [
   'SpinButton', // className is not injected
   'Sticky', // accepts stickyClassName instead of className
   'TeachingBubble', // does not accept className
-  'ThemeGenerator' // not intended to be tested
+  'ThemeGenerator', // not intended to be tested
+  'UnifiedPicker' // Not intended for direct use
 ];
 
 // Some components require nodes to be mocked when creating the test component (e.g. components that use refs)

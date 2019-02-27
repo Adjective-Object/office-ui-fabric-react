@@ -3,7 +3,7 @@ import { UnifiedPeoplePickerBasicExample } from './examples/UnifiedPeoplePicker.
 
 import { IDocPageProps } from '../../../common/DocPage.types';
 
-const UnifiedPeoplePickerBasicExampleCode = require('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/examples/UnifiedPeoplePicker.Basic.Example.tsx') as string;
+const UnifiedPeoplePickerBasicExampleCode = require('!raw-loader!office-ui-fabric-react/src/components/UnifiedPicker/UnifiedPeoplePicker/examples/UnifiedPeoplePicker.Basic.Example.tsx') as string;
 
 export const UnifiedPeoplePickerPageProps: IDocPageProps = {
   title: 'UnifiedPeoplePicker',
