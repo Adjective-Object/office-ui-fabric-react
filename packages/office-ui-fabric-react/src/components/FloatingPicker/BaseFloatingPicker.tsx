@@ -27,6 +27,7 @@ export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProp
     props: ISuggestionsControlProps<T>
   ) => SuggestionsControl<T>;
   protected currentPromise: PromiseLike<T[]>;
+  protected isComponentMounted: boolean = false;
 
   constructor(basePickerProps: IBaseFloatingPickerProps<T>) {
     super(basePickerProps);
@@ -105,6 +106,7 @@ export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProp
 
   public componentDidMount(): void {
     this._bindToInputElement();
+    this.isComponentMounted = true;
 
     this._onResolveSuggestions = this._async.debounce(this._onResolveSuggestions, this.props.resolveDelay);
   }
@@ -115,6 +117,7 @@ export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProp
 
   public componentWillUnmount(): void {
     this._unbindFromInputElement();
+    this.isComponentMounted = false;
   }
 
   public componentWillReceiveProps(newProps: IBaseFloatingPickerProps<T>): void {
@@ -164,7 +167,7 @@ export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProp
           onSuggestionClick={this.onSuggestionClick}
           onSuggestionRemove={this.onSuggestionRemove}
           suggestions={this.suggestionStore.getSuggestions()}
-          ref={this.suggestionsControl}
+          componentRef={this.suggestionsControl}
           completeSuggestion={this.completeSuggestion}
           shouldLoopSelection={false}
           onRenderSuggestion={this.props.onRenderSuggestionsItem}
@@ -207,7 +210,9 @@ export class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProp
       // Ensure that the promise will only use the callback if it was the most recent one.
       const promise: PromiseLike<T[]> = (this.currentPromise = suggestionsPromiseLike);
       promise.then((newSuggestions: T[]) => {
-        if (promise === this.currentPromise) {
+        // Only update if the next promise has not yet resolved and
+        // the floating picker is still mounted.
+        if (promise === this.currentPromise && this.isComponentMounted) {
           this.updateSuggestions(newSuggestions, true /*forceUpdate*/);
         }
       });
