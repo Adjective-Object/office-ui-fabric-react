@@ -27,6 +27,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
     props: ISuggestionsControlProps<T>
   ) => SuggestionsControl<T>;
   protected currentPromise: PromiseLike<T[]>;
+  protected isComponentMounted: boolean = false;
 
   constructor(basePickerProps: P) {
     super(basePickerProps);
@@ -105,6 +106,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
 
   public componentDidMount(): void {
     this._bindToInputElement();
+    this.isComponentMounted = true;
 
     this._onResolveSuggestions = this._async.debounce(this._onResolveSuggestions, this.props.resolveDelay);
   }
@@ -115,6 +117,7 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
 
   public componentWillUnmount(): void {
     this._unbindFromInputElement();
+    this.isComponentMounted = false;
   }
 
   public componentWillReceiveProps(newProps: P): void {
@@ -207,7 +210,9 @@ export class BaseFloatingPicker<T, P extends IBaseFloatingPickerProps<T>> extend
       // Ensure that the promise will only use the callback if it was the most recent one.
       const promise: PromiseLike<T[]> = (this.currentPromise = suggestionsPromiseLike);
       promise.then((newSuggestions: T[]) => {
-        if (promise === this.currentPromise) {
+        // Only update if the next promise has not yet resolved and
+        // the floating picker is still mounted.
+        if (promise === this.currentPromise && this.isComponentMounted) {
           this.updateSuggestions(newSuggestions, true /*forceUpdate*/);
         }
       });
