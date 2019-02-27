@@ -26,7 +26,7 @@ export class SelectedItemWithContextMenu extends BaseComponent<ISelectedItemWith
 
   public render(): JSX.Element {
     return (
-      <div ref={this.itemElement} onContextMenu={this._onClick}>
+      <div key={this.props.renderedItem.key || undefined} ref={this.itemElement} onContextMenu={this._onClick}>
         {this.props.renderedItem}
         {this.state.contextualMenuVisible ? (
           <ContextualMenu
