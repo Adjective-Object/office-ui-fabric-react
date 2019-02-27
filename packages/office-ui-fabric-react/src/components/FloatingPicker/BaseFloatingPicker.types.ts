@@ -149,5 +149,11 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
  */
 export type BaseFloatingPickerSuggestionProps<T> = Pick<
   ISuggestionsControlProps<T>,
-  'onSuggestionClick' | 'onSuggestionRemove' | 'suggestions' | 'ref' | 'completeSuggestion' | 'shouldLoopSelection' | 'onRenderSuggestion'
+  | 'onSuggestionClick'
+  | 'onSuggestionRemove'
+  | 'suggestions'
+  | 'componentRef'
+  | 'completeSuggestion'
+  | 'shouldLoopSelection'
+  | 'onRenderSuggestion'
 >;

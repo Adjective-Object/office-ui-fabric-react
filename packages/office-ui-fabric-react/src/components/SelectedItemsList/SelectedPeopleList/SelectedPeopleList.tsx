@@ -9,7 +9,7 @@ import { SelectedItemWithContextMenu } from './Items/SelectedItemWithContextMenu
 import { IRenderFunction } from '../../../Utilities';
 import { IContextualMenuItem } from '../../../ContextualMenu';
 import { IBaseFloatingPickerProps } from '../../../FloatingPicker';
-import { EditingItem } from './Items/EditingItem';
+import { EditingItem, EditingItemFloatingPickerProps } from './Items/EditingItem';
 
 export interface IExtendedPersonaProps extends IPersonaProps {
   isValid?: boolean;
@@ -33,7 +33,7 @@ export interface ISelectedPeopleProps<TPersona extends IExtendedPersonaProps = I
   copyMenuItemText?: string;
   editMenuItemText?: string;
   getEditingItemText?: (item: IExtendedPersonaProps) => string;
-  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<TPersona>>;
+  onRenderFloatingPicker?: React.ComponentType<EditingItemFloatingPickerProps<TPersona>>;
   floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
 }
 
@@ -77,7 +77,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     const props = {
       item,
       index,
-      key: item.key ? item.key : index,
+      key: item.key !== undefined ? item.key : index,
       selected: this.selection.isIndexSelected(index),
       onRemoveItem: () => this.removeItem(item),
       onItemChange: this.onItemChange,

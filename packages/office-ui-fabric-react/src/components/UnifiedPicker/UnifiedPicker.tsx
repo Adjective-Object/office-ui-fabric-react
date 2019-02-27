@@ -18,7 +18,7 @@ export interface IUnifiedPickerState<T> {
   suggestionItems: T[] | null;
 }
 
-const shouldFocusZoneInputLoseFocusOnArrowKey = () => false;
+const shouldFocusZoneInputLoseFocusOnArrowKey = () => true;
 
 /**
  * The focus zone that is used by default to wrap the whole unified picker

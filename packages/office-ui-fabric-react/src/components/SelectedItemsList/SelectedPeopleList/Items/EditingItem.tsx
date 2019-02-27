@@ -33,7 +33,7 @@ export type EditingItemFloatingPickerProps<T> = Pick<
   'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'onRemoveSuggestion'
 >;
 
-export class EditingItem<TItem> extends React.Component<IEditingItemProps<TItem>, IPeoplePickerItemState> {
+export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TItem>, IPeoplePickerItemState> {
   private _editingInput: HTMLInputElement;
   private _editingFloatingPicker = React.createRef<FloatingPeoplePicker>();
 

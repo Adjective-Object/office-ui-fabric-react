@@ -2,6 +2,7 @@ import * as React from 'react';
 import { css } from '../../../Utilities';
 import { IPersonaProps } from '../../Persona/Persona.types';
 import { UnifiedPicker } from '../UnifiedPicker';
+import { DefaultPickerFooterItems } from '../DefaultPickerFooterItems';
 import { IUnifiedPickerProps, UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
 import { IEditingItemProps, EditingItemFloatingPickerProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
 import {
@@ -83,8 +84,21 @@ export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
   onRemoveSuggestion?: IBaseFloatingPickerProps<TPersona>['onRemoveSuggestion'];
 };
 
-export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.Component<UnifiedPeoplePickerProps<TPersona>> {
+// /**
+//  * Purify a functional component
+//  */
+// function memo<TProps>(InnerComponent: React.StatelessComponent<TProps>): React.ComponentType<TProps> {
+//   return class MemoizedFunctionalComponent extends React.PureComponent<TProps> {
+//     public render() {
+//       return <InnerComponent {...this.props} />;
+//     }
+//   };
+// }
+
+export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.PureComponent<UnifiedPeoplePickerProps<TPersona>> {
   private _picker: UnifiedPicker<TPersona>;
+  // Custom footer items that reflect the state of the picker.
+  private _defaultFooterItems: DefaultPickerFooterItems = new DefaultPickerFooterItems();
 
   constructor(props: UnifiedPeoplePickerProps<TPersona>) {
     super(props);
@@ -118,14 +132,17 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
     <SuggestionsControl
       showRemoveButtons={this._shouldShowSuggestionRemoveButtons()}
       headerItemsProps={[]}
-      footerItemsProps={[]}
+      footerItemsProps={this._defaultFooterItems.items}
       shouldSelectFirstItem={this._suggestionIsNotEmpty}
       {...overriddenProps}
     />
   );
 
   /**
-   * the default selected items list
+   * Renders the suggestion control that is passed to both the
+   * main picker and the editing item picker.
+   *
+   * Uses the default suggestion control if none is provided.
    */
   private SuggestionControl = (overriddenProps: BaseFloatingPickerSuggestionProps<TPersona>) => {
     const Inner: ComposableSuggestionControl<TPersona> = this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
@@ -151,11 +168,19 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
     />
   );
 
+  /**
+   * Renders the floating picker for the main input.
+   * Uses the default picker if none is provided.
+   */
   private MainFloatingPicker = (overriddenProps: UnifiedPickerFloatingPickerProps<TPersona>) => {
     const Inner: ComposableMainFloatingPicker<TPersona> = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
     return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
 
+  /**
+   * Renders the floating picker for the editing item.
+   * Uses the default picker if none is provided.
+   */
   private EditingItemFloatingPicker = (overriddenProps: EditingItemFloatingPickerProps<TPersona>) => {
     const Inner: ComposableEditingItemFloatingPicker<TPersona> =
       this.props.onRenderEditingItemFloatingPicker || this.DefaultFloatingPickerInner;
@@ -203,6 +228,14 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
 
   private _setComponentRef = (component: UnifiedPicker<TPersona>): void => {
     this._picker = component;
+    if (this.props.onRenderSuggestionControl === undefined) {
+      // Only bind the default footer items to the component
+      // if we are using the default suggestions control.
+      this._defaultFooterItems.bindPickerInstance(this._picker);
+    } else {
+      // Clean up the reference otherwise
+      this._defaultFooterItems.bindPickerInstance(undefined);
+    }
   };
 
   private _suggestionIsNotEmpty = (): boolean => {
