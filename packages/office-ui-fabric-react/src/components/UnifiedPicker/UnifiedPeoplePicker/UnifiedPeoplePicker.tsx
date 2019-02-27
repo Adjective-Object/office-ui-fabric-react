@@ -67,14 +67,20 @@ export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
   ///////////////////////////
   onResolveSuggestions: IBaseFloatingPickerProps<TPersona>['onResolveSuggestions'];
 
-  ///////////////////////////
-  // Data model (optional) //
-  ///////////////////////////
+  //////////////////////////////////////
+  // Customizable Behavior (optional) //
+  //////////////////////////////////////
   onValidateInput?: IBaseFloatingPickerProps<TPersona>['onValidateInput'];
-  onRemoveSuggestion?: IBaseFloatingPickerProps<TPersona>['onRemoveSuggestion'];
   onZeroQuerySuggestion?: IBaseFloatingPickerProps<TPersona>['onZeroQuerySuggestion'];
   shouldShowForceResolveSuggestion?: IBaseFloatingPickerProps<TPersona>['showForceResolve'];
   onExpandSelectedItem?: ISelectedPeopleProps<TPersona>['onExpandGroup'];
+
+  /////////////////////////////////////////////
+  // Props for use as a controlled component //
+  // TODO: write a wrapper component that    //
+  // manages state for use as uncontrolled   //
+  /////////////////////////////////////////////
+  onRemoveSuggestion?: IBaseFloatingPickerProps<TPersona>['onRemoveSuggestion'];
 };
 
 export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.Component<UnifiedPeoplePickerProps<TPersona>> {
@@ -110,7 +116,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
     overriddenProps: PropsOf<ComposableSuggestionControl<TPersona>>
   ) => (
     <SuggestionsControl
-      showRemoveButtons={true}
+      showRemoveButtons={this._shouldShowSuggestionRemoveButtons()}
       headerItemsProps={[]}
       footerItemsProps={[]}
       shouldSelectFirstItem={this._suggestionIsNotEmpty}
@@ -205,5 +211,14 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.C
 
   private _getTextFromItem(persona: TPersona): string {
     return persona.text as string;
+  }
+
+  /**
+   * If the suggestion remove buttons should be shown or nots
+   *
+   * Show if we control the data model
+   */
+  private _shouldShowSuggestionRemoveButtons() {
+    return this.props.onRemoveSuggestion !== undefined;
   }
 }
