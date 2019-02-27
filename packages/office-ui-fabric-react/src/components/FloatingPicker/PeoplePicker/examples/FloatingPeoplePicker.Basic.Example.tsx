@@ -61,7 +61,7 @@ export class FloatingPeoplePickerTypesExample extends React.Component<{}, IPeopl
     }
   };
 
-  private _renderSuggestionsControl(props: BaseFloatingPickerSuggestionProps<IExtendedPersonaProps>): JSX.Element {
+  private _renderSuggestionsControl = (props: BaseFloatingPickerSuggestionProps<IExtendedPersonaProps>): JSX.Element => {
     return (
       <SuggestionsControl
         {...props}
@@ -77,7 +77,7 @@ export class FloatingPeoplePickerTypesExample extends React.Component<{}, IPeopl
         ]}
       />
     );
-  }
+  };
 
   private _renderFloatingPicker(): JSX.Element {
     return (
