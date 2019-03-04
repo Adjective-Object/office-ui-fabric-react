@@ -1,26 +1,34 @@
-type BaseExampleType = {
+export interface IBaseExampleType {
   text?: string;
-};
+}
 
-export class ExampleSuggestionsModel<T extends BaseExampleType> {
-  private peopleList: T[];
+export class ExampleSuggestionsModel<T extends IBaseExampleType> {
+  private suggestionsData: T[];
 
   public constructor(data: T[]) {
-    this.peopleList = data;
+    this.suggestionsData = [...data];
   }
 
-  public resolveSuggestions = (filterText: string, currentPersonas: T[]): Promise<T[]> | null => {
+  public resolveSuggestions = (filterText: string, currentPersonas?: T[]): Promise<T[]> => {
     let filteredPersonas: T[] = [];
     if (filterText) {
       filteredPersonas = this._filterPersonasByText(filterText);
-      filteredPersonas = this._removeDuplicates(filteredPersonas, currentPersonas);
+      filteredPersonas = this._removeDuplicates(filteredPersonas, currentPersonas || []);
     }
 
     return this._convertResultsToPromise(filteredPersonas);
   };
 
+  public removeSuggestion(item: T) {
+    const index = this.suggestionsData.indexOf(item);
+    console.log('removing', item, 'at', index);
+    if (index !== -1) {
+      this.suggestionsData.splice(index, 1);
+    }
+  }
+
   private _filterPersonasByText(filterText: string): T[] {
-    return this.peopleList.filter((item: T) => this._doesTextStartWith(item.text as string, filterText));
+    return this.suggestionsData.filter((item: T) => this._doesTextStartWith(item.text as string, filterText));
   }
 
   private _doesTextStartWith(text: string, filterText: string): boolean {
