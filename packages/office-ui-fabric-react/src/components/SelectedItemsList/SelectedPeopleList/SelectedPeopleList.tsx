@@ -99,6 +99,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
         />
       );
     } else {
+      // TODO make onRenderItem required and move SelectedPeopleList to a composition-based design.
       const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps<TPersona>) => JSX.Element;
       const renderedItem = onRenderItem(props);
       return hasContextMenu ? (
