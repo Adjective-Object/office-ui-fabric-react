@@ -1,6 +1,84 @@
 # Change Log - office-ui-fabric-react
 
-This log was last generated on Tue, 26 Feb 2019 13:31:28 GMT and should not be manually modified.
+This log was last generated on Mon, 04 Mar 2019 13:29:58 GMT and should not be manually modified.
+
+## 6.149.0
+Mon, 04 Mar 2019 13:29:58 GMT
+
+### Minor changes
+
+- Improved Accessibility with the Pickers and PeoplePicker Components by adjusting styles for High Contrast Mode.
+
+## 6.148.1
+Fri, 01 Mar 2019 19:40:22 GMT
+
+### Patches
+
+- DetailsList & List: Improve typings currently typed as any
+
+## 6.148.0
+Fri, 01 Mar 2019 13:33:08 GMT
+
+### Minor changes
+
+- Nav: Add disable state for navigation links
+
+### Patches
+
+- ChoiceGroup: Make dropdown on example disabled until the option with the dropdown is selected so that tab focus goes to the default selected option.
+- ChoiceGroup: Visually present 'required' prop in 'ChoiceGroup with a custom label' example and remove 'required' prop from non-selected radio buttons.
+- ChoiceGroup: Fixing Narrator focus on ChoiceGroupOptions.
+- ChoiceGroup: Adding defaultSelectedKey to 'ChoiceGroup with Icons' example so that aria-selected property is set.
+- CommandBar: Fixing aria-label in examples so that it doesn't repeat information.
+- GroupedList: Provide default getGroupHeight implementation to avoid infinite scroll handlers
+- Updated dependencies.
+
+## 6.147.0
+Thu, 28 Feb 2019 17:04:01 GMT
+
+### Minor changes
+
+- Dropdown and ComboBox: `selectedKey` can now take null to clear the selection.
+
+## 6.146.2
+Thu, 28 Feb 2019 13:29:07 GMT
+
+### Patches
+
+- TagItemSuggestion: adds `white-space: nowrap` CSS declaration which is required for `text-overflow: ellipsis` to work.
+- TextField: adds font styles passed from theme to the root element.
+
+## 6.146.1
+Wed, 27 Feb 2019 06:49:08 GMT
+
+### Patches
+
+- Modal: Fix missed naming updated from Modeless PR
+
+## 6.146.0
+Wed, 27 Feb 2019 01:28:58 GMT
+
+### Minor changes
+
+- Updating the API file resulted in the updates to the @uifabric/styling package which is exported form OUFR.
+
+### Patches
+
+- Announce column header for Day in Calendar
+- Calendar: Change role of CalendarDay button from 'button' to 'gridcell'
+- DetailsList: dragDropEvents props updates not respected
+
+## 6.145.0
+Tue, 26 Feb 2019 22:45:29 GMT
+
+### Minor changes
+
+- Dialog: Add the ability for dialogs to be sticky (can interact with content behind dialog while dialog is open)
+
+### Patches
+
+- Make the list items of personas used in rendering Facepile have role="option" which is required because the <ul> encompassing these has a role="listbox". Caught in a Keros FastPass.
+- ARIA: Update calls to mergeAriaAttributeValues to no longer explicitly supply output element id padding.
 
 ## 6.144.0
 Tue, 26 Feb 2019 13:31:28 GMT
