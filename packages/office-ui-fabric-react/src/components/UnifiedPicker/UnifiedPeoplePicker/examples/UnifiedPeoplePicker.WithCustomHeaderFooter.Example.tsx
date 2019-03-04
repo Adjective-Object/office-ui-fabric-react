@@ -7,10 +7,10 @@ import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 import { Spinner } from 'office-ui-fabric-react/lib/components/Spinner';
 
-export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Component<
-  {},
-  { isSearching: boolean; isResultEmpty: boolean }
-> {
+export type ExampleProps = {};
+export type ExampleState = { isSearching: boolean; isResultEmpty: boolean };
+
+export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Component<ExampleProps, ExampleState> {
   private model = new ExampleSuggestionsModel<IPersonaProps>(people);
   private _searchIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {

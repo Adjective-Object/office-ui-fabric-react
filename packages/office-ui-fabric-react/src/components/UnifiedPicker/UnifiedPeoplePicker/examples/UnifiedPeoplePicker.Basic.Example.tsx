@@ -5,7 +5,7 @@ import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Per
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 
-export class UnifiedPeoplePickerBasicExample extends React.Component<{}> {
+export class UnifiedPeoplePickerBasicExample extends React.Component {
   private model = new ExampleSuggestionsModel<IPersonaProps>(people);
 
   public render() {

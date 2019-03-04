@@ -6,7 +6,10 @@ import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 import { Button } from 'office-ui-fabric-react/lib/components/Button';
 
-export class UnifiedPeoplePickerWithRemovalExample extends React.Component<{}, { model: ExampleSuggestionsModel<IPersonaProps> }> {
+export type ExampleProps = {};
+export type ExampleState = { model: ExampleSuggestionsModel<IPersonaProps> };
+
+export class UnifiedPeoplePickerWithRemovalExample extends React.Component<ExampleProps, ExampleState> {
   constructor(props: {}) {
     super(props);
     this.state = {

@@ -60,7 +60,7 @@ const CustomSelectedItem = (props: ISelectedItemProps<CustomPersonaWithEmail>): 
   </div>
 );
 
-export class UnifiedPeoplePickerWithCustomItemsExample extends React.Component<{}> {
+export class UnifiedPeoplePickerWithCustomItemsExample extends React.Component {
   private model = new ExampleSuggestionsModel<CustomPersonaWithEmail>(people.map(addEmailToPersona));
 
   public render() {
