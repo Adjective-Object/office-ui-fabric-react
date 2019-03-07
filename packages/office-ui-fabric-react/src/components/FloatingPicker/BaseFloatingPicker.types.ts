@@ -146,7 +146,7 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
 /**
  * Props which are passed on to the inner Suggestions component
  */
-export type IBaseFloatingPickerSuggestionProps = Pick<
-  ISuggestionsControlProps<any>,
+export type IBaseFloatingPickerSuggestionProps<T = any> = Pick<
+  ISuggestionsControlProps<T>,
   'shouldSelectFirstItem' | 'headerItemsProps' | 'footerItemsProps' | 'showRemoveButtons'
 >;
