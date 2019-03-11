@@ -5,8 +5,8 @@ import * as ReactTestUtils from 'react-dom/test-utils';
 /* tslint:enable:no-unused-variable */
 import * as renderer from 'react-test-renderer';
 
-import { IBaseExtendedPickerProps } from './BaseExtendedPicker.types';
-import { BaseExtendedPicker } from './BaseExtendedPicker';
+import { IUnifiedPickerProps } from './UnifiedPicker.types';
+import { UnifiedPicker } from './UnifiedPicker';
 import { IBaseFloatingPickerProps, BaseFloatingPicker, SuggestionsStore } from '../FloatingPicker/index';
 import { IBaseSelectedItemsListProps, ISelectedItemProps, BaseSelectedItemsList } from '../SelectedItemsList/index';
 import { KeyCodes } from '../../Utilities';
@@ -33,10 +33,7 @@ function onResolveSuggestions(text: string): ISimple[] {
     .map((item: string) => ({ key: item, name: item }));
 }
 
-const BasePickerWithType = BaseFloatingPicker as new (props: IBaseFloatingPickerProps<ISimple>) => BaseFloatingPicker<
-  ISimple,
-  IBaseFloatingPickerProps<ISimple>
->;
+const BasePickerWithType = BaseFloatingPicker as new (props: IBaseFloatingPickerProps<ISimple>) => BaseFloatingPicker<ISimple>;
 
 const BaseSelectedItemsListWithType = BaseSelectedItemsList as new (props: IBaseSelectedItemsListProps<ISimple>) => BaseSelectedItemsList<
   ISimple,
@@ -51,22 +48,19 @@ const basicItemRenderer = (props: ISelectedItemProps<ISimple>) => {
   return <div> {props.name} </div>;
 };
 
-const basicRenderFloatingPicker = (props: IBaseFloatingPickerProps<ISimple>) => {
-  return <BasePickerWithType {...props} />;
+const BasicFloatingPicker = (props: IBaseFloatingPickerProps<ISimple>) => {
+  return (
+    <BasePickerWithType
+      onResolveSuggestions={onResolveSuggestions}
+      onRenderSuggestionsItem={basicSuggestionRenderer}
+      suggestionsStore={new SuggestionsStore<ISimple>()}
+      {...props}
+    />
+  );
 };
 
-const basicRenderSelectedItemsList = (props: IBaseSelectedItemsListProps<ISimple>) => {
-  return <BaseSelectedItemsListWithType />;
-};
-
-const floatingPickerProps = {
-  onResolveSuggestions: onResolveSuggestions,
-  onRenderSuggestionsItem: basicSuggestionRenderer,
-  suggestionsStore: new SuggestionsStore<ISimple>()
-};
-
-const selectedItemsListProps: IBaseSelectedItemsListProps<ISimple> = {
-  onRenderItem: basicItemRenderer
+const BasicSelectedItemsList = (props: IBaseSelectedItemsListProps<ISimple>) => {
+  return <BaseSelectedItemsListWithType onRenderItem={basicItemRenderer} {...props} />;
 };
 
 export interface ISimple {
@@ -74,23 +68,15 @@ export interface ISimple {
   name: string;
 }
 
-export type TypedBaseExtendedPicker = BaseExtendedPicker<ISimple, IBaseExtendedPickerProps<ISimple>>;
+export type TypedBaseUnifiedPicker = UnifiedPicker<ISimple>;
 
 describe('Pickers', () => {
   describe('BasePicker', () => {
-    const BaseExtendedPickerWithType = BaseExtendedPicker as new (props: IBaseExtendedPickerProps<ISimple>) => BaseExtendedPicker<
-      ISimple,
-      IBaseExtendedPickerProps<ISimple>
-    >;
+    const BaseUnifiedPickerWithType: new (props: IUnifiedPickerProps<ISimple>) => UnifiedPicker<ISimple> = UnifiedPicker;
 
-    it('renders BaseExtendedPicker correctly', () => {
+    it('renders BaseUnifiedPicker correctly', () => {
       const component = renderer.create(
-        <BaseExtendedPickerWithType
-          floatingPickerProps={floatingPickerProps}
-          selectedItemsListProps={selectedItemsListProps}
-          onRenderSelectedItems={basicRenderSelectedItemsList}
-          onRenderFloatingPicker={basicRenderFloatingPicker}
-        />
+        <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />
       );
       const tree = component.toJSON();
       expect(tree).toMatchSnapshot();
@@ -100,15 +86,10 @@ describe('Pickers', () => {
       const root = document.createElement('div');
       document.body.appendChild(root);
 
-      const picker: TypedBaseExtendedPicker = ReactDOM.render(
-        <BaseExtendedPickerWithType
-          floatingPickerProps={floatingPickerProps}
-          selectedItemsListProps={selectedItemsListProps}
-          onRenderSelectedItems={basicRenderSelectedItemsList}
-          onRenderFloatingPicker={basicRenderFloatingPicker}
-        />,
+      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+        <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />,
         root
-      ) as TypedBaseExtendedPicker;
+      ) as TypedBaseUnifiedPicker;
 
       if (picker.inputElement) {
         picker.inputElement.value = 'bl';
@@ -129,15 +110,10 @@ describe('Pickers', () => {
       const root = document.createElement('div');
       document.body.appendChild(root);
 
-      const picker: TypedBaseExtendedPicker = ReactDOM.render(
-        <BaseExtendedPickerWithType
-          floatingPickerProps={floatingPickerProps}
-          selectedItemsListProps={selectedItemsListProps}
-          onRenderSelectedItems={basicRenderSelectedItemsList}
-          onRenderFloatingPicker={basicRenderFloatingPicker}
-        />,
+      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+        <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />,
         root
-      ) as TypedBaseExtendedPicker;
+      ) as TypedBaseUnifiedPicker;
 
       if (picker.inputElement) {
         picker.inputElement.value = 'bl';
@@ -156,15 +132,10 @@ describe('Pickers', () => {
       const root = document.createElement('div');
       document.body.appendChild(root);
 
-      const picker: TypedBaseExtendedPicker = ReactDOM.render(
-        <BaseExtendedPickerWithType
-          floatingPickerProps={floatingPickerProps}
-          selectedItemsListProps={selectedItemsListProps}
-          onRenderSelectedItems={basicRenderSelectedItemsList}
-          onRenderFloatingPicker={basicRenderFloatingPicker}
-        />,
+      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+        <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />,
         root
-      ) as TypedBaseExtendedPicker;
+      ) as TypedBaseUnifiedPicker;
 
       if (picker.inputElement) {
         picker.inputElement.value = 'bl';

@@ -1,6 +1,6 @@
-import { PersonaPresence } from '../../../Persona';
-import { IExtendedPersonaProps } from '../../SelectedItemsList/SelectedPeopleList/SelectedPeopleList';
-import { TestImages } from '../../../common/TestImages';
+import { PersonaPresence } from '../../../Persona/Persona.types';
+import { IExtendedPersonaProps } from '../../../SelectedItemsList/index';
+import { TestImages } from '../../../../common/TestImages';
 
 export const people: (IExtendedPersonaProps & { key: string | number })[] = [
   {

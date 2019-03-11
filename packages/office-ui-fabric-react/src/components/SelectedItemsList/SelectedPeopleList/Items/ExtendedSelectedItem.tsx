@@ -3,7 +3,7 @@ import * as React from 'react';
 /* tslint:enable */
 import { BaseComponent, css, getId } from '../../../../Utilities';
 import { Persona, PersonaSize } from '../../../../Persona';
-import { ISelectedPeopleItemProps } from '../SelectedPeopleList';
+import { ISelectedPeopleItemProps, IExtendedPersonaProps } from '../SelectedPeopleList';
 import { IconButton } from '../../../../Button';
 import * as stylesImport from './ExtendedSelectedItem.scss';
 // tslint:disable-next-line:no-any
@@ -41,7 +41,7 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
       >
         <div hidden={!item.canExpand || onExpandItem === undefined}>
           <IconButton
-            onClick={this._onClickIconButton(onExpandItem)}
+            onClick={this._onClickIconButton(onExpandItem, item)}
             iconProps={{ iconName: 'Add', style: { fontSize: '14px' } }}
             className={css('ms-PickerItem-removeButton', styles.expandButton, styles.actionButton)}
             ariaLabel={removeButtonAriaLabel}
@@ -57,7 +57,7 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
             />
           </div>
           <IconButton
-            onClick={this._onClickIconButton(onRemoveItem)}
+            onClick={this._onClickIconButton(onRemoveItem, item)}
             iconProps={{ iconName: 'Cancel', style: { fontSize: '14px' } }}
             className={css('ms-PickerItem-removeButton', styles.removeButton, styles.actionButton)}
             ariaLabel={removeButtonAriaLabel}
@@ -67,12 +67,15 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
     );
   }
 
-  private _onClickIconButton(action: (() => void) | undefined): (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void {
+  private _onClickIconButton(
+    action: ((item: IExtendedPersonaProps) => void) | undefined,
+    item: IExtendedPersonaProps
+  ): (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void {
     return (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): void => {
       ev.stopPropagation();
       ev.preventDefault();
       if (action) {
-        action();
+        action(item);
       }
     };
   }
