@@ -1,0 +1,39 @@
+.headerFooterWrapper {
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+}
+
+.headerFooterSpinner {
+  padding-right: 0.5em;
+}
+
+.customSuggestionItem {
+  display: flex;
+  align-items: center;
+  padding: 0.25em;
+}
+
+.customSuggestionItemImage {
+  width: 32;
+  height: 32;
+  border-radius: 50%;
+  padding-right: 0.25em;
+}
+
+.customSelectedItem {
+  display: flex;
+  align-items: center;
+  padding-left: 2;
+  margin-right: 4;
+  height: 36;
+  border: 1px solid #aaaaaa;
+  border-radius: 18;
+}
+
+.customSelectedItemImage {
+  width: 32;
+  height: 32;
+  border-radius: 50%;
+  padding-right: 0.25em;
+}

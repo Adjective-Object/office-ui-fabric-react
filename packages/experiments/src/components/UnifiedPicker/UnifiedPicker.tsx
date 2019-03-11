@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { BaseComponent, KeyCodes, css } from '../../Utilities';
-import { Autofill } from '../../Autofill';
-import { IInputProps } from '../../Pickers';
-import * as stylesImport from './UnifiedPicker.scss';
-import { IUnifiedPickerProps, IUnifiedPicker, UnifiedPickerFocusZoneProps } from './UnifiedPicker.types';
-import { IBaseFloatingPickerProps, BaseFloatingPicker } from '../../FloatingPicker';
-import { BaseSelectedItemsList, IBaseSelectedItemsListProps } from '../../SelectedItemsList';
-import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from '../../FocusZone';
-import { Selection, SelectionMode, SelectionZone } from '../../Selection';
+import { BaseComponent, KeyCodes, css } from 'office-ui-fabric-react/lib/Utilities';
+import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
+import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
+import { IBaseFloatingPickerProps, BaseFloatingPicker } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { BaseSelectedItemsList, IBaseSelectedItemsListProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from 'office-ui-fabric-react/lib/FocusZone';
+import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
 
-// tslint:disable-next-line:no-any
-const styles: any = stylesImport;
+import * as styles from './UnifiedPicker.scss';
+import { IUnifiedPickerProps, IUnifiedPicker, UnifiedPickerFocusZoneProps } from './UnifiedPicker.types';
 
 export interface IUnifiedPickerState<T> {
   queryString: string | null;

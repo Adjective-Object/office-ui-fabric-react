@@ -187,6 +187,8 @@ class BaseFloatingPicker<T> extends BaseComponent<IBaseFloatingPickerProps<T>, I
   // (undocumented)
   readonly inputText: string;
   // (undocumented)
+  protected isComponentMounted: boolean;
+  // (undocumented)
   readonly isSuggestionsShown: boolean;
   // (undocumented)
   protected onChange(item: T): void;
@@ -970,6 +972,15 @@ enum DropdownMenuItemType {
   Header = 2,
   // (undocumented)
   Normal = 0
+}
+
+// @public
+class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TItem>, IPeoplePickerItemState> {
+  constructor(props: IEditingItemProps<TItem>);
+  // (undocumented)
+  componentDidMount(): void;
+  // (undocumented)
+  render(): JSX.Element;
 }
 
 // @public
@@ -7611,6 +7622,17 @@ interface IDropdownSubComponentStyles {
   panel: IStyleFunctionOrObject<IPanelStyleProps, any>;
 }
 
+// @public (undocumented)
+interface IEditingItemProps<TItem> extends React.HTMLAttributes<any> {
+  // @deprecated
+  floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
+  getEditingItemText?: (item: IExtendedPersonaProps) => string;
+  item: TItem;
+  onEditingComplete: (oldItem: TItem, newItem: TItem) => void;
+  onRemoveItem?: (item: TItem) => void;
+  onRenderFloatingPicker?: React.ComponentType<EditingItemFloatingPickerProps<IPersonaProps>>;
+}
+
 // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
 // @internal
 interface IEffects {
@@ -9983,7 +10005,7 @@ interface ISelectedPeopleProps<TPersona extends IExtendedPersonaProps = IExtende
   // (undocumented)
   onExpandGroup?: (item: IExtendedPersonaProps) => void;
   // (undocumented)
-  onRenderFloatingPicker?: React.ComponentType<IBaseFloatingPickerProps<TPersona>>;
+  onRenderFloatingPicker?: React.ComponentType<EditingItemFloatingPickerProps<TPersona>>;
   // (undocumented)
   removeMenuItemText?: string;
 }
@@ -12507,8 +12529,6 @@ class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, {}> {
   nextSuggestion(): boolean;
   previousSuggestion(): boolean;
   // (undocumented)
-  removeSuggestion(index: number): void;
-  // (undocumented)
   render(): JSX.Element;
   // (undocumented)
   scrollSelected(): void;
@@ -12926,6 +12946,7 @@ module ZIndexes {
 // WARNING: Unsupported export: ScrollbarVisibility
 // WARNING: Unsupported export: ScrollbarVisibility
 // WARNING: Unsupported export: SearchBox
+// WARNING: Unsupported export: EditingItemFloatingPickerProps
 // WARNING: Unsupported export: Shimmer
 // WARNING: Unsupported export: ShimmerLine
 // WARNING: Unsupported export: IShimmerLineStyleProps

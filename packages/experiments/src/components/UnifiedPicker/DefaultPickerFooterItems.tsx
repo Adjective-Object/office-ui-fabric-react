@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { UnifiedPicker } from './UnifiedPicker';
 import * as styles from './UnifiedPicker.scss';
-import { ISuggestionsHeaderFooterProps } from '../FloatingPicker';
+import { ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 
 export class DefaultPickerFooterItems {
   private pickerInstance: UnifiedPicker<any> | undefined;
@@ -9,7 +9,7 @@ export class DefaultPickerFooterItems {
   private _items: ISuggestionsHeaderFooterProps[] = [
     {
       renderItem: () => {
-        return <div className={styles.defaultPickerFooterItem}>No results</div>;
+        return <div className={(styles as any).defaultPickerFooterItem}>No results</div>;
       },
       shouldShow: () => {
         return (

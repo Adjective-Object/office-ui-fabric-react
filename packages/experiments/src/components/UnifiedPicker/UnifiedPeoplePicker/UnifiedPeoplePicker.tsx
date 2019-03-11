@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { css } from '../../../Utilities';
-import { IPersonaProps } from '../../Persona/Persona.types';
-import { UnifiedPicker } from '../UnifiedPicker';
+import { css } from 'office-ui-fabric-react/lib/Utilities';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { DefaultPickerFooterItems } from '../DefaultPickerFooterItems';
 import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
-import { EditingItemFloatingPickerProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
-import { SuggestionsStore, FloatingPeoplePicker, BaseFloatingPickerSuggestionProps } from '../../FloatingPicker/index';
-import { SelectedPeopleList } from '../../SelectedItemsList/SelectedPeopleList/SelectedPeopleList';
-import { SuggestionsControl } from '../../FloatingPicker/Suggestions/SuggestionsControl';
+import { SuggestionsStore, FloatingPeoplePicker, BaseFloatingPickerSuggestionProps } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { SelectedPeopleList, EditingItemFloatingPickerProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { SuggestionsControl } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { UnifiedPicker } from '../UnifiedPicker';
 import {
   PropsOf,
   UnifiedPeoplePickerProps,

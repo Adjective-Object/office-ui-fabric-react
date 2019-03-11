@@ -7,9 +7,9 @@ import * as renderer from 'react-test-renderer';
 
 import { IUnifiedPickerProps } from './UnifiedPicker.types';
 import { UnifiedPicker } from './UnifiedPicker';
-import { IBaseFloatingPickerProps, BaseFloatingPicker, SuggestionsStore } from '../FloatingPicker/index';
-import { IBaseSelectedItemsListProps, ISelectedItemProps, BaseSelectedItemsList } from '../SelectedItemsList/index';
-import { KeyCodes } from '../../Utilities';
+import { IBaseFloatingPickerProps, BaseFloatingPicker, SuggestionsStore } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { IBaseSelectedItemsListProps, ISelectedItemProps, BaseSelectedItemsList } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
 
 function onResolveSuggestions(text: string): ISimple[] {
   return [

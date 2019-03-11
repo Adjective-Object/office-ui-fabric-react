@@ -125,6 +125,12 @@ export const AppDefinition: IAppDefinition = {
           url: '#/examples/staticlist'
         },
         {
+          component: require<any>('../components/UnifiedPicker/UnifiedPeoplePicker/UnifiedPeoplePickerPage').UnifiedPeoplePickerPage,
+          key: 'UnifiedPeoplePicker',
+          name: 'UnifiedPeoplePicker',
+          url: '#examples/unifiedpeoplepicker'
+        },
+        {
           component: require<any>('../components/fluent/examplePages/FluentThemePage').FluentThemePage,
           key: 'FluentColorTheme',
           name: 'Fluent Color Theme',

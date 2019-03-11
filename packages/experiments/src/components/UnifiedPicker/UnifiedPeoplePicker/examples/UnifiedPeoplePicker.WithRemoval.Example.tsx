@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
-import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Persona.types';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 /* Sample Data */
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
-import { Button } from 'office-ui-fabric-react/lib/components/Button';
+import { Button } from 'office-ui-fabric-react/lib/Button';
 
 export type ExampleProps = {};
 export type ExampleState = { model: ExampleSuggestionsModel<IPersonaProps> };

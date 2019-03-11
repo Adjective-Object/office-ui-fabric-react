@@ -425,12 +425,6 @@ export const AppDefinition: IAppDefinition = {
           key: 'Tooltip',
           name: 'Tooltip',
           url: '#/examples/Tooltip'
-        },
-        {
-          component: require<any>('./components/pages/UnifiedPeoplePickerPage').UnifiedPeoplePickerPage,
-          key: 'UnifiedPeoplePicker',
-          name: 'UnifiedPeoplePicker',
-          url: '#examples/unifiedpeoplepicker'
         }
       ],
       name: 'Basic components'

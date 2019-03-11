@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { UnifiedPeoplePicker, ComposableSuggestionControl } from 'office-ui-fabric-react/lib/components/UnifiedPicker/UnifiedPeoplePicker';
-import { SuggestionsControl, ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/components/FloatingPicker';
+import { SuggestionsControl, ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { UnifiedPeoplePicker, ComposableSuggestionControl } from '../index';
 /* Sample Data */
-import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Persona.types';
+import * as ExampleStyles from './Example.scss';
+import { css } from 'office-ui-fabric-react/lib/Utilities';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
-import { Spinner } from 'office-ui-fabric-react/lib/components/Spinner';
+import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 
 export type ExampleProps = {};
 export type ExampleState = { isSearching: boolean; isResultEmpty: boolean };
@@ -15,8 +17,8 @@ export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Comp
   private _searchIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {
       return (
-        <div style={{ display: 'flex', padding: '0.5em', alignItems: 'center' }}>
-          <Spinner style={{ paddingRight: '0.5em' }} /> Hold on, we're searching..
+        <div className={css([ExampleStyles.headerFooterWrapper])}>
+          <Spinner className={css([ExampleStyles.headerFooterSpinner])} /> Hold on, we're searching..
         </div>
       );
     },
@@ -27,7 +29,7 @@ export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Comp
   };
   private _noResultsIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {
-      return <div style={{ display: 'flex', padding: '0.5em', alignItems: 'center' }}>No Results 😢</div>;
+      return <div className={css([ExampleStyles.headerFooterWrapper])}>No Results 😢</div>;
     },
     shouldShow: () => {
       return this.state.isResultEmpty;

@@ -7,24 +7,46 @@ import { IExtendedPersonaProps } from '../SelectedPeopleList';
 import { IPeoplePickerItemState } from './ExtendedSelectedItem';
 import { IPersonaProps } from '../../../../Persona';
 
-import * as stylesImport from './EditingItem.scss';
-
-// tslint:disable-next-line:no-any
-const styles: any = stylesImport;
+import * as styles from './EditingItem.scss';
 
 export interface IEditingItemProps<TItem> extends React.HTMLAttributes<any> {
+  /**
+   * The current item of the EditingItem
+   */
   item: TItem;
+
+  /**
+   * Callback for when the edited item's new value has been selected.
+   * Invoked indirectly by the picker mounted by onRenderFloatingPicker.
+   */
   onEditingComplete: (oldItem: TItem, newItem: TItem) => void;
+
+  /**
+   * Renders the floating picker for suggesting the result of the item edit.
+   *
+   * Not actually optional, since is what is needed to resolve the new item.
+   */
   onRenderFloatingPicker?: React.ComponentType<EditingItemFloatingPickerProps<IPersonaProps>>;
-  onExpandItem?: (item: TItem) => void;
+
+  /**
+   * Callback for when the editing item removes the item from the well
+   *
+   * Called when the item is currently being edited and the text length goes to zero
+   */
   onRemoveItem?: (item: TItem) => void;
 
   /**
-   * custom props to be passed to the floating picker opened when editing the pill.
+   * Custom props to be passed to the floating picker opened when editing the pill.
    *
    * @deprecated Instead of using this prop, bind this yourself inyour onRenderFloatingPicker.
    */
   floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
+
+  /**
+   * Callback used by the EditingItem to populate the initial thing
+   *
+   * Not actually optional
+   */
   getEditingItemText?: (item: IExtendedPersonaProps) => string;
 }
 
@@ -33,6 +55,10 @@ export type EditingItemFloatingPickerProps<T> = Pick<
   'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'onRemoveSuggestion'
 >;
 
+/**
+ * Wrapper around an item in a selection well that renders an item with a context menu for
+ * replacing that item with another item.
+ */
 export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TItem>, IPeoplePickerItemState> {
   private _editingInput: HTMLInputElement;
   private _editingFloatingPicker = React.createRef<FloatingPeoplePicker>();
@@ -43,8 +69,8 @@ export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TI
   }
 
   public componentDidMount(): void {
-    const getEditingItemText = this.props.getEditingItemText as (item: IExtendedPersonaProps) => string;
-    const itemText = getEditingItemText(this.props.item);
+    // TODO remove this cast and make the item required in types.
+    const itemText: string = (this.props.getEditingItemText as (item: IExtendedPersonaProps) => string)(this.props.item);
 
     this._editingFloatingPicker.current && this._editingFloatingPicker.current.onQueryStringChanged(itemText);
     this._editingInput.value = itemText;

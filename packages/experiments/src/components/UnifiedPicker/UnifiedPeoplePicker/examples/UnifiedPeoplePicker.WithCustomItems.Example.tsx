@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
-import { ISelectedItemProps } from 'office-ui-fabric-react/lib/components/SelectedItemsList';
+import { ISelectedItemProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 /* Sample Data */
-import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Persona.types';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
-import { IconButton } from 'office-ui-fabric-react/lib/components/Button';
+import { IconButton } from 'office-ui-fabric-react/lib/components/Button/index';
+import { css } from 'office-ui-fabric-react/lib/Utilities';
+import * as ExampleStyles from './Example.scss';
 
 /**
  * Our custom persona type
@@ -26,8 +28,8 @@ const addEmailToPersona = (originalPersona: IPersonaProps): CustomPersonaWithEma
  * Custom component we use to render our suggestion items in the floating picker
  */
 const CustomSuggestionItem = (props: CustomPersonaWithEmail): JSX.Element => (
-  <div style={{ display: 'flex', alignItems: 'center', padding: '0.25em' }}>
-    <img src={props.imageUrl} alt={props.imageAlt} style={{ width: 32, height: 32, borderRadius: '50%', paddingRight: '0.25em' }} />
+  <div className={css([ExampleStyles.customSuggestionItem])}>
+    <img src={props.imageUrl} alt={props.imageAlt} className={css([ExampleStyles.customSuggestionItemImage])} />
     {props.emailAddress}
   </div>
 );
@@ -39,22 +41,8 @@ const CustomSuggestionItem = (props: CustomPersonaWithEmail): JSX.Element => (
  * it binc props.onRemoveItem somewhere in its body.
  */
 const CustomSelectedItem = (props: ISelectedItemProps<CustomPersonaWithEmail>): JSX.Element => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      paddingLeft: 2,
-      marginRight: 4,
-      height: 36,
-      border: '1px solid #AAAAAA',
-      borderRadius: 18
-    }}
-  >
-    <img
-      src={props.item.imageUrl}
-      alt={props.item.imageAlt}
-      style={{ width: 32, height: 32, borderRadius: '50%', paddingRight: '0.25em' }}
-    />
+  <div className={css([ExampleStyles.customSelectedItem])}>
+    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={css([ExampleStyles.customSelectedItemImage])} />
     {props.item.emailAddress}
     <IconButton iconProps={{ iconName: 'ChromeClose' }} onClick={props.onRemoveItem} />
   </div>

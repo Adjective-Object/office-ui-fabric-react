@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { IPersonaProps } from '../../Persona/Persona.types';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
+import {
+  BaseFloatingPickerSuggestionProps,
+  IBaseFloatingPickerProps,
+  ISuggestionsControlProps
+} from 'office-ui-fabric-react/lib/FloatingPicker';
+import { ISelectedPeopleProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { IUnifiedPickerProps } from '../UnifiedPicker.types';
-import { IEditingItemProps } from '../../SelectedItemsList/SelectedPeopleList/Items/EditingItem';
-import { BaseFloatingPickerSuggestionProps, IBaseFloatingPickerProps, ISuggestionsControlProps } from '../../FloatingPicker/index';
-import { ISelectedPeopleProps } from '../../SelectedItemsList/SelectedPeopleList/SelectedPeopleList';
 
 export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
 export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = React.ComponentType<PropsOf<TComponent> & TMoreProps>;
@@ -24,7 +27,7 @@ export type ComposableMainFloatingPicker<T> = WithMoreProps<
  * component subtree (e.g. the separately specified or default component)
  */
 export type ComposableEditingItemFloatingPicker<T> = WithMoreProps<
-  NonNullable<IEditingItemProps<T>['onRenderFloatingPicker']>,
+  NonNullable<ISelectedPeopleProps<T>['onRenderFloatingPicker']>,
   Pick<IBaseFloatingPickerProps<T>, 'onRenderSuggestionControl'>
 >;
 
