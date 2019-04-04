@@ -31,7 +31,7 @@ export interface IBaseSelectedItemsListProps<T> extends React.ClassAttributes<an
   /**
    * Function that specifies how the selected item will appear.
    */
-  onRenderItem?: (props: ISelectedItemProps<T>) => JSX.Element;
+  onRenderItem?: React.ComponentType<ISelectedItemProps<T>>;
   /**
    * Initial items that have already been selected and should appear in the people picker.
    */

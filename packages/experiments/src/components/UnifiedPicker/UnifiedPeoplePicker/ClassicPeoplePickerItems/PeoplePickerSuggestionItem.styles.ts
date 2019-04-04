@@ -1,6 +1,6 @@
 import { getGlobalClassNames, HighContrastSelector, IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IPeoplePickerSuggestionItemStyles, IPeoplePickerSuggestionItemStyleProps } from './PeoplePickerSuggestionItem.types';
-import { SuggestionsItemGlobalClassNames as suggested } from 'office-ui-fabric-react/lib/Suggestions';
+import { SuggestionsItemGlobalClassNames as suggested } from 'office-ui-fabric-react/lib/Pickers';
 
 const GlobalClassNames = {
   root: 'ms-PeoplePicker-personaContent',

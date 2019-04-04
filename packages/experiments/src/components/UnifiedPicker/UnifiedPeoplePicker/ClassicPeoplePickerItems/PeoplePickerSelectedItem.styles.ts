@@ -1,5 +1,6 @@
 import { getGlobalClassNames, getFocusStyle, HighContrastSelector, IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IPeoplePickerSelectedItemStyleProps, IPeoplePickerSelectedItemStyles } from './PeoplePickerSelectedItem.types';
+import { ButtonGlobalClassNames } from 'office-ui-fabric-react/lib/Button';
 
 const GlobalClassNames = {
   root: 'ms-PickerPersona-container',

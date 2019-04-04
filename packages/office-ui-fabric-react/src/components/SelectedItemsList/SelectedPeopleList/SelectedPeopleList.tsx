@@ -88,7 +88,8 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     } else {
       // Assert onRenderItem is not null because it is provided in the defaultProps of this component.
       // it's still possible that it could be null if a deriving component overrides defaultProps.
-      const renderedItem = (this.props.onRenderItem as NonNullable<ISelectedPeopleProps<IExtendedPersonaProps>['onRenderItem']>)(props);
+      const RenderItem = this.props.onRenderItem as NonNullable<ISelectedPeopleProps<IExtendedPersonaProps>['onRenderItem']>;
+      const renderedItem = <RenderItem {...props} />;
       return hasContextMenu ? (
         <SelectedItemWithContextMenu
           key={props.key}

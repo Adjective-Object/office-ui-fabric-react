@@ -20,7 +20,7 @@ import { getStyles } from './PeoplePickerSelectedItem.styles';
 
 const getClassNames = classNamesFunction<IPeoplePickerSelectedItemStyleProps, IPeoplePickerSelectedItemStyles>();
 
-export const PeoplePickerItemBase = (props: IPeoplePickerSelectedItemProps) => {
+export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemProps) => {
   const { item, onRemoveItem, index, selected, removeButtonAriaLabel, styles, theme, className, disabled } = props;
 
   const itemId = getId();
@@ -64,8 +64,8 @@ export const PeoplePickerItemBase = (props: IPeoplePickerSelectedItemProps) => {
   );
 };
 
-export const PeoplePickerItem = styled<
+export const PeoplePickerSelectedItem = styled<
   IPeoplePickerSelectedItemProps,
   IPeoplePickerSelectedItemStyleProps,
   IPeoplePickerSelectedItemStyles
->(PeoplePickerItemBase, getStyles, undefined, { scope: 'PeoplePickerItem' });
+>(PeoplePickerSelectedItemInner, getStyles, undefined, { scope: 'PeoplePickerItem' });

@@ -13,6 +13,12 @@ const UnifiedPeoplePickerWithCustomHeaderFooterExampleCode = require('!raw-loade
 import { UnifiedPeoplePickerWithCustomItemsExample } from './examples/UnifiedPeoplePicker.WithCustomItems.Example';
 const UnifiedPeoplePickerWithCustomItemsExampleCode = require('!raw-loader!./examples/UnifiedPeoplePicker.WithCustomItems.Example') as string;
 
+import { ClassicNormalPeoplePickerExample } from './examples/ClassicNormalPeoplePicker.Example';
+const ClassicNormalPeoplePickerExampleCode = require('!raw-loader!./examples/ClassicNormalPeoplePicker.Example') as string;
+
+import { ClassicCompactPeoplePickerExample } from './examples/ClassicCompactPeoplePicker.Example';
+const ClassicCompactPeoplePickerExampleCode = require('!raw-loader!./examples/ClassicCompactPeoplePicker.Example') as string;
+
 export class UnifiedPeoplePickerPage extends React.Component<IComponentDemoPageProps, {}> {
   public render(): JSX.Element {
     return (
@@ -36,6 +42,12 @@ export class UnifiedPeoplePickerPage extends React.Component<IComponentDemoPageP
               code={UnifiedPeoplePickerWithCustomItemsExampleCode}
             >
               <UnifiedPeoplePickerWithCustomItemsExample />
+            </ExampleCard>
+            <ExampleCard title="Classic Normal Picker" isOptIn={true} code={ClassicNormalPeoplePickerExampleCode}>
+              <ClassicNormalPeoplePickerExample />
+            </ExampleCard>
+            <ExampleCard title="Classic Compact Picker" isOptIn={true} code={ClassicCompactPeoplePickerExampleCode}>
+              <ClassicCompactPeoplePickerExample />
             </ExampleCard>
           </div>
         }

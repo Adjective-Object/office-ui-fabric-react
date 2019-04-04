@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { PeoplePickerItem } from './ClassicPeoplePickerItems/PeoplePickerItem';
-import { PeoplePickerSuggestionItem, IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerItems/PeoplePickerSuggestionItem';
+import { PeoplePickerSelectedItem } from './ClassicPeoplePickerItems/PeoplePickerSelectedItem';
+import { PeoplePickerSuggestionItem } from './ClassicPeoplePickerItems/PeoplePickerSuggestionItem';
 import { UnifiedPeoplePickerProps } from './UnifiedPeoplePicker.types';
 import { UnifiedPeoplePicker } from './UnifiedPeoplePicker';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
+import { IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerItems/PeoplePickerSuggestionItem.types';
+import { ISuggestionItemProps } from 'office-ui-fabric-react/lib/Pickers';
 
 /**
  * Special case of the UnifiedPeoplePicker binding custom rendering to match
@@ -13,7 +15,12 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
   props: UnifiedPeoplePickerProps<TPersona>,
   ref: React.Ref<UnifiedPeoplePicker<TPersona>>
 ) => (
-  <UnifiedPeoplePicker ref={ref} onRenderSelectedItem={PeoplePickerItem} onRenderSuggestionItem={PeoplePickerSuggestionItem} {...props} />
+  <UnifiedPeoplePicker
+    ref={ref}
+    onRenderSelectedItem={PeoplePickerSelectedItem}
+    onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => <PeoplePickerSuggestionItem {...props} />}
+    {...props}
+  />
 );
 export const NormalPeoplePicker = React.forwardRef(NormalPeoplePickerInner);
 
@@ -27,8 +34,10 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
 ) => (
   <UnifiedPeoplePicker
     ref={ref}
-    onRenderSelectedItem={PeoplePickerItem}
-    onRenderSuggestionItem={CompactPeoplePickerSuggestionItem}
+    onRenderSelectedItem={PeoplePickerSelectedItem}
+    onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => (
+      <CompactPeoplePickerSuggestionItem {...props} />
+    )}
     {...props}
   />
 );
@@ -49,7 +58,7 @@ export const CompactPeoplePicker = React.forwardRef(CompactPeoplePickerInner);
 // ) => (
 //   <UnifiedPeoplePicker
 //     ref={ref}
-//     onRenderSelectedItem={PeoplePickerItem}
+//     onRenderSelectedItem={PeoplePickerSelectedItem}
 //     onRenderSuggestionItem={CompactPeoplePickerSuggestionItem}
 //     {...props}
 //   />

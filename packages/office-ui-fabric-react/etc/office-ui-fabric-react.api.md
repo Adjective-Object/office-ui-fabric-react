@@ -459,6 +459,18 @@ export class Button extends BaseComponent<IButtonProps, {}> {
 }
 
 // @public (undocumented)
+export const ButtonGlobalClassNames: {
+    msButton: string;
+    msButtonIcon: string;
+    msButtonMenuIcon: string;
+    msButtonLabel: string;
+    msButtonDescription: string;
+    msButtonScreenReaderText: string;
+    msButtonFlexContainer: string;
+    msButtonTextContainer: string;
+};
+
+// @public (undocumented)
 export enum ButtonType {
     // (undocumented)
     command = 4,
@@ -1568,7 +1580,7 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
     onInputChanged?: (filter: string) => void;
     onRemoveSuggestion?: (item: T) => void;
     onRenderSuggestionControl?: React.ComponentType<BaseFloatingPickerSuggestionProps<T>>;
-    onRenderSuggestionsItem?: (props: T, itemProps: any) => JSX.Element;
+    onRenderSuggestionsItem?: (props: T, itemProps: ISuggestionItemProps<T>) => JSX.Element;
     onResolveSuggestions: (filter: string, selectedItems?: T[]) => T[] | PromiseLike<T[]> | null;
     onSuggestionsHidden?: () => void;
     onSuggestionsShown?: () => void;
@@ -1627,7 +1639,7 @@ export interface IBasePickerProps<T> extends React.Props<any> {
     onItemSelected?: (selectedItem?: T) => T | PromiseLike<T> | null;
     onRemoveSuggestion?: (item: IPersonaProps) => void;
     onRenderItem?: (props: IPickerItemProps<T>) => JSX.Element;
-    onRenderSuggestionsItem?: (props: T, itemProps: any) => JSX.Element;
+    onRenderSuggestionsItem?: (props: T, itemProps: ISuggestionItemProps<T>) => JSX.Element;
     onResolveSuggestions: (filter: string, selectedItems?: T[]) => T[] | PromiseLike<T[]>;
     onValidateInput?: (input: string) => ValidationState;
     pickerCalloutProps?: ICalloutProps;
@@ -1705,7 +1717,7 @@ export interface IBaseSelectedItemsListProps<T> extends React.ClassAttributes<an
     onItemDeleted?: (deletedItem: T) => void;
     onItemsDeleted?: (deletedItems: T[]) => void;
     onItemSelected?: (selectedItem?: T) => T | PromiseLike<T>;
-    onRenderItem?: (props: ISelectedItemProps<T>) => JSX.Element;
+    onRenderItem?: React.ComponentType<ISelectedItemProps<T>>;
     removeButtonAriaLabel?: string;
     selectedItems?: T[];
     selection?: Selection;
@@ -6850,7 +6862,7 @@ export interface ISuggestionItemProps<T> {
     onClick: (ev: React_2.MouseEvent<HTMLButtonElement>) => void;
     onRemoveItem: (ev: React_2.MouseEvent<HTMLButtonElement>) => void;
     removeButtonAriaLabel?: string;
-    RenderSuggestion: (item: T, suggestionItemProps?: ISuggestionItemProps<T>) => JSX.Element;
+    RenderSuggestion: (item: T, suggestionItemProps: ISuggestionItemProps<T>) => JSX.Element;
     showRemoveButton?: boolean;
     styles?: IStyleFunctionOrObject<ISuggestionsItemStyleProps, ISuggestionsItemStyles>;
     suggestionModel: ISuggestionModel<T>;
@@ -6899,7 +6911,7 @@ export interface ISuggestionsControlState<T> {
 // @public (undocumented)
 export interface ISuggestionsCoreProps<T> extends React.ClassAttributes<any> {
     componentRef?: IRefObject<{}>;
-    onRenderSuggestion?: (props: T, suggestionItemProps: T) => JSX.Element;
+    onRenderSuggestion?: (props: T, suggestionItemProps: ISuggestionItemProps<T>) => JSX.Element;
     onSuggestionClick: (ev?: React.MouseEvent<HTMLElement>, item?: any, index?: number) => void;
     onSuggestionRemove?: (ev?: React.MouseEvent<HTMLElement>, item?: IPersonaProps, index?: number) => void;
     resultsMaximumNumber?: number;
@@ -6973,7 +6985,7 @@ export interface ISuggestionsProps<T> extends React.Props<any> {
     noResultsFoundText?: string;
     onGetMoreResults?: () => void;
     onRenderNoResultFound?: IRenderFunction<void>;
-    onRenderSuggestion?: (props: T, suggestionItemProps: T) => JSX.Element;
+    onRenderSuggestion: (props: T, suggestionItemProps: ISuggestionItemProps<T>) => JSX.Element;
     onSuggestionClick: (ev?: React.MouseEvent<HTMLElement>, item?: any, index?: number) => void;
     onSuggestionRemove?: (ev?: React.MouseEvent<HTMLElement>, item?: T | IPersonaProps, index?: number) => void;
     refocusSuggestions?: (keyCode: KeyCodes) => void;
@@ -8837,6 +8849,14 @@ export class SuggestionsItem<T> extends BaseComponent<ISuggestionItemProps<T>, {
     // (undocumented)
     render(): JSX.Element;
 }
+
+// @public (undocumented)
+export const SuggestionsItemGlobalClassNames: {
+    root: string;
+    itemButton: string;
+    closeButton: string;
+    isSuggested: string;
+};
 
 // @public (undocumented)
 export class SuggestionsStore<T> {

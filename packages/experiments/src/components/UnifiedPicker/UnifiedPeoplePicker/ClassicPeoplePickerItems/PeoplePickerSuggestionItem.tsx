@@ -11,7 +11,7 @@ import { getStyles } from './PeoplePickerSuggestionItem.styles';
 
 const getClassNames = classNamesFunction<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>();
 
-export const PeoplePickerSuggestionItemBase = (props: IPeoplePickerSuggestionItemProps) => {
+export const PeoplePickerSuggestionItemInner = (props: IPeoplePickerSuggestionItemProps) => {
   const { personaProps, suggestionsProps, compact, styles, theme, className } = props;
 
   const classNames = getClassNames(styles, {
@@ -41,4 +41,4 @@ export const PeoplePickerSuggestionItem = styled<
   IPeoplePickerSuggestionItemProps,
   IPeoplePickerSuggestionItemStyleProps,
   IPeoplePickerSuggestionItemStyles
->(PeoplePickerSuggestionItemBase, getStyles, undefined, { scope: 'PeoplePickerSuggestionItem' });
+>(PeoplePickerSuggestionItemInner, getStyles, undefined, { scope: 'PeoplePickerSuggestionItem' });
