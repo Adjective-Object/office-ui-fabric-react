@@ -12,7 +12,8 @@ import { IBaseFloatingPickerProps } from '../../../FloatingPicker';
 import { EditingItem, EditingItemFloatingPickerProps } from './Items/EditingItem';
 
 export interface IExtendedPersonaProps extends IPersonaProps {
-  isValid?: boolean;
+  key?: React.Key;
+  isValid: boolean;
   blockRecipientRemoval?: boolean;
   shouldBlockSelection?: boolean;
   canExpand?: boolean;
@@ -53,27 +54,16 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     onRenderItem: (props: ISelectedPeopleItemProps<IExtendedPersonaProps>) => <ExtendedSelectedItem {...props} />
   };
 
-  public replaceItem = (itemToReplace: IExtendedPersonaProps, itemsToReplaceWith: IExtendedPersonaProps[]): void => {
-    const { items } = this.state;
-    const index: number = items.indexOf(itemToReplace);
-    if (index > -1) {
-      const newItems = items
-        .slice(0, index)
-        .concat(itemsToReplaceWith)
-        .concat(items.slice(index + 1));
-      this.updateItems(newItems);
-    }
-  };
-
   protected renderItems = (): JSX.Element[] => {
     const { items } = this.state;
     // tslint:disable-next-line:no-any
-    return items.map((item: any, index: number) => this._renderItem(item, index));
+    return items.map((item: TPersona, index: number) => this._renderItem(item, index));
   };
 
   // tslint:disable-next-line:no-any
-  private _renderItem(item: any, index: number): JSX.Element {
+  private _renderItem(item: TPersona, index: number): JSX.Element {
     const { removeButtonAriaLabel } = this.props;
+    const expandGroup = this.props.onExpandGroup;
     const props = {
       item,
       index,
@@ -83,12 +73,12 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
       onItemChange: this.onItemChange,
       removeButtonAriaLabel: removeButtonAriaLabel,
       onCopyItem: (itemToCopy: TPersona) => this.copyItems([itemToCopy]),
-      onExpandItem: this.props.onExpandGroup ? () => (this.props.onExpandGroup as (item: IExtendedPersonaProps) => void)(item) : undefined,
+      onExpandItem: expandGroup ? () => expandGroup(item) : undefined,
       menuItems: this._createMenuItems(item)
     };
 
     const hasContextMenu = props.menuItems.length > 0;
-    if ((item as IExtendedPersonaProps).isEditing && hasContextMenu) {
+    if (item.isEditing && hasContextMenu) {
       return (
         <EditingItem
           {...props}
@@ -99,11 +89,15 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
         />
       );
     } else {
-      // TODO make onRenderItem required and move SelectedPeopleList to a composition-based design.
-      const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps<TPersona>) => JSX.Element;
+      // This cast is here because we are guaranteed that onRenderItem is set
+      // from static defaultProps
+      // TODO: Move this component to composition with required onRenderItem to remove
+      // this cast.
+      const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps) => JSX.Element;
       const renderedItem = onRenderItem(props);
       return hasContextMenu ? (
         <SelectedItemWithContextMenu
+          key={props.key}
           renderedItem={renderedItem}
           beginEditing={this._beginEditing}
           menuItems={this._createMenuItems(props.item)}
@@ -115,7 +109,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     }
   }
 
-  private _beginEditing = (item: IExtendedPersonaProps): void => {
+  private _beginEditing = (item: TPersona): void => {
     item.isEditing = true;
     this.forceUpdate();
   };
@@ -158,7 +152,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
         text: this.props.copyMenuItemText,
         onClick: (ev: React.MouseEvent<HTMLElement>, menuItem: IContextualMenuItem) => {
           if (this.props.onCopyItems) {
-            (this.copyItems as (items: IExtendedPersonaProps[]) => void)([menuItem.data] as IExtendedPersonaProps[]);
+            this.copyItems([menuItem.data]);
           }
         },
         data: item

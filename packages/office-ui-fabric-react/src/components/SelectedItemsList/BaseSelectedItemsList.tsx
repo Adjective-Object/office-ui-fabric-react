@@ -4,12 +4,12 @@ import { Selection } from '../../Selection';
 
 import { IBaseSelectedItemsList, IBaseSelectedItemsListProps, ISelectedItemProps } from './BaseSelectedItemsList.types';
 
-export interface IBaseSelectedItemsListState {
+export interface IBaseSelectedItemsListState<T = any> {
   // tslint:disable-next-line:no-any
-  items?: any;
+  items: T[];
 }
 
-export class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> extends BaseComponent<P, IBaseSelectedItemsListState>
+export class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> extends BaseComponent<P, IBaseSelectedItemsListState<T>>
   implements IBaseSelectedItemsList<T> {
   protected root: HTMLElement;
   protected selection: Selection;
@@ -157,7 +157,7 @@ export class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> 
     const newItems = newProps.selectedItems;
 
     if (newItems) {
-      this.setState({ items: newProps.selectedItems });
+      this.setState({ items: newItems });
     }
 
     if (newProps.selection) {
