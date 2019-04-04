@@ -15,17 +15,6 @@ import {
   ComposableEditingItemFloatingPicker
 } from './UnifiedPeoplePicker.types';
 
-// /**
-//  * Purify a functional component
-//  */
-// function memo<TProps>(InnerComponent: React.StatelessComponent<TProps>): React.ComponentType<TProps> {
-//   return class MemoizedFunctionalComponent extends React.PureComponent<TProps> {
-//     public render() {
-//       return <InnerComponent {...this.props} />;
-//     }
-//   };
-// }
-
 export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.PureComponent<UnifiedPeoplePickerProps<TPersona>> {
   private _picker: UnifiedPicker<TPersona>;
   // Custom footer items that reflect the state of the picker.

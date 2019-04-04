@@ -1,0 +1,44 @@
+import * as React from 'react';
+
+import { classNamesFunction, styled, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
+import { Persona, PersonaSize, IPersonaStyleProps, IPersonaStyles } from 'office-ui-fabric-react/lib/Persona';
+import {
+  IPeoplePickerSuggestionItemProps,
+  IPeoplePickerSuggestionItemStyleProps,
+  IPeoplePickerSuggestionItemStyles
+} from './PeoplePickerSuggestionItem.types';
+import { getStyles } from './PeoplePickerSuggestionItem.styles';
+
+const getClassNames = classNamesFunction<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>();
+
+export const PeoplePickerSuggestionItemBase = (props: IPeoplePickerSuggestionItemProps) => {
+  const { personaProps, suggestionsProps, compact, styles, theme, className } = props;
+
+  const classNames = getClassNames(styles, {
+    theme: theme!,
+    className: (suggestionsProps && suggestionsProps.suggestionsItemClassName) || className
+  });
+
+  const personaStyles =
+    classNames.subComponentStyles && classNames.subComponentStyles.persona
+      ? (classNames.subComponentStyles.persona as IStyleFunctionOrObject<IPersonaStyleProps, IPersonaStyles>)
+      : undefined;
+
+  return (
+    <div className={classNames.root}>
+      <Persona
+        size={PersonaSize.size24}
+        styles={personaStyles}
+        className={classNames.personaWrapper}
+        showSecondaryText={!compact}
+        {...personaProps}
+      />
+    </div>
+  );
+};
+
+export const PeoplePickerSuggestionItem = styled<
+  IPeoplePickerSuggestionItemProps,
+  IPeoplePickerSuggestionItemStyleProps,
+  IPeoplePickerSuggestionItemStyles
+>(PeoplePickerSuggestionItemBase, getStyles, undefined, { scope: 'PeoplePickerSuggestionItem' });
