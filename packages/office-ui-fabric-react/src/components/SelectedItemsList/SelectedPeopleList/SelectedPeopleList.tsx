@@ -13,7 +13,7 @@ import { EditingItem, EditingItemFloatingPickerProps } from './Items/EditingItem
 
 export interface IExtendedPersonaProps extends IPersonaProps {
   key?: React.Key;
-  isValid: boolean;
+  isValid?: boolean;
   blockRecipientRemoval?: boolean;
   shouldBlockSelection?: boolean;
   canExpand?: boolean;
@@ -29,13 +29,13 @@ export interface ISelectedPeopleItemProps<TPersona extends IExtendedPersonaProps
 
 export interface ISelectedPeopleProps<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps>
   extends IBaseSelectedItemsListProps<TPersona> {
-  onExpandGroup?: (item: IExtendedPersonaProps) => void;
+  onExpandGroup?: (item: TPersona) => void;
   removeMenuItemText?: string;
   copyMenuItemText?: string;
   editMenuItemText?: string;
-  getEditingItemText?: (item: IExtendedPersonaProps) => string;
+  getEditingItemText?: (item: TPersona) => string;
   onRenderFloatingPicker?: React.ComponentType<EditingItemFloatingPickerProps<TPersona>>;
-  floatingPickerProps?: IBaseFloatingPickerProps<IPersonaProps>;
+  floatingPickerProps?: IBaseFloatingPickerProps<TPersona>;
 }
 
 export class BasePeopleSelectedItemsList<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends BaseSelectedItemsList<
@@ -49,18 +49,15 @@ export class BasePeopleSelectedItemsList<TPersona extends IExtendedPersonaProps 
 export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtendedPersonaProps> extends BasePeopleSelectedItemsList<
   TPersona
 > {
-  // tslint:disable-next-line:no-any
-  public static defaultProps: any = {
+  public static defaultProps: Partial<ISelectedPeopleProps<IExtendedPersonaProps>> = {
     onRenderItem: (props: ISelectedPeopleItemProps<IExtendedPersonaProps>) => <ExtendedSelectedItem {...props} />
   };
 
   protected renderItems = (): JSX.Element[] => {
     const { items } = this.state;
-    // tslint:disable-next-line:no-any
     return items.map((item: TPersona, index: number) => this._renderItem(item, index));
   };
 
-  // tslint:disable-next-line:no-any
   private _renderItem(item: TPersona, index: number): JSX.Element {
     const { removeButtonAriaLabel } = this.props;
     const expandGroup = this.props.onExpandGroup;
@@ -78,7 +75,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     };
 
     const hasContextMenu = props.menuItems.length > 0;
-    if (item.isEditing && hasContextMenu) {
+    if (item.isEditing && hasContextMenu && this.props.getEditingItemText) {
       return (
         <EditingItem
           {...props}
@@ -89,12 +86,9 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
         />
       );
     } else {
-      // This cast is here because we are guaranteed that onRenderItem is set
-      // from static defaultProps
-      // TODO: Move this component to composition with required onRenderItem to remove
-      // this cast.
-      const onRenderItem = this.props.onRenderItem as (props: ISelectedPeopleItemProps) => JSX.Element;
-      const renderedItem = onRenderItem(props);
+      // Assert onRenderItem is not null because it is provided in the defaultProps of this component.
+      // it's still possible that it could be null if a deriving component overrides defaultProps.
+      const renderedItem = (this.props.onRenderItem as NonNullable<ISelectedPeopleProps<IExtendedPersonaProps>['onRenderItem']>)(props);
       return hasContextMenu ? (
         <SelectedItemWithContextMenu
           key={props.key}
@@ -109,7 +103,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
     }
   }
 
-  private _beginEditing = (item: TPersona): void => {
+  private _beginEditing = (item: IExtendedPersonaProps): void => {
     item.isEditing = true;
     this.forceUpdate();
   };
@@ -152,7 +146,7 @@ export class SelectedPeopleList<TPersona extends IExtendedPersonaProps = IExtend
         text: this.props.copyMenuItemText,
         onClick: (ev: React.MouseEvent<HTMLElement>, menuItem: IContextualMenuItem) => {
           if (this.props.onCopyItems) {
-            this.copyItems([menuItem.data]);
+            (this.copyItems as (items: IExtendedPersonaProps[]) => void)([menuItem.data] as IExtendedPersonaProps[]);
           }
         },
         data: item

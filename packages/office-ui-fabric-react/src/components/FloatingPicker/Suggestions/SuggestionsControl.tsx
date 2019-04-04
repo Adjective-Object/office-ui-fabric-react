@@ -142,17 +142,7 @@ export class SuggestionsControl<T> extends BaseComponent<ISuggestionsControlProp
   }
 
   public removeSuggestion(index?: number): void {
-    const indexToRemove = index !== undefined ? index : this._suggestions.currentIndex;
-    // Do not mutate the object in the state.
-    // This object is copied over from props
-    //
-    // Because we expect suggestion removal to be an edge case, take the perf cost
-    // of the copy on removal instead of on initialization.
-    const nextSuggestions = [...this.state.suggestions];
-    nextSuggestions.splice(indexToRemove, 1);
-    this.setState({
-      suggestions: nextSuggestions
-    });
+    this._suggestions.removeSuggestion(index ? index : this._suggestions.currentIndex);
   }
 
   /**

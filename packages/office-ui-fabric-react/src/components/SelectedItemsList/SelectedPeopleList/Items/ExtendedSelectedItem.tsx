@@ -3,7 +3,7 @@ import * as React from 'react';
 /* tslint:enable */
 import { BaseComponent, css, getId } from '../../../../Utilities';
 import { Persona, PersonaSize } from '../../../../Persona';
-import { ISelectedPeopleItemProps, IExtendedPersonaProps } from '../SelectedPeopleList';
+import { ISelectedPeopleItemProps } from '../SelectedPeopleList';
 import { IconButton } from '../../../../Button';
 import * as stylesImport from './ExtendedSelectedItem.scss';
 // tslint:disable-next-line:no-any
@@ -13,6 +13,9 @@ export interface IPeoplePickerItemState {
   contextualMenuVisible: boolean;
 }
 
+/**
+ * A selected persona with support for item removal and expansion.
+ */
 export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps, IPeoplePickerItemState> {
   protected persona = React.createRef<HTMLDivElement>();
 
@@ -41,7 +44,7 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
       >
         <div hidden={!item.canExpand || onExpandItem === undefined}>
           <IconButton
-            onClick={this._onClickIconButton(onExpandItem, item)}
+            onClick={this._onClickIconButton(onExpandItem)}
             iconProps={{ iconName: 'Add', style: { fontSize: '14px' } }}
             className={css('ms-PickerItem-removeButton', styles.expandButton, styles.actionButton)}
             ariaLabel={removeButtonAriaLabel}
@@ -57,7 +60,7 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
             />
           </div>
           <IconButton
-            onClick={this._onClickIconButton(onRemoveItem, item)}
+            onClick={this._onClickIconButton(onRemoveItem)}
             iconProps={{ iconName: 'Cancel', style: { fontSize: '14px' } }}
             className={css('ms-PickerItem-removeButton', styles.removeButton, styles.actionButton)}
             ariaLabel={removeButtonAriaLabel}
@@ -67,15 +70,12 @@ export class ExtendedSelectedItem extends BaseComponent<ISelectedPeopleItemProps
     );
   }
 
-  private _onClickIconButton(
-    action: ((item: IExtendedPersonaProps) => void) | undefined,
-    item: IExtendedPersonaProps
-  ): (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void {
+  private _onClickIconButton(action: (() => void) | undefined): (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void {
     return (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): void => {
       ev.stopPropagation();
       ev.preventDefault();
       if (action) {
-        action(item);
+        action();
       }
     };
   }

@@ -72,9 +72,6 @@ export class BaseSelectedItemsList<T, P extends IBaseSelectedItemsListProps<T>> 
     this.removeItemAt(index);
   };
 
-  /**
-   * replace an item with a group of other items
-   */
   public replaceItem = (itemToReplace: T, itemsToReplaceWith: T[]): void => {
     const { items } = this.state;
     const index: number = items.indexOf(itemToReplace);

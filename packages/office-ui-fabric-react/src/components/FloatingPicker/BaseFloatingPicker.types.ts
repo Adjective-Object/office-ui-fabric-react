@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ISuggestionModel } from '../../Pickers';
-import { IPersonaProps } from '../../Persona';
 import { ISuggestionsControlProps } from './Suggestions/Suggestions.types';
 import { SuggestionsStore } from './Suggestions/SuggestionsStore';
 import { IRefObject } from '../../Utilities';
@@ -89,9 +88,16 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
    */
   onRenderSuggestionControl?: React.ComponentType<BaseFloatingPickerSuggestionProps<T>>;
   /**
+   * The properties that will get passed to the Suggestions component.
+   *
+   * @deprecated prefer binding properties on onRendersuggestionControl.
+   */
+  pickerSuggestionsProps?: IBaseFloatingPickerSuggestionProps;
+
+  /**
    * A callback for when a persona is removed from the suggestion list
    */
-  onRemoveSuggestion?: (item: IPersonaProps) => void;
+  onRemoveSuggestion?: (item: T) => void;
   /**
    * A function used to validate if raw text entered into the well can be added
    */
@@ -144,10 +150,18 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
 }
 
 /**
+ *  @deprecated prefer setting props on onRenderSuggestionControl
+ */
+export type IBaseFloatingPickerSuggestionProps = Pick<
+  ISuggestionsControlProps<any>,
+  'shouldSelectFirstItem' | 'headerItemsProps' | 'footerItemsProps' | 'showRemoveButtons'
+>;
+
+/**
  * Props which are passed on to the inner Suggestions component by
  * BaseFloatingPicker.
  */
-export type BaseFloatingPickerSuggestionProps<T> = Pick<
+export type BaseFloatingPickerSuggestionProps<T = any> = Pick<
   ISuggestionsControlProps<T>,
   | 'onSuggestionClick'
   | 'onSuggestionRemove'

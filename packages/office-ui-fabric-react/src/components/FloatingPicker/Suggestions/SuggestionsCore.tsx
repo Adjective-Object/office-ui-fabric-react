@@ -8,9 +8,6 @@ const styles: any = stylesImport;
 
 /**
  * Class when used with SuggestionsStore, renders a basic suggestions control
- *
- * Completely controlled internal component.
- * See SuggestionsControl for usage.
  */
 export class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, {}> {
   public currentIndex: number;
@@ -81,6 +78,10 @@ export class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, 
 
   public hasSuggestionSelected(): boolean {
     return this.currentIndex !== -1 && this.currentIndex < this.props.suggestions.length;
+  }
+
+  public removeSuggestion(index: number): void {
+    this.props.suggestions.splice(index, 1);
   }
 
   public deselectAllSuggestions(): void {
