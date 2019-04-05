@@ -3,8 +3,9 @@ import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IBaseFloatingPickerProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { IBaseSelectedItemsListProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
-import { IRefObject } from 'office-ui-fabric-react/lib/Utilities';
+import { IRefObject, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { IFocusZoneProps } from 'office-ui-fabric-react/lib/FocusZone';
+import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
 
 /**
  * The slice of props that the unified picker will pass to the
@@ -40,7 +41,7 @@ export interface IUnifiedPicker<T> {
 // Type T is the type of the item that is displayed
 // and searched for by the people picker. For example, if the picker is
 // displaying persona's than type T could either be of Persona or Ipersona props
-export interface IUnifiedPickerProps<T> {
+export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthroughProps {
   /**
    * Ref of the component
    */
@@ -77,11 +78,6 @@ export interface IUnifiedPickerProps<T> {
   onBlur?: React.FocusEventHandler<HTMLInputElement | Autofill>;
 
   /**
-   * ClassName for the picker.
-   */
-  className?: string;
-
-  /**
    * Function that specifies how the floating picker will appear.
    */
   onRenderFloatingPicker: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
@@ -96,12 +92,6 @@ export interface IUnifiedPickerProps<T> {
    * @defaultvalue undefined
    */
   inputProps?: IInputProps;
-
-  /**
-   * Flag for disabling the picker.
-   * @defaultvalue false
-   */
-  disabled?: boolean;
 
   /**
    * Restrict the amount of selectable items.
@@ -144,4 +134,62 @@ export interface IUnifiedPickerProps<T> {
    * Current rendered query string that's corealte to current rendered result
    **/
   currentRenderedQueryString?: string;
+
+  /**
+   * If, when the user presses Enter and there are no suggestions,
+   * the picker should force resolve to the current item
+   */
+  shouldForceResolveWhenEmpty?: boolean;
+}
+
+/**
+ * Props of the unified picker that are relevant to styles
+ */
+export interface IUnifiedPickerComponentPassthroughProps {
+  className?: string;
+
+  /**
+   * Call to provide customized styling that will layer on top of the variant rules.
+   */
+  styles?: IStyleFunctionOrObject<IUnifiedPickerStyleProps, IUnifiedPickerStyles>;
+
+  /**
+   * Theme provided by High-Order Component.
+   */
+  theme?: ITheme;
+
+  /**
+   * Flag for disabling the picker.
+   * @defaultvalue false
+   */
+  disabled?: boolean;
+}
+
+/**
+ * Input to generate styles for a unified picker
+ */
+export interface IUnifiedPickerStyleProps {
+  className?: string;
+  disabled?: boolean;
+  /**
+   * Theme provided by styled() function.
+   */
+  theme?: ITheme;
+}
+
+/**
+ * Generated styles for a unifiedPicker
+ */
+export interface IUnifiedPickerStyles {
+  /** Root element of any picker extending from BasePicker (wraps all the elements). */
+  root: IStyle;
+
+  /** Refers to the wrapper of the elements already selected along with the input to type new selection. */
+  pickerWell: IStyle;
+
+  /** Refers to the input were to type new selections(picks). */
+  input: IStyle;
+
+  /** Refers to helper element used for accessibility tools (hidden from view on screen). */
+  screenReaderText: IStyle;
 }

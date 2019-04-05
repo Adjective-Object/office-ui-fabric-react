@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { css } from 'office-ui-fabric-react/lib/Utilities';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { DefaultPickerFooterItems } from '../DefaultPickerFooterItems';
 import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
 import { SuggestionsStore, FloatingPeoplePicker, BaseFloatingPickerSuggestionProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { SelectedPeopleList, EditingItemFloatingPickerProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { SuggestionsControl } from 'office-ui-fabric-react/lib/FloatingPicker';
-import { UnifiedPicker } from '../UnifiedPicker';
+import { UnifiedPicker, UnifiedPickerImpl } from '../UnifiedPicker';
 import {
   PropsOf,
   UnifiedPeoplePickerProps,
@@ -16,7 +15,7 @@ import {
 } from './UnifiedPeoplePicker.types';
 
 export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.PureComponent<UnifiedPeoplePickerProps<TPersona>> {
-  private _picker: UnifiedPicker<TPersona>;
+  private _picker: UnifiedPickerImpl<TPersona>;
   // Custom footer items that reflect the state of the picker.
   private _defaultFooterItems: DefaultPickerFooterItems = new DefaultPickerFooterItems();
 
@@ -30,13 +29,16 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
         onRenderFloatingPicker={this.MainFloatingPicker}
         onRenderSelectedItems={this.DefaultSelectedPeopleList}
         onRenderFocusZone={this.props.onRenderFocusZone}
-        className={css('ms-PeoplePicker', this.props.className)}
         key={'normal'}
         inputProps={{
           'aria-label': 'People Picker'
         }}
         componentRef={this._setComponentRef}
         headerComponent={this.props.headerComponent}
+        // Styling props pasthrough
+        className={this.props.className}
+        styles={this.props.styles}
+        disabled={this.props.disabled}
       />
     );
   }
@@ -80,7 +82,6 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
       getTextFromItem={this._getTextFromItem}
       onRemoveSuggestion={this.props.onRemoveSuggestion}
       onZeroQuerySuggestion={this.props.onZeroQuerySuggestion}
-      showForceResolve={this.props.shouldShowForceResolveSuggestion}
       onValidateInput={this.props.onValidateInput}
       // Override the render suggestion item twice here.
       // TODO: fix this once FloatingPickers are switched to composition
@@ -149,7 +150,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
     return item.text as string;
   }
 
-  private _setComponentRef = (component: UnifiedPicker<TPersona>): void => {
+  private _setComponentRef = (component: UnifiedPickerImpl<TPersona>): void => {
     this._picker = component;
     if (this.props.onRenderSuggestionControl === undefined) {
       // Only bind the default footer items to the component

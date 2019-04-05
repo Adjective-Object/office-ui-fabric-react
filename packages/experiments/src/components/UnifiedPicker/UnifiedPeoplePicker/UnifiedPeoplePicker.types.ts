@@ -6,7 +6,7 @@ import {
   ISuggestionsControlProps
 } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { ISelectedPeopleProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
-import { IUnifiedPickerProps } from '../UnifiedPicker.types';
+import { IUnifiedPickerProps, IUnifiedPickerComponentPassthroughProps } from '../UnifiedPicker.types';
 
 export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
 export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = React.ComponentType<PropsOf<TComponent> & TMoreProps>;
@@ -67,7 +67,6 @@ export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
   //////////////////////////////////////
   onValidateInput?: IBaseFloatingPickerProps<TPersona>['onValidateInput'];
   onZeroQuerySuggestion?: IBaseFloatingPickerProps<TPersona>['onZeroQuerySuggestion'];
-  shouldShowForceResolveSuggestion?: IBaseFloatingPickerProps<TPersona>['showForceResolve'];
   onExpandSelectedItem?: ISelectedPeopleProps<TPersona>['onExpandGroup'];
 
   /////////////////////////////////////////////
@@ -76,4 +75,4 @@ export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
   // manages state for use as uncontrolled   //
   /////////////////////////////////////////////
   onRemoveSuggestion?: IBaseFloatingPickerProps<TPersona>['onRemoveSuggestion'];
-};
+} & IUnifiedPickerComponentPassthroughProps;

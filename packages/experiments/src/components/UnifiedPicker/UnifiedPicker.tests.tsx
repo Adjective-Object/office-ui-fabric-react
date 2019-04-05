@@ -6,7 +6,7 @@ import * as ReactTestUtils from 'react-dom/test-utils';
 import * as renderer from 'react-test-renderer';
 
 import { IUnifiedPickerProps } from './UnifiedPicker.types';
-import { UnifiedPicker } from './UnifiedPicker';
+import { UnifiedPickerImpl } from './UnifiedPicker';
 import { IBaseFloatingPickerProps, BaseFloatingPicker, SuggestionsStore } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { IBaseSelectedItemsListProps, ISelectedItemProps, BaseSelectedItemsList } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
@@ -68,11 +68,11 @@ export interface ISimple {
   name: string;
 }
 
-export type TypedBaseUnifiedPicker = UnifiedPicker<ISimple>;
+export type TypedBaseUnifiedPicker = UnifiedPickerImpl<ISimple>;
 
 describe('Pickers', () => {
   describe('BasePicker', () => {
-    const BaseUnifiedPickerWithType: new (props: IUnifiedPickerProps<ISimple>) => UnifiedPicker<ISimple> = UnifiedPicker;
+    const BaseUnifiedPickerWithType: new (props: IUnifiedPickerProps<ISimple>) => UnifiedPickerImpl<ISimple> = UnifiedPickerImpl;
 
     it('renders BaseUnifiedPicker correctly', () => {
       const component = renderer.create(

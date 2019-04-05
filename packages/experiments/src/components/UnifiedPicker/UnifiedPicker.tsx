@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BaseComponent, KeyCodes, css } from 'office-ui-fabric-react/lib/Utilities';
+import { BaseComponent, KeyCodes, classNamesFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IBaseFloatingPickerProps, BaseFloatingPicker } from 'office-ui-fabric-react/lib/FloatingPicker';
@@ -7,14 +7,25 @@ import { BaseSelectedItemsList, IBaseSelectedItemsListProps } from 'office-ui-fa
 import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from 'office-ui-fabric-react/lib/FocusZone';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
 
-import * as styles from './UnifiedPicker.scss';
-import { IUnifiedPickerProps, IUnifiedPicker, UnifiedPickerFocusZoneProps } from './UnifiedPicker.types';
+import { getStyles } from './UnifiedPicker.styles';
+import { styled } from 'office-ui-fabric-react/lib/Utilities';
+
+import {
+  IUnifiedPickerProps,
+  IUnifiedPicker,
+  UnifiedPickerFocusZoneProps,
+  IUnifiedPickerStyleProps,
+  IUnifiedPickerStyles
+} from './UnifiedPicker.types';
+import { PropsOf } from './UnifiedPeoplePicker';
 
 export interface IUnifiedPickerState<T> {
   queryString: string | null;
   selectedItems: T[] | null;
   suggestionItems: T[] | null;
 }
+
+const getClassNames = classNamesFunction<IUnifiedPickerStyleProps, IUnifiedPickerStyles>();
 
 const shouldFocusZoneInputLoseFocusOnArrowKey = () => true;
 
@@ -29,7 +40,7 @@ const DefaultUnifiedPickerFocusZone = (overriddenProps: UnifiedPickerFocusZonePr
   />
 );
 
-export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
+export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
   public floatingPicker = React.createRef<BaseFloatingPicker<T>>();
   public selectedItemsList = React.createRef<BaseSelectedItemsList<T, IBaseSelectedItemsListProps<T>>>();
 
@@ -93,7 +104,13 @@ export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUni
   }
 
   public render(): JSX.Element {
-    const { className, inputProps, disabled, onRenderFocusZone } = this.props;
+    const { className, theme, disabled, styles, inputProps, onRenderFocusZone } = this.props;
+    const classNames = getClassNames(styles, {
+      theme: theme!,
+      disabled,
+      className
+    });
+
     const activeDescendant =
       this.floatingPicker.current && this.floatingPicker.current.currentSelectedSuggestionIndex !== -1
         ? 'sug-' + this.floatingPicker.current.currentSelectedSuggestionIndex
@@ -101,21 +118,16 @@ export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUni
     const FocusZoneComponent: React.ComponentType<UnifiedPickerFocusZoneProps> = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
 
     return (
-      <div
-        ref={this.root}
-        className={css('ms-BasePicker ms-UnifiedPicker', className ? className : '')}
-        onKeyDown={this.onBackspace}
-        onCopy={this.onCopy}
-      >
+      <div ref={this.root} className={classNames.root} onKeyDown={this.onBackspace} onCopy={this.onCopy}>
         <FocusZoneComponent direction={FocusZoneDirection.bidirectional}>
           <SelectionZone selection={this.selection} selectionMode={SelectionMode.multiple}>
-            <div className={css('ms-BasePicker-text', styles.pickerText)} role={'list'}>
+            <div className={classNames.pickerWell} role={'list'}>
               {this.props.headerComponent}
               {this.renderSelectedItemsList()}
               {this.canAddItems() && (
                 <Autofill
                   {...inputProps as IInputProps}
-                  className={css('ms-BasePicker-input', styles.pickerInput)}
+                  className={classNames.input}
                   ref={this.input}
                   onFocus={this.onInputFocus}
                   onClick={this.onInputClick}
@@ -300,3 +312,7 @@ export class UnifiedPicker<T> extends BaseComponent<IUnifiedPickerProps<T>, IUni
     this.focus();
   }
 }
+
+export const UnifiedPicker: React.StatelessComponent<PropsOf<typeof UnifiedPickerImpl>> = styled(UnifiedPickerImpl, getStyles, undefined, {
+  scope: 'UnifiedPicker'
+});
