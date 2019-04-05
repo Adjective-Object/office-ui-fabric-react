@@ -9,7 +9,6 @@ import { IBasePickerSuggestionsProps } from 'office-ui-fabric-react/lib/Pickers'
 export type IPeoplePickerSuggestionItemProps = ISuggestionItemProps<IPersonaProps> &
   Partial<CommonStylingProps> & {
     styles?: IStyleFunctionOrObject<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>;
-    personaProps?: IPersonaProps;
     compact?: boolean;
     /** General common props for all PeoplePicker items suggestions. */
     suggestionsProps?: IBasePickerSuggestionsProps;

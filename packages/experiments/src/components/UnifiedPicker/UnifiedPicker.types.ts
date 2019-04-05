@@ -19,10 +19,8 @@ export type UnifiedPickerFloatingPickerProps<T> = Pick<
  * The slice of props that the unified picker will pass to the
  * implementing selected items component
  */
-export type UnifiedPickerSelectedItemsProps<T> = Pick<
-  IBaseSelectedItemsListProps<T>,
-  'componentRef' | 'selection' | 'selectedItems' | 'onItemsDeleted'
->;
+export type UnifiedPickerSelectedItemsProps<T> = Pick<IBaseSelectedItemsListProps<T>, 'componentRef' | 'onItemsDeleted'> &
+  NonNullable<Pick<IBaseSelectedItemsListProps<T>, 'selection' | 'selectedItems' | 'onRenderItem'>>;
 
 /**
  * tge slice of props that the unified picker will pass to the
@@ -89,7 +87,7 @@ export interface IUnifiedPickerProps<T> {
   onRenderFloatingPicker: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
 
   /**
-   * Function that specifies how the floating picker will appear.
+   * Function that specifies how the selected item list will appear.
    */
   onRenderSelectedItems: React.ComponentType<UnifiedPickerSelectedItemsProps<T>>;
 

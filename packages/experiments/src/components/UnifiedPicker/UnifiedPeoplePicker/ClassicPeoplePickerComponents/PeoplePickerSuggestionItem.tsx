@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { classNamesFunction, styled, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
-import { Persona, PersonaSize, IPersonaStyleProps, IPersonaStyles } from 'office-ui-fabric-react/lib/Persona';
+import { Persona, PersonaSize, IPersonaStyleProps, IPersonaStyles, IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import {
   IPeoplePickerSuggestionItemProps,
   IPeoplePickerSuggestionItemStyleProps,
@@ -12,7 +12,8 @@ import { getStyles } from './PeoplePickerSuggestionItem.styles';
 const getClassNames = classNamesFunction<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>();
 
 export const PeoplePickerSuggestionItemInner = (props: IPeoplePickerSuggestionItemProps) => {
-  const { personaProps, suggestionsProps, compact, styles, theme, className } = props;
+  const { suggestionsProps, compact, styles, theme, className } = props;
+  const personaProps: IPersonaProps = props.suggestionModel.item;
 
   const classNames = getClassNames(styles, {
     theme: theme!,

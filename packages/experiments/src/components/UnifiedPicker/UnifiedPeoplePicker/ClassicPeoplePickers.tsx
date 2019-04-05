@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { PeoplePickerSelectedItem } from './ClassicPeoplePickerItems/PeoplePickerSelectedItem';
-import { PeoplePickerSuggestionItem } from './ClassicPeoplePickerItems/PeoplePickerSuggestionItem';
+import { PeoplePickerSelectedItem } from './ClassicPeoplePickerComponents/PeoplePickerSelectedItem';
+import { PeoplePickerSuggestionItem } from './ClassicPeoplePickerComponents/PeoplePickerSuggestionItem';
 import { UnifiedPeoplePickerProps } from './UnifiedPeoplePicker.types';
 import { UnifiedPeoplePicker } from './UnifiedPeoplePicker';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
-import { IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerItems/PeoplePickerSuggestionItem.types';
+import { IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerComponents/PeoplePickerSuggestionItem.types';
 import { ISuggestionItemProps } from 'office-ui-fabric-react/lib/Pickers';
 
 /**
@@ -18,7 +18,7 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
   <UnifiedPeoplePicker
     ref={ref}
     onRenderSelectedItem={PeoplePickerSelectedItem}
-    onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => <PeoplePickerSuggestionItem {...props} />}
+    onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => <PeoplePickerSuggestionItem {...itemProps} />}
     {...props}
   />
 );
@@ -35,8 +35,8 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
   <UnifiedPeoplePicker
     ref={ref}
     onRenderSelectedItem={PeoplePickerSelectedItem}
-    onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => (
-      <CompactPeoplePickerSuggestionItem {...props} />
+    onRenderSuggestionItem={(persona: TPersona, itemProps: ISuggestionItemProps<TPersona>) => (
+      <CompactPeoplePickerSuggestionItem {...itemProps} />
     )}
     {...props}
   />

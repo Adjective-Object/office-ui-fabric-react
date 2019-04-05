@@ -12,6 +12,7 @@ export interface IBaseSelectedItemsList<T> {
 
 export interface ISelectedItemProps<T> extends IPickerItemProps<T> {
   onCopyItem: (item: T) => void;
+  validationState?: ValidationState;
 }
 
 // Type T is the type of the item that is displayed

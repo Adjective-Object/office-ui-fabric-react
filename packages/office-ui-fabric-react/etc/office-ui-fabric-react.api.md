@@ -6250,6 +6250,8 @@ export interface ISelectableOption {
 export interface ISelectedItemProps<T> extends IPickerItemProps<T> {
     // (undocumented)
     onCopyItem: (item: T) => void;
+    // (undocumented)
+    validationState?: ValidationState;
 }
 
 // @public (undocumented)

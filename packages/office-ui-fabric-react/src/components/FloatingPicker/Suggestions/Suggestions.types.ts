@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ISuggestionModel } from '../../../Pickers';
 import { IPersonaProps } from '../../../Persona';
 import { IRefObject } from '../../../Utilities';
-import { ISuggestionItemProps } from '../../pickers';
+import { ISuggestionItemProps } from '../../pickers/Suggestions/SuggestionsItem.types';
 
 // tslint:disable-next-line:no-any
 export interface ISuggestionsCoreProps<T> extends React.ClassAttributes<any> {

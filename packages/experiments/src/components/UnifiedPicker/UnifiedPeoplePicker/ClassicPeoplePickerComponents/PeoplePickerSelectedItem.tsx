@@ -30,6 +30,7 @@ export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemPr
     className,
     selected,
     disabled,
+    // TODO port validation state to selected item props
     invalid: props.validationState === ValidationState.warning
   });
 
