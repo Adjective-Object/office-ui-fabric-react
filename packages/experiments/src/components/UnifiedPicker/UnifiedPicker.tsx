@@ -169,6 +169,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
         inputElement={this.input.current ? this.input.current.inputElement : undefined}
         selectedItems={this.items}
         suggestionItems={this.props.suggestionItems ? this.props.suggestionItems : undefined}
+        onValidateInput={this.props.onValidateInputQuery}
       />
     );
   }

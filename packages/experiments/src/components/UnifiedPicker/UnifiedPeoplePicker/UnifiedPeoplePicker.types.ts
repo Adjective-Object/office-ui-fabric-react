@@ -65,7 +65,7 @@ export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = {
   //////////////////////////////////////
   // Customizable Behavior (optional) //
   //////////////////////////////////////
-  onValidateInput?: IBaseFloatingPickerProps<TPersona>['onValidateInput'];
+  isQueryForceResolveable?: IBaseFloatingPickerProps<TPersona>['isQueryForceResolveable'];
   onZeroQuerySuggestion?: IBaseFloatingPickerProps<TPersona>['onZeroQuerySuggestion'];
   onExpandSelectedItem?: ISelectedPeopleProps<TPersona>['onExpandGroup'];
 

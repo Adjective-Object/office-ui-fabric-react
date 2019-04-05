@@ -16,6 +16,7 @@ import { IFocusZoneProps, FocusZoneTabbableElements } from 'office-ui-fabric-rea
 import { people, mru, groupOne, groupTwo } from './PeopleExampleData';
 
 import * as stylesImport from './ExtendedPeoplePicker.Basic.Example.scss';
+import { ValidationState } from '../../pickers';
 // tslint:disable-next-line:no-any
 const styles: any = stylesImport;
 
@@ -117,7 +118,6 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
       onRemoveSuggestion: this._onRemoveSuggestion,
       onValidateInput: this._validateInput,
       onZeroQuerySuggestion: this._returnMostRecentlyUsed,
-      showForceResolve: this._shouldShowForceResolve,
       onInputChanged: this._onInputChanged,
       onSuggestionsHidden: () => {
         console.log('FLOATINGPICKER: hidden');
@@ -271,13 +271,13 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
     return copyText;
   }
 
-  private _shouldShowForceResolve = (): boolean => {
-    return !!(
-      this._picker.floatingPicker.current &&
-      this._validateInput(this._picker.floatingPicker.current.inputText) &&
-      this._picker.floatingPicker.current.suggestions.length === 0
-    );
-  };
+  // private _shouldShowForceResolve = (): boolean => {
+  //   return !!(
+  //     this._picker.floatingPicker.current &&
+  //     this._validateInput(this._picker.floatingPicker.current.inputText) &&
+  //     this._picker.floatingPicker.current.suggestions.length === 0
+  //   );
+  // };
 
   private _shouldShowSuggestedContacts = (): boolean => {
     return this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '';
@@ -325,13 +325,8 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
   };
 
   private _validateInput = (input: string): boolean => {
-    if (input.indexOf('@') !== -1) {
-      return true;
-    } else if (input.length > 1) {
-      return false;
-    } else {
-      return false;
-    }
+    // Good enough of an 'is an email address' check for a UI demo
+    return input.indexOf('@') !== -1;
   };
 
   private _getExpandedGroupItems(item: IExtendedPersonaProps): IExtendedPersonaProps[] {

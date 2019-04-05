@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
-import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
+import { IInputProps, ValidationState } from 'office-ui-fabric-react/lib/Pickers';
 import { IBaseFloatingPickerProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { IBaseSelectedItemsListProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { IRefObject, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
@@ -134,12 +134,6 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
    * Current rendered query string that's corealte to current rendered result
    **/
   currentRenderedQueryString?: string;
-
-  /**
-   * If, when the user presses Enter and there are no suggestions,
-   * the picker should force resolve to the current item
-   */
-  shouldForceResolveWhenEmpty?: boolean;
 }
 
 /**

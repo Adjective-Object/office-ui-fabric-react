@@ -82,7 +82,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
       getTextFromItem={this._getTextFromItem}
       onRemoveSuggestion={this.props.onRemoveSuggestion}
       onZeroQuerySuggestion={this.props.onZeroQuerySuggestion}
-      onValidateInput={this.props.onValidateInput}
+      isQueryForceResolveable={this.props.isQueryForceResolveable}
       // Override the render suggestion item twice here.
       // TODO: fix this once FloatingPickers are switched to composition
       // isntead of inheritence.
