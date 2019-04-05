@@ -113,11 +113,6 @@ export interface IBaseFloatingPickerProps<T> extends React.ClassAttributes<any> 
   createGenericItem?: (input: string, isValid: boolean) => ISuggestionModel<T>;
 
   /**
-   * The callback that should be called to see if the force resolve command should be shown
-   */
-  showForceResolve?: () => boolean;
-
-  /**
    * The items that the base picker should currently display as selected. If this is provided then the picker will act as a controlled
    * component.
    */
