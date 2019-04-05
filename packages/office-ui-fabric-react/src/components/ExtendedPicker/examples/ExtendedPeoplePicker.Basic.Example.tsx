@@ -272,10 +272,10 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
   }
 
   private _shouldShowForceResolve = (): boolean => {
-    return Boolean(
+    return !!(
       this._picker.floatingPicker.current &&
-        this._validateInput(this._picker.floatingPicker.current.inputText) &&
-        this._picker.floatingPicker.current.suggestions.length === 0
+      this._validateInput(this._picker.floatingPicker.current.inputText) &&
+      this._picker.floatingPicker.current.suggestions.length === 0
     );
   };
 
