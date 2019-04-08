@@ -4,7 +4,7 @@ import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 /* Sample Data */
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
-import { Button } from 'office-ui-fabric-react/lib/Button';
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
 export type ExampleProps = {};
 export type ExampleState = { model: ExampleSuggestionsModel<IPersonaProps> };
@@ -21,9 +21,9 @@ export class UnifiedPeoplePickerWithRemovalExample extends React.Component<Examp
     return (
       <>
         <UnifiedPeoplePicker onResolveSuggestions={this.state.model.resolveSuggestions} onRemoveSuggestion={this._removeItem} />
-        <Button onClick={this._resetModel} ariaLabel="Reset Data Model">
+        <DefaultButton onClick={this._resetModel} ariaLabel="Reset Data Model">
           Reset Data Model
-        </Button>
+        </DefaultButton>
       </>
     );
   }
