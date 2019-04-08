@@ -16,7 +16,6 @@ import { IFocusZoneProps, FocusZoneTabbableElements } from 'office-ui-fabric-rea
 import { people, mru, groupOne, groupTwo } from './PeopleExampleData';
 
 import * as stylesImport from './ExtendedPeoplePicker.Basic.Example.scss';
-import { ValidationState } from '../../pickers';
 // tslint:disable-next-line:no-any
 const styles: any = stylesImport;
 
@@ -116,7 +115,7 @@ export class ExtendedPeoplePickerBasicExample extends React.Component<{}, IPeopl
       pickerSuggestionsProps: this._suggestionProps,
       key: 'normal',
       onRemoveSuggestion: this._onRemoveSuggestion,
-      onValidateInput: this._validateInput,
+      isQueryForceResolveable: this._validateInput,
       onZeroQuerySuggestion: this._returnMostRecentlyUsed,
       onInputChanged: this._onInputChanged,
       onSuggestionsHidden: () => {

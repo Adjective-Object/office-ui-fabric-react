@@ -4,7 +4,7 @@ import { ISuggestionsControlProps } from './Suggestions/Suggestions.types';
 import { SuggestionsStore } from './Suggestions/SuggestionsStore';
 import { IRefObject } from '../../Utilities';
 import { ISuggestionItemProps } from '../pickers/Suggestions/SuggestionsItem.types';
-import { ValidationState } from '../pickers';
+import { ValidationState } from '../pickers/BasePicker.types';
 
 export interface IBaseFloatingPicker {
   /** Whether the suggestions are shown */

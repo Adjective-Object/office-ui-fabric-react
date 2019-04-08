@@ -7,7 +7,7 @@ import { ISuggestionModel } from '../../Pickers';
 import { ISuggestionsControlProps } from './Suggestions/Suggestions.types';
 import { SuggestionsControl } from './Suggestions/SuggestionsControl';
 import { SuggestionsStore } from './Suggestions/SuggestionsStore';
-import { ValidationState } from '../pickers';
+import { ValidationState } from '../pickers/BasePicker.types';
 // tslint:disable-next-line:no-any
 const styles: any = stylesImport;
 

@@ -92,7 +92,7 @@ export class FloatingPeoplePickerTypesExample extends React.Component<{}, IPeopl
         key={'normal'}
         onRemoveSuggestion={this._onRemoveSuggestion}
         onRenderSuggestionControl={this._renderSuggestionsControl}
-        onValidateInput={this._validateInput}
+        isQueryForceResolveable={this._validateInput}
         componentRef={this._setComponentRef}
         onChange={this._onPickerChange}
         inputElement={this._inputElement}
