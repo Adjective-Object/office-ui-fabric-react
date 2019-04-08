@@ -14,6 +14,9 @@ import {
   ComposableEditingItemFloatingPicker
 } from './UnifiedPeoplePicker.types';
 
+/**
+ * Attep
+ */
 export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.PureComponent<UnifiedPeoplePickerProps<TPersona>> {
   private _picker: UnifiedPickerImpl<TPersona>;
   // Custom footer items that reflect the state of the picker.
@@ -53,7 +56,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
       showRemoveButtons={this._shouldShowSuggestionRemoveButtons()}
       headerItemsProps={[]}
       footerItemsProps={this._defaultFooterItems.items}
-      shouldSelectFirstItem={this._suggestionIsNotEmpty}
+      shouldSelectFirstItem={this._inputIsNotEmpty}
       {...overriddenProps}
     />
   );
@@ -162,7 +165,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
     }
   };
 
-  private _suggestionIsNotEmpty = (): boolean => {
+  private _inputIsNotEmpty = (): boolean => {
     return !(this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '');
   };
 

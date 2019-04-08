@@ -20,20 +20,21 @@ export type UnifiedPickerFloatingPickerProps<T> = Pick<
  * The slice of props that the unified picker will pass to the
  * implementing selected items component
  */
-export type UnifiedPickerSelectedItemsProps<T> = Pick<IBaseSelectedItemsListProps<T>, 'componentRef' | 'onItemsDeleted'> &
-  NonNullable<Pick<IBaseSelectedItemsListProps<T>, 'selection' | 'selectedItems' | 'onRenderItem'>>;
+export type UnifiedPickerSelectedItemsProps<T> = NonNullable<
+  Pick<IBaseSelectedItemsListProps<T>, 'selection' | 'selectedItems' | 'onRenderItem' | 'componentRef' | 'onItemsDeleted'>
+>;
 
 /**
  * tge slice of props that the unified picker will pass to the
  * implementing focusZone component
  */
-export type UnifiedPickerFocusZoneProps = Pick<IFocusZoneProps, 'direction'>;
+export type UnifiedPickerFocusZoneProps = Pick<IFocusZoneProps, 'direction' | 'onKeyDown' | 'onCopy' | 'className'>;
 
 export interface IUnifiedPicker<T> {
   /** Forces the picker to resolve */
   forceResolve?: () => void;
   /** Gets the current value of the input. */
-  items: T[] | undefined;
+  value: T[] | undefined;
   /** Sets focus to the input. */
   focus: () => void;
 }

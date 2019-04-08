@@ -40,13 +40,23 @@ const DefaultUnifiedPickerFocusZone = (overriddenProps: UnifiedPickerFocusZonePr
   />
 );
 
+function isPromiseLike<T>(r: T | PromiseLike<T>): r is PromiseLike<T> {
+  return !!(r && (r as { then?: Function }).then);
+}
+
 export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
+  /**
+   * This should be private but is public for tests
+   */
   public floatingPicker = React.createRef<BaseFloatingPicker<T>>();
+
+  /**
+   * This should be private but is public for tests
+   */
   public selectedItemsList = React.createRef<BaseSelectedItemsList<T, IBaseSelectedItemsListProps<T>>>();
 
-  protected root = React.createRef<HTMLDivElement>();
-  protected input = React.createRef<Autofill>();
-  protected selection: Selection;
+  private input = React.createRef<Autofill>();
+  private selection: Selection;
 
   constructor(basePickerProps: IUnifiedPickerProps<T>) {
     super(basePickerProps);
@@ -55,32 +65,30 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
 
     this.state = {
       queryString: '',
-      suggestionItems: this.props.suggestionItems ? (this.props.suggestionItems as T[]) : null,
-      selectedItems: this.props.defaultSelectedItems
-        ? (this.props.defaultSelectedItems as T[])
-        : this.props.selectedItems
-        ? (this.props.selectedItems as T[])
-        : null
+      suggestionItems: this.props.suggestionItems || null,
+      selectedItems: this.props.defaultSelectedItems || (this.props.selectedItems ? null : [])
     };
   }
 
-  // tslint:disable-next-line:no-any
-  public get items(): any {
-    return this.state.selectedItems
-      ? this.state.selectedItems
-      : this.selectedItemsList.current
-      ? this.selectedItemsList.current.items
-      : null;
-  }
-
   public componentDidMount(): void {
+    //TODO this doesn't work when mounted in a new react root on initial render
+    // (ref timing issues)
+    // pls fix so tests work.
     this.forceUpdate();
   }
 
   public componentWillReceiveProps(newProps: IUnifiedPickerProps<T>): void {
-    if (newProps.selectedItems) {
+    // Only track state if the component was initialized with some defaultSelectedItems
+    // (e.g. we intended for this component to be uncontrolled & it became controlled)
+    //
+    // TODO this might not be a valid lifecyle step?
+    if (this.state.selectedItems && newProps.selectedItems) {
       this.setState({ selectedItems: newProps.selectedItems });
     }
+  }
+
+  public get value(): T[] {
+    return this.state.selectedItems || (this.selectedItemsList.current && this.selectedItemsList.current.items) || [];
   }
 
   public focus(): void {
@@ -93,14 +101,6 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     if (this.input.current) {
       this.input.current.clear();
     }
-  }
-
-  public get inputElement(): HTMLInputElement | null {
-    return this.input.current && this.input.current.inputElement;
-  }
-
-  public get highlightedItems(): T[] {
-    return this.selectedItemsList.current ? this.selectedItemsList.current.highlightedItems() : [];
   }
 
   public render(): JSX.Element {
@@ -118,8 +118,13 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     const FocusZoneComponent: React.ComponentType<UnifiedPickerFocusZoneProps> = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
 
     return (
-      <div ref={this.root} className={classNames.root} onKeyDown={this.onBackspace} onCopy={this.onCopy}>
-        <FocusZoneComponent direction={FocusZoneDirection.bidirectional}>
+      <>
+        <FocusZoneComponent
+          className={classNames.root}
+          direction={FocusZoneDirection.bidirectional}
+          onKeyDown={this.onBackspace}
+          onCopy={this.onCopy}
+        >
           <SelectionZone selection={this.selection} selectionMode={SelectionMode.multiple}>
             <div className={classNames.pickerWell} role={'list'}>
               {this.props.headerComponent}
@@ -147,53 +152,79 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
           </SelectionZone>
         </FocusZoneComponent>
         {this.renderFloatingPicker()}
-      </div>
+      </>
     );
   }
 
-  protected onSelectionChange = (): void => {
+  /**
+   * Input elmeent for the picker (the input from the Autofill)
+   *
+   * TODO i think this should be private
+   */
+  public get inputElement(): HTMLInputElement | null {
+    return this.input.current && this.input.current.inputElement;
+  }
+
+  private onSelectionChange = (): void => {
     this.forceUpdate();
   };
 
-  protected canAddItems(): boolean {
+  private canAddItems(): boolean {
     const { itemLimit } = this.props;
-    return itemLimit === undefined || this.items.length < itemLimit;
+    return itemLimit === undefined || this.value.length < itemLimit;
   }
 
-  protected renderFloatingPicker(): JSX.Element {
+  private renderFloatingPicker(): JSX.Element {
     const FloatingPicker: React.ComponentType<Partial<IBaseFloatingPickerProps<T>>> = this.props.onRenderFloatingPicker;
     return (
       <FloatingPicker
         componentRef={this.floatingPicker}
         onChange={this._onSuggestionSelected}
-        inputElement={this.input.current ? this.input.current.inputElement : undefined}
-        selectedItems={this.items}
+        inputElement={this.inputElement}
+        selectedItems={this.value}
         suggestionItems={this.props.suggestionItems ? this.props.suggestionItems : undefined}
         isQueryForceResolveable={this.props.isQueryForceResolveable}
       />
     );
   }
 
-  protected renderSelectedItemsList(): JSX.Element {
-    const SelectedItems: React.ComponentType<Partial<IBaseSelectedItemsListProps<T>>> = this.props.onRenderSelectedItems;
+  private renderSelectedItemsList(): JSX.Element {
+    const SelectedItems = this.props.onRenderSelectedItems;
     return (
       <SelectedItems
         componentRef={this.selectedItemsList}
         selection={this.selection}
-        selectedItems={this.props.selectedItems ? this.props.selectedItems : undefined}
-        onItemsDeleted={this.props.selectedItems ? this.props.onItemsRemoved : undefined}
+        selectedItems={this.props.selectedItems || this.state.selectedItems || undefined}
+        onItemsDeleted={this._onSelectedItemsRemoved}
       />
     );
   }
 
-  protected onInputChange = (value: string): void => {
+  private _onSelectedItemsRemoved = (removedItems: T[]) => {
+    // Update internal state if it is tracked at all
+    if (this.state.selectedItems !== null) {
+      const nextSelectedItems = this.state.selectedItems.filter(i => removedItems.indexOf(i) === -1);
+      if (nextSelectedItems.length !== this.state.selectedItems.length - removedItems.length) {
+        console.error('UnifiedPicker _onSelectedItemRemoved called on an item not in the current state');
+      }
+      this.setState({
+        selectedItems: nextSelectedItems
+      });
+    }
+
+    if (this.props.onItemsRemoved) {
+      this.props.onItemsRemoved(removedItems);
+    }
+  };
+
+  private onInputChange = (value: string): void => {
     this.setState({ queryString: value });
     if (this.floatingPicker.current) {
       this.floatingPicker.current.onQueryStringChanged(value);
     }
   };
 
-  protected onInputFocus = (ev: React.FocusEvent<HTMLInputElement | Autofill>): void => {
+  private onInputFocus = (ev: React.FocusEvent<HTMLInputElement | Autofill>): void => {
     if (this.selectedItemsList.current) {
       this.selectedItemsList.current.unselectAll();
     }
@@ -203,7 +234,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     }
   };
 
-  protected onInputClick = (ev: React.MouseEvent<HTMLInputElement | Autofill>): void => {
+  private onInputClick = (ev: React.MouseEvent<HTMLInputElement | Autofill>): void => {
     if (this.selectedItemsList.current) {
       this.selectedItemsList.current.unselectAll();
     }
@@ -215,45 +246,43 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     }
   };
 
-  // This is protected because we may expect the backspace key to work differently in a different kind of picker.
+  // This is private because we may expect the backspace key to work differently in a different kind of picker.
   // This lets the subclass override it and provide it's own onBackspace. For an example see the BasePickerListBelow
-  protected onBackspace = (ev: React.KeyboardEvent<HTMLElement>): void => {
+  private onBackspace = (ev: React.KeyboardEvent<HTMLElement>): void => {
     if (ev.which !== KeyCodes.backspace) {
       return;
     }
 
-    if (this.selectedItemsList.current && this.items.length) {
-      if (
-        this.input.current &&
-        !this.input.current.isValueSelected &&
-        this.input.current.inputElement === document.activeElement &&
-        (this.input.current as Autofill).cursorLocation === 0
-      ) {
-        if (this.floatingPicker.current) {
-          this.floatingPicker.current.hidePicker();
-        }
-        ev.preventDefault();
-        this.selectedItemsList.current.removeItemAt(this.items.length - 1);
-        this._onSelectedItemsChanged();
-      } else if (this.selectedItemsList.current.hasSelectedItems()) {
-        if (this.floatingPicker.current) {
-          this.floatingPicker.current.hidePicker();
-        }
-        ev.preventDefault();
-        this.selectedItemsList.current.removeSelectedItems();
-        this._onSelectedItemsChanged();
+    // if the autofill was not empty, the backspace was for typing. ignore it.
+    if (this.inputElement && this.inputElement.value !== '') {
+      return;
+    }
+
+    // Dismiss the picker and remove the last item in the list
+    if (this.state.selectedItems && this.state.selectedItems.length) {
+      const removedItem = this.state.selectedItems[this.state.selectedItems.length - 1];
+      this.setState({
+        selectedItems: this.state.selectedItems.slice(0, this.state.selectedItems.length - 1)
+      });
+
+      if (this.props.onItemsRemoved) {
+        this.props.onItemsRemoved([removedItem]);
       }
+    }
+
+    if (this.floatingPicker.current) {
+      this.floatingPicker.current.hidePicker();
     }
   };
 
-  protected onCopy = (ev: React.ClipboardEvent<HTMLElement>): void => {
+  private onCopy = (ev: React.ClipboardEvent<HTMLElement>): void => {
     if (this.selectedItemsList.current) {
       // Pass it down into the selected items list
       this.selectedItemsList.current.onCopy(ev);
     }
   };
 
-  protected onPaste = (ev: React.ClipboardEvent<Autofill | HTMLInputElement>): void => {
+  private onPaste = (ev: React.ClipboardEvent<Autofill | HTMLInputElement>): void => {
     if (this.props.onPaste) {
       const inputText = ev.clipboardData.getData('Text');
       ev.preventDefault();
@@ -261,7 +290,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     }
   };
 
-  protected _onSuggestionSelected = (item: T): void => {
+  private _onSuggestionSelected = (item: T): void => {
     const currentRenderedQueryString = this.props.currentRenderedQueryString;
     const queryString = this.state.queryString;
     if (currentRenderedQueryString === undefined || currentRenderedQueryString === queryString) {
@@ -271,35 +300,30 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
         return;
       }
 
-      const processedItemObject: T = processedItem as T;
-      const processedItemPromiseLike: PromiseLike<T> = processedItem as PromiseLike<T>;
-
       let newItem: T;
-      if (processedItemPromiseLike && processedItemPromiseLike.then) {
-        processedItemPromiseLike.then((resolvedProcessedItem: T) => {
+      if (isPromiseLike(processedItem)) {
+        processedItem.then((resolvedProcessedItem: T) => {
           newItem = resolvedProcessedItem;
-          this._addProcessedItem(newItem);
+          this._addItem(newItem);
         });
       } else {
-        newItem = processedItemObject;
-        this._addProcessedItem(newItem);
+        this._addItem(processedItem);
       }
     }
   };
 
-  protected _onSelectedItemsChanged = (): void => {
-    this.focus();
-  };
-
-  private _addProcessedItem(newItem: T) {
+  private _addItem(newItem: T) {
     // If this is a controlled component, call the on item selected callback
     // Otherwise add it to the selectedItemsList
     if (this.props.onItemAdded) {
       this.props.onItemAdded(newItem);
     }
 
-    if (this.selectedItemsList.current) {
-      this.selectedItemsList.current.addItems([newItem]);
+    // Update the state representation if we've been maintaining one.
+    if (this.state.selectedItems) {
+      this.setState({
+        selectedItems: this.state.selectedItems.concat([newItem])
+      });
     }
 
     if (this.input.current) {
