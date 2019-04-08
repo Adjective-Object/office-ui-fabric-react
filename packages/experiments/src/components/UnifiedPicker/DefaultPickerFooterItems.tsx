@@ -2,6 +2,10 @@ import * as React from 'react';
 import { UnifiedPickerImpl } from './UnifiedPicker';
 import { ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 
+/**
+ * Hacking around the picker header/footer items in order to
+ * keep the reference to the footer items consistent between re-renders.
+ */
 export class DefaultPickerFooterItems {
   private pickerInstance: UnifiedPickerImpl<any> | undefined;
 

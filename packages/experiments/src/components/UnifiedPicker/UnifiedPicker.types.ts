@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
-import { IInputProps, ValidationState } from 'office-ui-fabric-react/lib/Pickers';
+import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IBaseFloatingPickerProps } from 'office-ui-fabric-react/lib/FloatingPicker';
 import { IBaseSelectedItemsListProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { IRefObject, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
@@ -13,7 +13,7 @@ import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
  */
 export type UnifiedPickerFloatingPickerProps<T> = Pick<
   IBaseFloatingPickerProps<T>,
-  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'suggestionItems'
+  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'suggestionItems' | 'isQueryForceResolveable'
 >;
 
 /**
@@ -134,6 +134,11 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
    * Current rendered query string that's corealte to current rendered result
    **/
   currentRenderedQueryString?: string;
+
+  /**
+   * If the current query can be force resolved.
+   */
+  isQueryForceResolveable?: (query: string) => boolean;
 }
 
 /**

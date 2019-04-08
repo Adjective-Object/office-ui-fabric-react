@@ -6,7 +6,6 @@ import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 import { IconButton } from 'office-ui-fabric-react/lib/components/Button/index';
-import { css } from 'office-ui-fabric-react/lib/Utilities';
 import * as ExampleStyles from './Example.scss';
 
 /**
@@ -28,8 +27,8 @@ const addEmailToPersona = (originalPersona: IPersonaProps): CustomPersonaWithEma
  * Custom component we use to render our suggestion items in the floating picker
  */
 const CustomSuggestionItem = (props: CustomPersonaWithEmail): JSX.Element => (
-  <div className={css([ExampleStyles.customSuggestionItem])}>
-    <img src={props.imageUrl} alt={props.imageAlt} className={css([ExampleStyles.customSuggestionItemImage])} />
+  <div className={ExampleStyles.customSuggestionItem}>
+    <img src={props.imageUrl} alt={props.imageAlt} className={ExampleStyles.customSuggestionItemImage} />
     {props.emailAddress}
   </div>
 );
@@ -41,8 +40,8 @@ const CustomSuggestionItem = (props: CustomPersonaWithEmail): JSX.Element => (
  * it binc props.onRemoveItem somewhere in its body.
  */
 const CustomSelectedItem = (props: ISelectedItemProps<CustomPersonaWithEmail>): JSX.Element => (
-  <div className={css([ExampleStyles.customSelectedItem])}>
-    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={css([ExampleStyles.customSelectedItemImage])} />
+  <div className={ExampleStyles.customSelectedItem}>
+    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={ExampleStyles.customSelectedItemImage} />
     {props.item.emailAddress}
     <IconButton iconProps={{ iconName: 'ChromeClose' }} onClick={props.onRemoveItem} />
   </div>

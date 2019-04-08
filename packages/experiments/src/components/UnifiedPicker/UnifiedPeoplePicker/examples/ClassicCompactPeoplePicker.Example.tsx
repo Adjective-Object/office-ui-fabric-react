@@ -22,14 +22,18 @@ export class ClassicCompactPeoplePickerExample extends React.Component<{}, { isD
           suggestionsHeaderText="Suggested People"
           noResultsFooterText="No results found"
           disabled={this.state.isDisabled}
+          isQueryForceResolveable={this.isQueryForceResolveable}
         />
         <Checkbox
           styles={{ root: { marginTop: 10 } }}
           label="Disable People Picker"
           checked={this.state.isDisabled}
-          onChange={(_, isDisabled) => this.setState({ isDisabled: isDisabled! })}
+          onChange={this.onChange}
         />
       </>
     );
   }
+
+  private isQueryForceResolveable = () => true;
+  private onChange = (_: any, isDisabled: boolean) => this.setState({ isDisabled: isDisabled! });
 }

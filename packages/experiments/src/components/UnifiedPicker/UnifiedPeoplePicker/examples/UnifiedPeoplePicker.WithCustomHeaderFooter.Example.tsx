@@ -3,7 +3,6 @@ import { SuggestionsControl, ISuggestionsHeaderFooterProps } from 'office-ui-fab
 import { UnifiedPeoplePicker, ComposableSuggestionControl } from '../index';
 /* Sample Data */
 import * as ExampleStyles from './Example.scss';
-import { css } from 'office-ui-fabric-react/lib/Utilities';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { people } from './PeopleExampleData';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
@@ -17,8 +16,8 @@ export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Comp
   private _searchIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {
       return (
-        <div className={css([ExampleStyles.headerFooterWrapper])}>
-          <Spinner className={css([ExampleStyles.headerFooterSpinner])} /> Hold on, we're searching..
+        <div className={ExampleStyles.headerFooterWrapper}>
+          <Spinner className={ExampleStyles.headerFooterSpinner} /> Hold on, we're searching..
         </div>
       );
     },
@@ -29,7 +28,7 @@ export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Comp
   };
   private _noResultsIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {
-      return <div className={css([ExampleStyles.headerFooterWrapper])}>No Results 😢</div>;
+      return <div className={ExampleStyles.headerFooterWrapper}>No Results 😢</div>;
     },
     shouldShow: () => {
       return this.state.isResultEmpty;

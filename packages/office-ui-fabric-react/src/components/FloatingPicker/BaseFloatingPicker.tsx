@@ -266,6 +266,7 @@ export class BaseFloatingPicker<TItem, TProps extends IBaseFloatingPickerProps<T
           ev.preventDefault();
           ev.stopPropagation();
         } else {
+          // no selection. Try to force resolve the current query
           this._validateAndInsertCurrentQueryString();
         }
         break;
