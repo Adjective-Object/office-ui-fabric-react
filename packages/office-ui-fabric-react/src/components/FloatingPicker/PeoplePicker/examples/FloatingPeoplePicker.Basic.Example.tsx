@@ -92,7 +92,7 @@ export class FloatingPeoplePickerTypesExample extends React.Component<{}, IPeopl
         key={'normal'}
         onRemoveSuggestion={this._onRemoveSuggestion}
         onRenderSuggestionControl={this._renderSuggestionsControl}
-        onValidateInput={this._validateInput}
+        isQueryForceResolveable={this._isQueryForceResolvable}
         componentRef={this._setComponentRef}
         onChange={this._onPickerChange}
         inputElement={this._inputElement}
@@ -169,13 +169,8 @@ export class FloatingPeoplePickerTypesExample extends React.Component<{}, IPeopl
     return personas.filter((persona: IPersonaProps) => !this._listContainsPersona(persona, possibleDupes));
   }
 
-  private _validateInput = (input: string): boolean => {
-    if (input.indexOf('@') !== -1) {
-      return true;
-    } else if (input.length > 1) {
-      return false;
-    } else {
-      return false;
-    }
+  private _isQueryForceResolvable = (input: string): boolean => {
+    // Close enough to 'is an email address' for the demo
+    return input.indexOf('@') !== -1;
   };
 }

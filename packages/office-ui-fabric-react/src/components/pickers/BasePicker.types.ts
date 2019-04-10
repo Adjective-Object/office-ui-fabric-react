@@ -6,6 +6,7 @@ import { ISuggestionModel, ISuggestionsProps } from './Suggestions/Suggestions.t
 import { BaseAutoFill } from './AutoFill/BaseAutoFill';
 import { ICalloutProps } from '../../Callout';
 import { ITheme, IStyle } from '../../Styling';
+import { ISuggestionItemProps } from './Suggestions/SuggestionsItem.types';
 
 /** BasePicker component. */
 export interface IBasePicker<T> {
@@ -37,7 +38,7 @@ export interface IBasePickerProps<T> extends React.Props<any> {
   /**
    * Function that specifies how an individual suggestion item will appear.
    */
-  onRenderSuggestionsItem?: (props: T, itemProps: any) => JSX.Element;
+  onRenderSuggestionsItem?: (props: T, itemProps: ISuggestionItemProps<T>) => JSX.Element;
 
   /**
    * A callback for what should happen when a person types text into the input.
@@ -222,7 +223,7 @@ export enum ValidationState {
   /** User input could be valid or invalid, its state is not known yet. */
   warning,
 
-  /** User input is invalid. */
+  /** User input is invalid. Do not resolve it to a selected item. */
   invalid
 }
 

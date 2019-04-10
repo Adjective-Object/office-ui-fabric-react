@@ -53,7 +53,7 @@ export class BaseFloatingPicker<TItem, TProps extends IBaseFloatingPickerProps<T
     if (this.suggestionsControl.current && this.suggestionsControl.current.hasSuggestionSelected()) {
       this.completeSuggestion();
     } else {
-      this._onValidateInput();
+      this._validateAndInsertCurrentQueryString();
     }
   }
 
@@ -265,7 +265,8 @@ export class BaseFloatingPicker<TItem, TProps extends IBaseFloatingPickerProps<T
           ev.preventDefault();
           ev.stopPropagation();
         } else {
-          this._onValidateInput();
+          // no selection. Try to force resolve the current query
+          this._validateAndInsertCurrentQueryString();
         }
         break;
 
@@ -321,12 +322,14 @@ export class BaseFloatingPicker<TItem, TProps extends IBaseFloatingPickerProps<T
     }
   }
 
-  private _onValidateInput = (): void => {
-    if (this.state.queryString && this.props.onValidateInput && this.props.createGenericItem) {
-      const itemToConvert: ISuggestionModel<TItem> = this.props.createGenericItem(
-        this.state.queryString,
-        this.props.onValidateInput(this.state.queryString)
-      );
+  private _validateAndInsertCurrentQueryString = (): void => {
+    if (this.state.queryString && this.props.isQueryForceResolveable && this.props.createForceResolvedItem) {
+      const isForceResolvable: boolean = this.props.isQueryForceResolveable(this.state.queryString);
+      if (!isForceResolvable) {
+        return;
+      }
+
+      const itemToConvert: ISuggestionModel<TItem> = this.props.createForceResolvedItem(this.state.queryString);
       const convertedItems = this.suggestionStore.convertSuggestionsToSuggestionItems([itemToConvert]);
       this.onChange(convertedItems[0].item);
     }
