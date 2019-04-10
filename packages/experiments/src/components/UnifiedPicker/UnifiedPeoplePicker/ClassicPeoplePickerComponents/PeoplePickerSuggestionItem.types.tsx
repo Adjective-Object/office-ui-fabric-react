@@ -1,12 +1,11 @@
 import { IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
-import { ISuggestionItemProps } from 'office-ui-fabric-react/lib/';
 import { CommonStylingProps, ICommonSubComponentStyles } from './CommonStylingProps.types';
-import { IBasePickerSuggestionsProps } from 'office-ui-fabric-react/lib/Pickers';
+import { ISuggestionModel, IBasePickerSuggestionsProps } from 'office-ui-fabric-react/lib/Pickers';
 
 /** PeoplePickerItemSuggestion props interface. Refers to the PeoplePicker items that are suggested for picking. */
-export type IPeoplePickerSuggestionItemProps = ISuggestionItemProps<IPersonaProps> &
+export type IPeoplePickerSuggestionItemProps = ISuggestionModel<IPersonaProps> &
   Partial<CommonStylingProps> & {
     styles?: IStyleFunctionOrObject<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>;
     compact?: boolean;

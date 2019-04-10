@@ -3,7 +3,7 @@ import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 /* Sample Data */
 import { people } from './PeopleExampleData';
-import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
+import { ExampleSuggestionsModel } from '../../examples/ExampleSuggestionsModel';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
 export type ExampleProps = {};

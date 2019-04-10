@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { SuggestionsControl, ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/FloatingPicker';
-import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
+import { UnifiedTagPicker } from '../UnifiedTagPicker';
 import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
 /* Sample Data */
 import * as ExampleStyles from './Example.scss';
-import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
-import { people } from './PeopleExampleData';
+import { ITag } from 'office-ui-fabric-react/lib/Pickers';
+import { tags } from './TagExampleData';
 import { ExampleSuggestionsModel } from '../../examples/ExampleSuggestionsModel';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 
 export type ExampleProps = {};
 export type ExampleState = { isSearching: boolean; isResultEmpty: boolean };
 
-export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Component<ExampleProps, ExampleState> {
-  private model = new ExampleSuggestionsModel<IPersonaProps>(people);
+export class UnifiedTagPickerWithCustomHeaderFooterExample extends React.Component<ExampleProps, ExampleState> {
+  private model = new ExampleSuggestionsModel<ITag>(tags);
   private _searchIndicatorItem: ISuggestionsHeaderFooterProps = {
     renderItem: () => {
       return (
@@ -49,17 +49,17 @@ export class UnifiedPeoplePickerWithCustomHeaderFooterExample extends React.Comp
   }
 
   public render() {
-    return <UnifiedPeoplePicker onResolveSuggestions={this.resolveSuggestions} onRenderSuggestionControl={this.CustomSuggestionControl} />;
+    return <UnifiedTagPicker onResolveSuggestions={this.resolveSuggestions} onRenderSuggestionControl={this.CustomSuggestionControl} />;
   }
 
-  private CustomSuggestionControl: ComposableSuggestionControl<IPersonaProps> = overriddenProps => (
+  private CustomSuggestionControl: ComposableSuggestionControl<ITag> = overriddenProps => (
     <SuggestionsControl headerItemsProps={this._headerItemsProps} footerItemsProps={this._footerItemsProps} {...overriddenProps} />
   );
 
   /**
    * Wrap the example model's suggestion resolve logic to control the internal state of this component.
    */
-  private resolveSuggestions = async (filter: string, selectedItems?: IPersonaProps[]): Promise<IPersonaProps[]> => {
+  private resolveSuggestions = async (filter: string, selectedItems?: ITag[]): Promise<ITag[]> => {
     this.setState({
       isSearching: true,
       isResultEmpty: false

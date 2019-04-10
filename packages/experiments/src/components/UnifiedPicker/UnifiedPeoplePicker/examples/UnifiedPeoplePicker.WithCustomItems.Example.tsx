@@ -3,8 +3,9 @@ import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
 import { ISelectedItemProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 /* Sample Data */
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
+import { ISuggestionModel } from 'office-ui-fabric-react/lib/Pickers';
 import { people } from './PeopleExampleData';
-import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
+import { ExampleSuggestionsModel } from '../../examples/ExampleSuggestionsModel';
 import { IconButton } from 'office-ui-fabric-react/lib/components/Button/index';
 import * as ExampleStyles from './Example.scss';
 
@@ -26,10 +27,10 @@ const addEmailToPersona = (originalPersona: IPersonaProps): CustomPersonaWithEma
 /**
  * Custom component we use to render our suggestion items in the floating picker
  */
-const CustomSuggestionItem = (props: CustomPersonaWithEmail): JSX.Element => (
+const CustomSuggestionItem = (props: ISuggestionModel<CustomPersonaWithEmail>): JSX.Element => (
   <div className={ExampleStyles.customSuggestionItem}>
-    <img src={props.imageUrl} alt={props.imageAlt} className={ExampleStyles.customSuggestionItemImage} />
-    {props.emailAddress}
+    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={ExampleStyles.customSuggestionItemImage} />
+    {props.item.emailAddress}
   </div>
 );
 

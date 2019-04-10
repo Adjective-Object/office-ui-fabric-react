@@ -13,7 +13,7 @@ const getClassNames = classNamesFunction<IPeoplePickerSuggestionItemStyleProps, 
 
 export const PeoplePickerSuggestionItemInner = (props: IPeoplePickerSuggestionItemProps) => {
   const { suggestionsProps, compact, styles, theme, className } = props;
-  const personaProps: IPersonaProps = props.suggestionModel.item;
+  const personaProps: IPersonaProps = props.item;
 
   const classNames = getClassNames(styles, {
     theme: theme!,

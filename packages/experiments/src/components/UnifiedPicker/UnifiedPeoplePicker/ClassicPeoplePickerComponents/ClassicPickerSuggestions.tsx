@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SuggestionsControl } from 'office-ui-fabric-react/lib/FloatingPicker';
-import { ComposableSuggestionControl } from '../UnifiedPeoplePicker.types';
+import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { ClassicPickerHeader } from './ClassicPickerHeader';
 import { ClassicPickerFooter } from './ClassicPickerFooter';

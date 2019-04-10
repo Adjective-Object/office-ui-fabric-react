@@ -17,7 +17,7 @@ import {
   IUnifiedPickerStyleProps,
   IUnifiedPickerStyles
 } from './UnifiedPicker.types';
-import { PropsOf } from './UnifiedPeoplePicker';
+import { PropsOf } from './ComposingUnifiedPicker.types';
 
 export interface IUnifiedPickerState<T> {
   queryString: string | null;

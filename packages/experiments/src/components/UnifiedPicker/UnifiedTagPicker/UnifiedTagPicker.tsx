@@ -1,26 +1,29 @@
 import * as React from 'react';
-import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
+import { ITag } from 'office-ui-fabric-react/lib/Pickers';
 import { DefaultPickerFooterItems } from '../DefaultPickerFooterItems';
 import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
 import { FloatingSuggestions, SuggestionsStore, IFloatingSuggestionsInnerSuggestionProps } from '../../FloatingSuggestions';
 import { SelectedPeopleList, EditingItemFloatingPickerProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { SuggestionsControl } from '../../FloatingSuggestions';
 import { UnifiedPicker, UnifiedPickerImpl } from '../UnifiedPicker';
-import { UnifiedPeoplePickerProps } from './UnifiedPeoplePicker.types';
+import { UnifiedTagPickerProps } from './UnifiedTagPicker.types';
 import {
   ComposableSuggestionControl,
   ComposableMainFloatingPicker,
   ComposableEditingItemFloatingPicker,
   PropsOf
 } from '../ComposingUnifiedPicker.types';
-import { PeoplePickerItemDefault } from './defaults/PeoplePickerItemDefault';
+import { DefaultTagPickerSuggestion } from './defaults/DefaultTagPickerSuggestion';
 
-export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.PureComponent<UnifiedPeoplePickerProps<TPersona>> {
-  private _picker: UnifiedPickerImpl<TPersona>;
+/**
+ * Attep
+ */
+export class UnifiedTagPicker<TTag extends ITag> extends React.PureComponent<UnifiedTagPickerProps<TTag>> {
+  private _picker: UnifiedPickerImpl<TTag>;
   // Custom footer items that reflect the state of the picker.
   private _defaultFooterItems: DefaultPickerFooterItems = new DefaultPickerFooterItems();
 
-  constructor(props: UnifiedPeoplePickerProps<TPersona>) {
+  constructor(props: UnifiedTagPickerProps<TTag>) {
     super(props);
   }
 
@@ -28,7 +31,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
     return (
       <UnifiedPicker
         onRenderFloatingPicker={this.MainFloatingPicker}
-        onRenderSelectedItems={this.DefaultSelectedPeopleList}
+        onRenderSelectedItems={this.DefaultSelectedItemsList}
         onRenderFocusZone={this.props.onRenderFocusZone}
         key={'normal'}
         inputProps={{
@@ -47,8 +50,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
   /**
    * the default selected items list
    */
-  private DefaultSuggestionControlInner: ComposableSuggestionControl<TPersona> = (
-    overriddenProps: PropsOf<ComposableSuggestionControl<TPersona>>
+  private DefaultSuggestionControlInner: ComposableSuggestionControl<TTag> = (
+    overriddenProps: PropsOf<ComposableSuggestionControl<TTag>>
   ) => (
     <SuggestionsControl
       showRemoveButtons={this._shouldShowSuggestionRemoveButtons()}
@@ -65,8 +68,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
    *
    * Uses the default suggestion control if none is provided.
    */
-  private SuggestionControl = (overriddenProps: IFloatingSuggestionsInnerSuggestionProps<TPersona>) => {
-    const Inner: ComposableSuggestionControl<TPersona> = this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
+  private SuggestionControl = (overriddenProps: IFloatingSuggestionsInnerSuggestionProps<TTag>) => {
+    const Inner: ComposableSuggestionControl<TTag> = this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
     return <Inner onRenderSuggestion={this.props.onRenderSuggestionItem} {...overriddenProps} />;
   };
 
@@ -74,17 +77,17 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
    * The floating picker that is used by default for both the
    * floating picker suggestion dropdown and the suggestion well floating picker.
    */
-  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<TPersona> = (
-    overriddenProps: PropsOf<ComposableMainFloatingPicker<TPersona>> | PropsOf<ComposableEditingItemFloatingPicker<TPersona>>
+  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<TTag> = (
+    overriddenProps: PropsOf<ComposableMainFloatingPicker<TTag>> | PropsOf<ComposableEditingItemFloatingPicker<TTag>>
   ) => (
     <FloatingSuggestions
-      suggestionsStore={new SuggestionsStore<TPersona>()}
+      suggestionsStore={new SuggestionsStore<TTag>()}
       onResolveSuggestions={this.props.onResolveSuggestions}
       getTextFromItem={this._getTextFromItem}
       onRemoveSuggestion={this.props.onRemoveSuggestion}
       onZeroQuerySuggestion={this.props.onZeroQuerySuggestion}
       isQueryForceResolveable={this.props.isQueryForceResolveable}
-      onRenderSuggestionsItem={this.props.onRenderSuggestionItem || PeoplePickerItemDefault}
+      onRenderSuggestionsItem={this.props.onRenderSuggestionItem || DefaultTagPickerSuggestion}
       {...overriddenProps}
     />
   );
@@ -93,8 +96,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
    * Renders the floating picker for the main input.
    * Uses the default picker if none is provided.
    */
-  private MainFloatingPicker = (overriddenProps: UnifiedPickerFloatingPickerProps<TPersona>) => {
-    const Inner: ComposableMainFloatingPicker<TPersona> = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
+  private MainFloatingPicker = (overriddenProps: UnifiedPickerFloatingPickerProps<TTag>) => {
+    const Inner: ComposableMainFloatingPicker<TTag> = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
     return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
 
@@ -102,8 +105,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
    * Renders the floating picker for the editing item.
    * Uses the default picker if none is provided.
    */
-  private EditingItemFloatingPicker = (overriddenProps: EditingItemFloatingPickerProps<TPersona>) => {
-    const Inner: ComposableEditingItemFloatingPicker<TPersona> =
+  private EditingItemFloatingPicker = (overriddenProps: EditingItemFloatingPickerProps<TTag>) => {
+    const Inner: ComposableEditingItemFloatingPicker<TTag> =
       this.props.onRenderEditingItemFloatingPicker || this.DefaultFloatingPickerInner;
     return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
@@ -111,7 +114,7 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
   /**
    * the default selected items list
    */
-  private DefaultSelectedPeopleList = (overriddenProps: UnifiedPickerSelectedItemsProps<TPersona>) => (
+  private DefaultSelectedItemsList = (overriddenProps: UnifiedPickerSelectedItemsProps<TTag>) => (
     <SelectedPeopleList
       onCopyItems={this._getDefaultCopyItemText}
       onExpandGroup={this.props.onExpandSelectedItem}
@@ -131,10 +134,10 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
    *
    * @param items the items to copy
    */
-  private _getDefaultCopyItemText(items: TPersona[]): string {
+  private _getDefaultCopyItemText(items: TTag[]): string {
     let copyText = '';
-    items.forEach((item: TPersona, index: number) => {
-      copyText += item.text;
+    items.forEach((item: TTag, index: number) => {
+      copyText += item.name;
 
       if (index < items.length - 1) {
         copyText += ', ';
@@ -144,11 +147,11 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
     return copyText;
   }
 
-  private _getDefaultEditingItemText(item: TPersona): string {
-    return item.text || '';
+  private _getDefaultEditingItemText(item: TTag): string {
+    return item.name;
   }
 
-  private _setComponentRef = (component: UnifiedPickerImpl<TPersona>): void => {
+  private _setComponentRef = (component: UnifiedPickerImpl<TTag>): void => {
     this._picker = component;
     if (this.props.onRenderSuggestionControl === undefined) {
       // Only bind the default footer items to the component
@@ -164,8 +167,8 @@ export class UnifiedPeoplePicker<TPersona extends IPersonaProps> extends React.P
     return !(this._picker !== undefined && this._picker.inputElement !== null && this._picker.inputElement.value === '');
   };
 
-  private _getTextFromItem(persona: TPersona): string {
-    return persona.text as string;
+  private _getTextFromItem(item: TTag): string {
+    return item.name as string;
   }
 
   /**

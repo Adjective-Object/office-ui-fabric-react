@@ -4,7 +4,7 @@ import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 /* Sample Data */
 import { IPersonaProps } from 'office-ui-fabric-react/lib/components/Persona/Persona.types';
 import { people } from './PeopleExampleData';
-import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
+import { ExampleSuggestionsModel } from '../../examples/ExampleSuggestionsModel';
 
 export class ClassicNormalPeoplePickerExample extends React.Component<{}, { isDisabled: boolean }> {
   private model = new ExampleSuggestionsModel<IPersonaProps>(people);

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { UnifiedPeoplePickerProps } from './UnifiedPeoplePicker.types';
 import { UnifiedPeoplePicker } from './UnifiedPeoplePicker';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
-import { ISuggestionItemProps } from 'office-ui-fabric-react/lib/Pickers';
 import { PeoplePickerSelectedItem } from './ClassicPeoplePickerComponents/PeoplePickerSelectedItem';
 import { PeoplePickerSuggestionItem } from './ClassicPeoplePickerComponents/PeoplePickerSuggestionItem';
 import { IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerComponents/PeoplePickerSuggestionItem.types';
@@ -71,7 +70,7 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
       styles={classicPickerStyleOverride}
       onRenderSelectedItem={PeoplePickerSelectedItem}
       onRenderSuggestionControl={BoundClassicPickerSuggestionControl}
-      onRenderSuggestionItem={(props: TPersona, itemProps: ISuggestionItemProps<TPersona>) => <PeoplePickerSuggestionItem {...itemProps} />}
+      onRenderSuggestionItem={PeoplePickerSuggestionItem}
       {...props}
       onResolveSuggestions={wrappedResolveSuggestions}
     />
@@ -99,9 +98,7 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
       styles={classicPickerStyleOverride}
       onRenderSelectedItem={PeoplePickerSelectedItem}
       onRenderSuggestionControl={BoundClassicPickerSuggestionControl}
-      onRenderSuggestionItem={(persona: TPersona, itemProps: ISuggestionItemProps<TPersona>) => (
-        <CompactPeoplePickerSuggestionItem {...itemProps} />
-      )}
+      onRenderSuggestionItem={CompactPeoplePickerSuggestionItem}
       {...props}
       onResolveSuggestions={wrappedResolveSuggestions}
     />
