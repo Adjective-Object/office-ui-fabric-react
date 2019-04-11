@@ -48,7 +48,6 @@ export type ComposingUnifiedPickerProps<T> = {
   headerComponent?: IUnifiedPickerProps<T>['headerComponent'];
   onRenderFocusZone?: IUnifiedPickerProps<T>['onRenderFocusZone'];
   onRenderMainFloatingPicker?: ComposableMainFloatingPicker<T>;
-  onRenderEditingItemFloatingPicker?: ComposableEditingItemFloatingPicker<T>;
   onRenderSuggestionControl?: ComposableSuggestionControl<T>;
   onRenderSuggestionItem?: ISuggestionsControlProps<T>['onRenderSuggestion'];
   onRenderSelectedItem?: ISelectedPeopleProps<T>['onRenderItem'];

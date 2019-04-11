@@ -3,7 +3,7 @@ import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { ISuggestionModel, ITag } from 'office-ui-fabric-react/lib/Pickers';
 
 /** TagItemSuggestion component props */
-export interface IDefaultTagPickerSuggestionProps extends ISuggestionModel<ITag> {
+export interface IDefaultTagPickerSuggestionProps<TTag extends ITag = ITag> extends ISuggestionModel<TTag> {
   /** Additional CSS class(es) to apply to the TagItemSuggestion div element */
   className?: string;
 

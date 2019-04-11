@@ -3,7 +3,7 @@ import { ITag } from 'office-ui-fabric-react/lib/Pickers';
 import { DefaultPickerFooterItems } from '../DefaultPickerFooterItems';
 import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from '../UnifiedPicker.types';
 import { FloatingSuggestions, SuggestionsStore, IFloatingSuggestionsInnerSuggestionProps } from '../../FloatingSuggestions';
-import { SelectedPeopleList, EditingItemFloatingPickerProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { SelectedItemsList } from '../../SelectedItemsList';
 import { SuggestionsControl } from '../../FloatingSuggestions';
 import { UnifiedPicker, UnifiedPickerImpl } from '../UnifiedPicker';
 import { UnifiedTagPickerProps } from './UnifiedTagPicker.types';
@@ -14,6 +14,7 @@ import {
   PropsOf
 } from '../ComposingUnifiedPicker.types';
 import { DefaultTagPickerSuggestion } from './defaults/DefaultTagPickerSuggestion';
+import { DefaultTagItem } from './defaults/DefaultTagItem';
 
 /**
  * Attep
@@ -102,28 +103,17 @@ export class UnifiedTagPicker<TTag extends ITag> extends React.PureComponent<Uni
   };
 
   /**
-   * Renders the floating picker for the editing item.
-   * Uses the default picker if none is provided.
-   */
-  private EditingItemFloatingPicker = (overriddenProps: EditingItemFloatingPickerProps<TTag>) => {
-    const Inner: ComposableEditingItemFloatingPicker<TTag> =
-      this.props.onRenderEditingItemFloatingPicker || this.DefaultFloatingPickerInner;
-    return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
-  };
-
-  /**
    * the default selected items list
    */
   private DefaultSelectedItemsList = (overriddenProps: UnifiedPickerSelectedItemsProps<TTag>) => (
-    <SelectedPeopleList
+    <SelectedItemsList
       onCopyItems={this._getDefaultCopyItemText}
       onExpandGroup={this.props.onExpandSelectedItem}
       removeMenuItemText={'Remove'}
       copyMenuItemText={'Copy name'}
       editMenuItemText={'Edit'}
       getEditingItemText={this._getDefaultEditingItemText}
-      onRenderFloatingPicker={this.EditingItemFloatingPicker}
-      onRenderItem={this.props.onRenderSelectedItem}
+      onRenderItem={this.props.onRenderSelectedItem || DefaultTagItem}
       {...overriddenProps}
     />
   );
