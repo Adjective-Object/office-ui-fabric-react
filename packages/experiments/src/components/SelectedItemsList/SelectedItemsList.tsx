@@ -3,6 +3,7 @@ import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { Selection } from 'office-ui-fabric-react/lib/Selection';
 
 import { ISelectedItemsList, ISelectedItemsListProps, BaseSelectedItem } from './SelectedItemsList.types';
+import { copyToClipboard } from './utils/copyToClipboard';
 
 export interface ISelectedItemsListState<T = any> {
   items: T[];
@@ -169,12 +170,12 @@ export class SelectedItemsList<TItem extends BaseSelectedItem>
 
   protected renderItems = (): JSX.Element[] => {
     const { removeButtonAriaLabel } = this.props;
-    const SuggestionItem = this.props.onRenderItem;
+    const SelectedItem = this.props.onRenderItem;
 
     const { items } = this.state;
     // tslint:disable-next-line:no-any
     return items.map((item: TItem, index: number) => (
-      <SuggestionItem
+      <SelectedItem
         item={item}
         index={index}
         key={item.key !== undefined ? item.key : index}
@@ -214,23 +215,7 @@ export class SelectedItemsList<TItem extends BaseSelectedItem>
     if (this.props.onCopyItems) {
       // tslint:disable-next-line:no-any
       const copyText = (this.props.onCopyItems as any)(items);
-
-      const copyInput = document.createElement('input') as HTMLInputElement;
-      document.body.appendChild(copyInput);
-
-      try {
-        // Try to copy the text directly to the clipboard
-        copyInput.value = copyText;
-        copyInput.select();
-        if (!document.execCommand('copy')) {
-          // The command failed. Fallback to the method below.
-          throw new Error();
-        }
-      } catch (err) {
-        // no op
-      } finally {
-        document.body.removeChild(copyInput);
-      }
+      copyToClipboard(copyText);
     }
   }
 

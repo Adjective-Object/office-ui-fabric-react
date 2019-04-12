@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { classNamesFunction, BaseComponent, css, styled } from 'office-ui-fabric-react/lib/Utilities';
+import { classNamesFunction, css, styled } from 'office-ui-fabric-react/lib/Utilities';
 import { IProcessedStyleSet } from 'office-ui-fabric-react/lib/Styling';
 import { CommandButton, IconButton } from 'office-ui-fabric-react/lib/Button';
 import { ISuggestionItemProps, ISuggestionsItemStyleProps, ISuggestionsItemStyles } from './SuggestionsItem.types';
@@ -8,7 +8,7 @@ import { getStyles } from './SuggestionsItem.styles';
 
 const getClassNames = classNamesFunction<ISuggestionsItemStyleProps, ISuggestionsItemStyles>();
 
-export const SuggestionsItem = React.memo(function<T>(props: ISuggestionItemProps<T>) {
+export const SuggestionsItemInner = function<T>(props: ISuggestionItemProps<T>) {
   const {
     suggestionModel,
     onRenderSuggestion: RenderSuggestion,
@@ -49,4 +49,7 @@ export const SuggestionsItem = React.memo(function<T>(props: ISuggestionItemProp
       ) : null}
     </div>
   );
-});
+};
+
+export const SuggestionsItem = styled(SuggestionsItemInner, getStyles);
+export type SuggestionsItem<T> = React.ComponentType<ISuggestionItemProps<T>>;

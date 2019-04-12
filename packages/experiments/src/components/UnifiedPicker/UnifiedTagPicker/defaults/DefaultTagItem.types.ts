@@ -1,9 +1,10 @@
-import { ITag, IPickerItemProps } from 'office-ui-fabric-react/lib/Pickers';
+import { ITag } from 'office-ui-fabric-react/lib/Pickers';
 import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
+import { ISelectedItemProps } from '../../../SelectedItemsList';
 
 /** TagItem component props */
-export interface IDefaultTagItemProps extends IPickerItemProps<ITag> {
+export interface IDefaultTagItemProps extends ISelectedItemProps<ITag> {
   /** Additional CSS class(es) to apply to the TagItem root element. */
   className?: string;
 

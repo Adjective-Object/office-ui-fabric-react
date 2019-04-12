@@ -7,9 +7,10 @@ import * as renderer from 'react-test-renderer';
 
 import { IUnifiedPickerProps, UnifiedPickerFloatingPickerProps } from './UnifiedPicker.types';
 import { UnifiedPickerImpl } from './UnifiedPicker';
-import { IBaseFloatingPickerProps, BaseFloatingPicker, SuggestionsStore } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { FloatingSuggestions, SuggestionsStore } from '../FloatingSuggestions';
 import { IBaseSelectedItemsListProps, ISelectedItemProps, BaseSelectedItemsList } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
+import { ISuggestionModel } from '../../../../office-ui-fabric-react/lib';
 
 function onResolveSuggestions(text: string): ISimple[] {
   return [
@@ -33,24 +34,22 @@ function onResolveSuggestions(text: string): ISimple[] {
     .map((item: string) => ({ key: item, name: item }));
 }
 
-const BasePickerWithType = BaseFloatingPicker as new (props: IBaseFloatingPickerProps<ISimple>) => BaseFloatingPicker<ISimple>;
-
 const BaseSelectedItemsListWithType = BaseSelectedItemsList as new (props: IBaseSelectedItemsListProps<ISimple>) => BaseSelectedItemsList<
   ISimple,
   IBaseSelectedItemsListProps<ISimple>
 >;
 
-const basicSuggestionRenderer = (props: ISimple) => {
-  return <div key={props.key}> {props.name} </div>;
+const basicSuggestionRenderer = (props: ISuggestionModel<ISimple>) => {
+  return <div key={props.item.key}> {props.item.name} </div>;
 };
 
 const basicItemRenderer = (props: ISelectedItemProps<ISimple>) => {
   return <div key={props.key}> {props.name} </div>;
 };
 
-const BasicFloatingPicker = <T extends UnifiedPickerFloatingPickerProps<ISimple>>(props: T) => {
+const BasicFloatingSuggestions = <T extends UnifiedPickerFloatingPickerProps<ISimple>>(props: T) => {
   return (
-    <BasePickerWithType
+    <FloatingSuggestions
       onResolveSuggestions={onResolveSuggestions}
       onRenderSuggestionsItem={basicSuggestionRenderer}
       suggestionsStore={new SuggestionsStore<ISimple>()}
@@ -75,7 +74,7 @@ describe('UnifiedPicker', () => {
 
   it('renders BaseUnifiedPicker correctly', () => {
     const component = renderer.create(
-      <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />
+      <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingSuggestions} />
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
@@ -85,15 +84,15 @@ describe('UnifiedPicker', () => {
     const root = document.createElement('div');
     document.body.appendChild(root);
 
-    const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+    const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
       <BaseUnifiedPickerWithType
         onRenderSelectedItems={BasicSelectedItemsList}
         onRenderFloatingPicker={props => (
-          <BasicFloatingPicker {...props} onResolveSuggestions={() => [{ key: 'a', name: 'test1' }, { key: 'b', name: 'test2' }]} />
+          <BasicFloatingSuggestions {...props} onResolveSuggestions={() => [{ key: 'a', name: 'test1' }, { key: 'b', name: 'test2' }]} />
         )}
       />,
       root
-    ) as TypedBaseUnifiedPicker;
+    ) as unknown) as TypedBaseUnifiedPicker;
 
     expect(picker.inputElement).toBeTruthy();
     if (picker.inputElement) {
@@ -118,10 +117,10 @@ describe('UnifiedPicker', () => {
     const root = document.createElement('div');
     document.body.appendChild(root);
 
-    const picker: TypedBaseUnifiedPicker = ReactDOM.render(
-      <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingPicker} />,
+    const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
+      <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={BasicFloatingSuggestions} />,
       root
-    ) as TypedBaseUnifiedPicker;
+    ) as unknown) as TypedBaseUnifiedPicker;
 
     if (picker.inputElement) {
       picker.inputElement.value = 'bl';
@@ -141,15 +140,15 @@ describe('UnifiedPicker', () => {
       document.body.appendChild(root);
       const onItemsRemovedSpy = jasmine.createSpy();
 
-      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+      const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
         <BaseUnifiedPickerWithType
           defaultSelectedItems={[{ key: '1', name: 'one' }, { key: '2', name: 'two' }]}
           onRenderSelectedItems={BasicSelectedItemsList}
-          onRenderFloatingPicker={BasicFloatingPicker}
+          onRenderFloatingPicker={BasicFloatingSuggestions}
           onItemsRemoved={onItemsRemovedSpy}
         />,
         root
-      ) as TypedBaseUnifiedPicker;
+      ) as unknown) as TypedBaseUnifiedPicker;
 
       if (!picker.inputElement) {
         throw new Error('picker input element not set!');
@@ -168,15 +167,15 @@ describe('UnifiedPicker', () => {
       document.body.appendChild(root);
       const onItemsRemovedSpy = jasmine.createSpy();
 
-      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+      const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
         <BaseUnifiedPickerWithType
           defaultSelectedItems={[{ key: '1', name: 'one' }, { key: '2', name: 'two' }]}
           onRenderSelectedItems={BasicSelectedItemsList}
-          onRenderFloatingPicker={BasicFloatingPicker}
+          onRenderFloatingPicker={BasicFloatingSuggestions}
           onItemsRemoved={onItemsRemovedSpy}
         />,
         root
-      ) as TypedBaseUnifiedPicker;
+      ) as unknown) as TypedBaseUnifiedPicker;
 
       if (!picker.inputElement) {
         throw new Error('picker input element not set!');
@@ -208,15 +207,15 @@ describe('UnifiedPicker', () => {
 
       const items = [{ key: '1', name: 'one' }, { key: '2', name: 'two' }];
 
-      const picker: TypedBaseUnifiedPicker = ReactDOM.render(
+      const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
         <BaseUnifiedPickerWithType
           defaultSelectedItems={items}
-          onRenderFloatingPicker={BasicFloatingPicker}
+          onRenderFloatingPicker={BasicFloatingSuggestions}
           onItemsRemoved={onItemsRemovedSpy}
           onRenderSelectedItems={InjectedSelectedItemsComponent}
         />,
         root
-      ) as TypedBaseUnifiedPicker;
+      ) as unknown) as TypedBaseUnifiedPicker;
 
       if (!picker.inputElement) {
         throw new Error('picker input element not set!');

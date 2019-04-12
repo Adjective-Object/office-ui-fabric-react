@@ -1,24 +1,31 @@
 import * as React from 'react';
 import { ISelectedItemProps } from '../SelectedItemsList.types';
 import { EditingItem, EditingItemFloatingPickerProps } from './EditingItem';
-
-type EditableItemWrappedComponent<T> = React.ComponentType<ISelectedItemProps<T>>;
+import { ItemCanDispatchTrigger, Item } from './ItemTrigger.types';
 
 /**
  * Parameters to the EditingItem higher-order component
  */
 export type EditableItemProps<T> = {
-  itemComponent: EditableItemWrappedComponent<T>;
+  itemComponent: ItemCanDispatchTrigger<T>;
   onRenderFloatingPicker: React.ComponentType<EditingItemFloatingPickerProps<T>>;
   getEditingItemText: (item: T) => string;
 };
 
-export const EditableItem = function<T>(editableItemProps: EditableItemProps<T>): EditableItemWrappedComponent<T> {
+export const EditableItem = function<T>(editableItemProps: EditableItemProps<T>): Item<T> {
   return React.memo((selectedItemProps: ISelectedItemProps<T>) => {
     const [isEditing, setIsEditing] = React.useState(false);
-    const setEditingTrue = React.useCallback(() => setIsEditing(true), [setIsEditing]);
+    const setEditingTrue = React.useCallback(() => {
+      setIsEditing(true);
+    }, [setIsEditing]);
+    const setEditingFalse = React.useCallback(() => {
+      setIsEditing(false);
+    }, [setIsEditing]);
     const onItemEdited = React.useCallback(
-      item => selectedItemProps.onItemChange && selectedItemProps.onItemChange(item, selectedItemProps.index),
+      (_oldItem: T, newItem: T) => {
+        selectedItemProps.onItemChange && selectedItemProps.onItemChange(newItem, selectedItemProps.index);
+        setIsEditing(false);
+      },
       [selectedItemProps.onItemChange]
     );
 
@@ -30,9 +37,10 @@ export const EditableItem = function<T>(editableItemProps: EditableItemProps<T>)
         onRenderFloatingPicker={editableItemProps.onRenderFloatingPicker}
         onEditingComplete={onItemEdited}
         getEditingItemText={editableItemProps.getEditingItemText}
+        onSuggestionsHidden={setEditingFalse}
       />
     ) : (
-      <ItemComponent {...selectedItemProps} onContextMenu={setEditingTrue} />
+      <ItemComponent {...selectedItemProps} onTrigger={setEditingTrue} />
     );
   });
 };

@@ -8,12 +8,14 @@
   padding-right: 0.5em;
 }
 
-.customSuggestionItem {
+.customSuggestionItem,
+.customSelectedItem {
   display: flex;
   align-items: center;
   padding: 0.25em;
 }
 
-.customSuggestionItemEmoji {
+.customSuggestionItemEmoji,
+.customSelectedItemEmoji {
   padding-right: 0.25em;
 }

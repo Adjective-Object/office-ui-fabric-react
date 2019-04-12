@@ -19,7 +19,12 @@ export interface IEditingItemProps<TItem> extends React.HTMLAttributes<any> {
   onEditingComplete: (oldItem: TItem, newItem: TItem) => void;
 
   /**
-   * Renders the floating picker for suggesting the result of the item edit.
+   * Callback for when the FloatingSuggestions is dismissed
+   */
+  onSuggestionsHidden?: () => void;
+
+  /**
+   * Renders the floating suggestions for suggesting the result of the item edit.
    *
    * Not actually optional, since is what is needed to resolve the new item.
    */
@@ -33,13 +38,6 @@ export interface IEditingItemProps<TItem> extends React.HTMLAttributes<any> {
   onRemoveItem?: (item: TItem) => void;
 
   /**
-   * Custom props to be passed to the floating picker opened when editing the pill.
-   *
-   * @deprecated Instead of using this prop, bind this yourself inyour onRenderFloatingPicker.
-   */
-  floatingPickerProps?: IFloatingSuggestionsProps<TItem>;
-
-  /**
    * Callback used by the EditingItem to populate the initial value of the editing item
    */
   getEditingItemText: (item: TItem) => string;
@@ -47,7 +45,7 @@ export interface IEditingItemProps<TItem> extends React.HTMLAttributes<any> {
 
 export type EditingItemFloatingPickerProps<T> = Pick<
   IFloatingSuggestionsProps<T>,
-  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'onRemoveSuggestion'
+  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'onRemoveSuggestion' | 'onSuggestionsHidden'
 >;
 
 /**
@@ -74,7 +72,7 @@ export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TI
     const itemId = getId();
     const nativeProps = getNativeProps(this.props, inputProperties);
     return (
-      <div aria-labelledby={'editingItemPersona-' + itemId} className={css('ms-EditingItem', styles.editingContainer)}>
+      <span aria-labelledby={'editingItemPersona-' + itemId} className={css('ms-EditingItem', styles.editingContainer)}>
         <input
           {...nativeProps}
           ref={this._resolveInputRef}
@@ -89,7 +87,7 @@ export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TI
           id={itemId}
         />
         {this._renderEditingSuggestions()}
-      </div>
+      </span>
     );
   }
 
@@ -105,7 +103,7 @@ export class EditingItem<TItem> extends React.PureComponent<IEditingItemProps<TI
         inputElement={this._editingInput}
         selectedItems={[]}
         onRemoveSuggestion={this.props.onRemoveItem}
-        {...this.props.floatingPickerProps || {}}
+        onSuggestionsHidden={this.props.onSuggestionsHidden}
       />
     );
   };

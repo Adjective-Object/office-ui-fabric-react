@@ -37,7 +37,7 @@ const CustomSuggestionItem = (props: ISuggestionModel<CustomTagWithEmojiIcon>): 
  */
 const CustomSelectedItem = (props: ISelectedItemProps<CustomTagWithEmojiIcon>): JSX.Element => (
   <div className={ExampleStyles.customSelectedItem}>
-    <i className={ExampleStyles.customSelectedItemEmoji}>{props.item.emojiIcon}</i> {props.name}
+    <i className={ExampleStyles.customSelectedItemEmoji}>{props.item.emojiIcon}</i> {props.item.name}
     <IconButton iconProps={{ iconName: 'ChromeClose' }} onClick={props.onRemoveItem} />
   </div>
 );

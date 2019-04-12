@@ -86,7 +86,7 @@ export interface IFloatingSuggestionsProps<T> extends React.ClassAttributes<any>
   /**
    * How to render the Suggestions control used by this floating picker.
    */
-  onRenderSuggestionControl: React.ComponentType<IFloatingSuggestionsInnerSuggestionProps<T>>;
+  onRenderSuggestionControl?: React.ComponentType<IFloatingSuggestionsInnerSuggestionProps<T>>;
 
   /**
    * A callback for when a persona is removed from the suggestion list
@@ -118,11 +118,6 @@ export interface IFloatingSuggestionsProps<T> extends React.ClassAttributes<any>
    * component.
    */
   selectedItems?: T[];
-
-  /**
-   * A callback to get text from an item. Used to autofill text in the pickers.
-   */
-  getTextFromItem?: (item: T, currentValue?: string) => string;
 
   /**
    * Width for the suggestions callout

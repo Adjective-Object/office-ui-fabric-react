@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as stylesImport from './BaseFloatingPicker.scss';
+import * as stylesImport from './FloatingSuggestions.scss';
 import { BaseComponent, css, KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { IFloatingSuggestions, IFloatingSuggestionsProps, IFloatingSuggestionsInnerSuggestionProps } from './FloatingSuggestions.types';
@@ -153,7 +153,7 @@ export class FloatingSuggestions<TItem, TProps extends IFloatingSuggestionsProps
   protected renderSuggestions(): JSX.Element | null {
     // Express this as 2 separate statements instead of a single one, because `undefined` isn't filtered out of the type
     // when using `|| SuggestionsControl`
-    let TypedSuggestionsControl: React.ComponentType<IFloatingSuggestionsInnerSuggestionProps<TItem>> = this.props
+    let TypedSuggestionsControl: React.ComponentType<IFloatingSuggestionsInnerSuggestionProps<TItem>> | undefined = this.props
       .onRenderSuggestionControl;
     if (TypedSuggestionsControl === undefined) {
       TypedSuggestionsControl = SuggestionsControl;

@@ -13,7 +13,7 @@ import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
  */
 export type UnifiedPickerFloatingPickerProps<T> = Pick<
   IBaseFloatingPickerProps<T>,
-  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'suggestionItems' | 'isQueryForceResolveable'
+  'componentRef' | 'onChange' | 'inputElement' | 'selectedItems' | 'suggestionItems'
 >;
 
 /**

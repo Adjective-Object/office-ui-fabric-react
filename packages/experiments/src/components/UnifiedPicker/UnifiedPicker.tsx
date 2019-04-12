@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BaseComponent, KeyCodes, classNamesFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
-import { IBaseFloatingPickerProps, BaseFloatingPicker } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { IFloatingSuggestionsProps, FloatingSuggestions } from '../FloatingSuggestions';
 import { BaseSelectedItemsList, IBaseSelectedItemsListProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
 import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from 'office-ui-fabric-react/lib/FocusZone';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
@@ -48,7 +48,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
   /**
    * This should be private but is public for tests
    */
-  public floatingPicker = React.createRef<BaseFloatingPicker<T>>();
+  public floatingPicker = React.createRef<FloatingSuggestions<T>>();
 
   /**
    * This should be private but is public for tests
@@ -127,7 +127,6 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
         >
           <SelectionZone selection={this.selection} selectionMode={SelectionMode.multiple}>
             <div className={classNames.pickerWell} role={'list'}>
-              {this.props.headerComponent}
               {this.renderSelectedItemsList()}
               {this.canAddItems() && (
                 <Autofill
@@ -175,7 +174,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
   }
 
   private renderFloatingPicker(): JSX.Element {
-    const FloatingPicker: React.ComponentType<Partial<IBaseFloatingPickerProps<T>>> = this.props.onRenderFloatingPicker;
+    const FloatingPicker: React.ComponentType<Partial<IFloatingSuggestionsProps<T>>> = this.props.onRenderFloatingPicker;
     return (
       <FloatingPicker
         componentRef={this.floatingPicker}

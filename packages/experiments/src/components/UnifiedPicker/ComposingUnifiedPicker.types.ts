@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IFloatingSuggestionsInnerSuggestionProps, IFloatingSuggestionsProps } from '../FloatingSuggestions/FloatingSuggestions.types';
 import { ISuggestionsControlProps } from '../FloatingSuggestions/Suggestions/Suggestions.types';
-import { ISelectedPeopleProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { ISelectedItemsListProps } from '../SelectedItemsList';
 import { IUnifiedPickerProps, IUnifiedPickerComponentPassthroughProps } from './UnifiedPicker.types';
 
 export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
@@ -14,16 +14,6 @@ export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = 
  */
 export type ComposableMainFloatingPicker<T> = WithMoreProps<
   IUnifiedPickerProps<T>['onRenderFloatingPicker'],
-  Pick<IFloatingSuggestionsProps<T>, 'onRenderSuggestionControl'>
->;
-
-/**
- * Expand the exact floating picker props that are passed through from the UnifiedPicker
- * so that if FloatingPicker is overridden, the consumer does not need to override the full
- * component subtree (e.g. the separately specified or default component)
- */
-export type ComposableEditingItemFloatingPicker<T> = WithMoreProps<
-  NonNullable<ISelectedPeopleProps<T>['onRenderFloatingPicker']>,
   Pick<IFloatingSuggestionsProps<T>, 'onRenderSuggestionControl'>
 >;
 
@@ -45,12 +35,11 @@ export type ComposingUnifiedPickerProps<T> = {
   /////////////////////////////////////
   // Coordinated Internal Components //
   /////////////////////////////////////
-  headerComponent?: IUnifiedPickerProps<T>['headerComponent'];
   onRenderFocusZone?: IUnifiedPickerProps<T>['onRenderFocusZone'];
   onRenderMainFloatingPicker?: ComposableMainFloatingPicker<T>;
   onRenderSuggestionControl?: ComposableSuggestionControl<T>;
-  onRenderSuggestionItem?: ISuggestionsControlProps<T>['onRenderSuggestion'];
-  onRenderSelectedItem?: ISelectedPeopleProps<T>['onRenderItem'];
+  onRenderSuggestionItem: ISuggestionsControlProps<T>['onRenderSuggestion'];
+  onRenderSelectedItem: ISelectedItemsListProps<T>['onRenderItem'];
 
   ///////////////////////////
   // Data Model (required) //
@@ -62,7 +51,6 @@ export type ComposingUnifiedPickerProps<T> = {
   //////////////////////////////////////
   isQueryForceResolveable?: IFloatingSuggestionsProps<T>['isQueryForceResolveable'];
   onZeroQuerySuggestion?: IFloatingSuggestionsProps<T>['onZeroQuerySuggestion'];
-  onExpandSelectedItem?: ISelectedPeopleProps<T>['onExpandGroup'];
 
   /////////////////////////////////////////////
   // Props for use as a controlled component //

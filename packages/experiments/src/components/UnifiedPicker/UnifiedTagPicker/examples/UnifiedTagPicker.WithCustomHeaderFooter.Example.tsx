@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SuggestionsControl, ISuggestionsHeaderFooterProps } from 'office-ui-fabric-react/lib/FloatingPicker';
+import { SuggestionsControl, ISuggestionsHeaderFooterProps } from '../../../FloatingSuggestions';
 import { UnifiedTagPicker } from '../UnifiedTagPicker';
 import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
 /* Sample Data */

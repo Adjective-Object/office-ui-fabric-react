@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { BaseComponent, css, autobind } from 'office-ui-fabric-react/lib/Utilities';
 import { ISuggestionModel } from 'office-ui-fabric-react/lib/Pickers';
-import { ISuggestionItemProps } from './SuggestionsItem.types';
 import { SuggestionsItem } from './SuggestionsItem';
 import { ISuggestionsCoreProps } from './Suggestions.types';
 import * as stylesImport from './SuggestionsCore.scss';
@@ -15,7 +14,6 @@ export class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, 
   public currentIndex: number;
   public currentSuggestion: ISuggestionModel<T> | undefined;
   protected _selectedElement: HTMLDivElement;
-  private SuggestionsItemOfProperType: new (props: ISuggestionItemProps<T>) => (typeof SuggestionsItem)<T> = SuggestionsItem;
 
   constructor(suggestionsProps: ISuggestionsCoreProps<T>) {
     super(suggestionsProps);
@@ -126,7 +124,6 @@ export class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, 
       showRemoveButtons,
       suggestionsContainerAriaLabel
     } = this.props;
-    const TypedSuggestionsItem = this.SuggestionsItemOfProperType;
     let { suggestions } = this.props;
 
     if (resultsMaximumNumber) {
@@ -150,7 +147,7 @@ export class SuggestionsCore<T> extends BaseComponent<ISuggestionsCoreProps<T>, 
             role="listitem"
             aria-label={suggestion.ariaLabel}
           >
-            <TypedSuggestionsItem
+            <SuggestionsItem
               id={'sug-item' + index}
               suggestionModel={suggestion}
               onRenderSuggestion={onRenderSuggestion}

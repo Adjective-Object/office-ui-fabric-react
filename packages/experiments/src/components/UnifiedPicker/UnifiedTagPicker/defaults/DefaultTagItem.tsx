@@ -58,3 +58,5 @@ export const DefaultTagItem = styled<IDefaultTagItemProps, IDefaultTagItemStyleP
     scope: 'DefaultTagItem'
   }
 );
+
+export type DefaultTagItem = React.ComponentType<IDefaultTagItemProps>;

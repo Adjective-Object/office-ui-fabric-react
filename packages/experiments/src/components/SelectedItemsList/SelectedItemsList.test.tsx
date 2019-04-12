@@ -16,14 +16,11 @@ const basicItemRenderer = (props: ISelectedItemProps<ISimple>) => {
   return <div key={props.key}> {props.name} </div>;
 };
 
-export type TypedSelectedItemsList = SelectedItemsList<ISimple, ISelectedItemsListProps<ISimple>>;
+export type TypedSelectedItemsList = SelectedItemsList<ISimple>;
 
 describe('SelectedItemsList', () => {
   describe('SelectedItemsList', () => {
-    const SelectedItemsListWithType = SelectedItemsList as new (props: ISelectedItemsListProps<ISimple>) => SelectedItemsList<
-      ISimple,
-      ISelectedItemsListProps<ISimple>
-    >;
+    const SelectedItemsListWithType = SelectedItemsList as new (props: ISelectedItemsListProps<ISimple>) => SelectedItemsList<ISimple>;
 
     it('renders SelectedItemsList correctly', () => {
       const component = renderer.create(<SelectedItemsListWithType onRenderItem={() => <div />} />);

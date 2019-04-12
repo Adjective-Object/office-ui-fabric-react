@@ -119,16 +119,25 @@ export const AppDefinition: IAppDefinition = {
           url: '#/examples/staticlist'
         },
         {
+          component: require<any>('../components/SelectedItemsList/SelectedPeopleList/SelectedPeopleListPage').SelectedPeopleListPage,
+          key: 'SelectedPeopleList',
+          name: 'SelectedPeopleList',
+          url: '#examples/selectedpeoplelist',
+          category: 'Data Collections'
+        },
+        {
           component: require<any>('../components/UnifiedPicker/UnifiedPeoplePicker/UnifiedPeoplePickerPage').UnifiedPeoplePickerPage,
           key: 'UnifiedPeoplePicker',
           name: 'UnifiedPeoplePicker',
-          url: '#examples/unifiedpeoplepicker'
+          url: '#examples/unifiedpeoplepicker',
+          category: 'Data Collections'
         },
         {
           component: require<any>('../components/UnifiedPicker/UnifiedTagPicker/UnifiedTagPickerPage').UnifiedTagPickerPage,
           key: 'UnifiedTagPicker',
           name: 'UnifiedTagPicker',
-          url: '#examples/unifiedtagpicker'
+          url: '#examples/unifiedtagpicker',
+          category: 'Data Collections'
         },
         {
           component: require<any>('../components/fluent/examplePages/FluentThemePage').FluentThemePage,

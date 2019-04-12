@@ -47,6 +47,8 @@ export const SelectedPersona = React.memo(function<TPersona extends IPersonaProp
 
   return (
     <div
+      onContextMenu={props.onContextMenu}
+      onClick={props.onClick}
       className={css(
         'ms-PickerPersona-container',
         styles.personaContainer,
