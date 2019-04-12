@@ -17,18 +17,6 @@ export class SelectedPeopleListWithGroupExpandExample extends React.Component<{}
   private _selectionList: SelectedPeopleList;
   private selection: Selection = new Selection({ onSelectionChanged: () => this._onSelectionChange() });
 
-  /**
-   * Build a custom selected item capable of being edited with a dropdown and
-   * capable of eidting
-   */
-  private SelectedItem = (props: ISelectedItemProps<IPersonaProps>) => (
-    <SelectedPersona
-      canExpand={item => item.text !== undefined && item.text.indexOf('Group') !== -1}
-      getExpandedItems={this._getExpandedGroupItems}
-      {...props}
-    />
-  );
-
   public render(): JSX.Element {
     return (
       <div className={'ms-BasePicker-text'}>
@@ -39,6 +27,14 @@ export class SelectedPeopleListWithGroupExpandExample extends React.Component<{}
       </div>
     );
   }
+
+  /**
+   * Build a custom selected item capable of being edited with a dropdown and
+   * capable of eidting
+   */
+  private SelectedItem = (props: ISelectedItemProps<IPersonaProps>) => (
+    <SelectedPersona canExpand={this._canExpandItem} getExpandedItems={this._getExpandedGroupItems} {...props} />
+  );
 
   private _renderExtendedPicker(): JSX.Element {
     return (
@@ -77,5 +73,9 @@ export class SelectedPeopleListWithGroupExpandExample extends React.Component<{}
       default:
         return [];
     }
+  }
+
+  private _canExpandItem(item: IPersonaProps): boolean {
+    return item.text !== undefined && item.text.indexOf('Group') !== -1;
   }
 }

@@ -71,7 +71,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
   }
 
   public componentDidMount(): void {
-    //TODO this doesn't work when mounted in a new react root on initial render
+    // TODO this doesn't work when mounted in a new react root on initial render
     // (ref timing issues)
     // pls fix so tests work.
     this.forceUpdate();
@@ -127,8 +127,8 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
         >
           <SelectionZone selection={this.selection} selectionMode={SelectionMode.multiple}>
             <div className={classNames.pickerWell} role={'list'}>
-              {this.renderSelectedItemsList()}
-              {this.canAddItems() && (
+              {this._renderSelectedItemsList()}
+              {this._canAddItems() && (
                 <Autofill
                   {...inputProps as IInputProps}
                   className={classNames.input}
@@ -150,7 +150,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
             </div>
           </SelectionZone>
         </FocusZoneComponent>
-        {this.renderFloatingPicker()}
+        {this._renderFloatingPicker()}
       </>
     );
   }
@@ -168,12 +168,12 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     this.forceUpdate();
   };
 
-  private canAddItems(): boolean {
+  private _canAddItems(): boolean {
     const { itemLimit } = this.props;
     return itemLimit === undefined || this.value.length < itemLimit;
   }
 
-  private renderFloatingPicker(): JSX.Element {
+  private _renderFloatingPicker(): JSX.Element {
     const FloatingPicker: React.ComponentType<Partial<IFloatingSuggestionsProps<T>>> = this.props.onRenderFloatingPicker;
     return (
       <FloatingPicker
@@ -187,7 +187,7 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
     );
   }
 
-  private renderSelectedItemsList(): JSX.Element {
+  private _renderSelectedItemsList(): JSX.Element {
     const SelectedItems = this.props.onRenderSelectedItems;
     return (
       <SelectedItems

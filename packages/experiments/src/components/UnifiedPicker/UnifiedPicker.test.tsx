@@ -84,13 +84,14 @@ describe('UnifiedPicker', () => {
     const root = document.createElement('div');
     document.body.appendChild(root);
 
+    const overrideOnResolveSuggestions = () => [{ key: 'a', name: 'test1' }, { key: 'b', name: 'test2' }];
+
+    const renderSuggestions = (props: UnifiedPickerFloatingPickerProps<ISimple>) => (
+      <BasicFloatingSuggestions {...props} onResolveSuggestions={overrideOnResolveSuggestions} />
+    );
+
     const picker: TypedBaseUnifiedPicker = (ReactDOM.render(
-      <BaseUnifiedPickerWithType
-        onRenderSelectedItems={BasicSelectedItemsList}
-        onRenderFloatingPicker={props => (
-          <BasicFloatingSuggestions {...props} onResolveSuggestions={() => [{ key: 'a', name: 'test1' }, { key: 'b', name: 'test2' }]} />
-        )}
-      />,
+      <BaseUnifiedPickerWithType onRenderSelectedItems={BasicSelectedItemsList} onRenderFloatingPicker={renderSuggestions} />,
       root
     ) as unknown) as TypedBaseUnifiedPicker;
 
