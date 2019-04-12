@@ -7,6 +7,8 @@ const doNothing = () => {
   return;
 };
 
+const renderNothing = () => <></>;
+
 describe('Pickers', () => {
   describe('SuggestionsControl', () => {
     it('renders header/footer items with the provided className', () => {
@@ -31,7 +33,7 @@ describe('Pickers', () => {
           suggestions={[]}
           shouldLoopSelection={true}
           onSuggestionClick={doNothing}
-          onRenderSuggestion={() => null}
+          onRenderSuggestion={renderNothing}
         />,
         root
       );

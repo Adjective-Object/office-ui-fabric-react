@@ -7,9 +7,9 @@ import { FloatingSuggestions } from '../FloatingSuggestions';
 type PartiallyOptional<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Pick<Partial<T>, keyof T>;
 export type IFloatingPeopleSuggestionsProps<TPersona> = PartiallyOptional<IFloatingSuggestionsProps<TPersona>, 'onRenderSuggestionsItem'>;
 
-export const FloatingPeopleSuggestions = function<TPersona extends IPersonaProps = IPersonaProps>(
+export const FloatingPeopleSuggestions = <TPersona extends IPersonaProps = IPersonaProps>(
   props: IFloatingPeopleSuggestionsProps<TPersona>
-) {
+) => {
   return <FloatingSuggestions<TPersona> onRenderSuggestionsItem={PeoplePickerItemDefault} {...props} />;
 };
 export type SelectedPeopleList<TPersona extends IPersonaProps = IPersonaProps> = FloatingSuggestions<TPersona>;

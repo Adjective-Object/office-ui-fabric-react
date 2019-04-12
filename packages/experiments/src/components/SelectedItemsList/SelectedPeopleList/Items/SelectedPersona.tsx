@@ -21,7 +21,7 @@ type ISelectedPersonaProps<TPersona> = ISelectedItemProps<TPersona> & {
  * To use the removal / expansion, bind isValid / canExpand /  getExpandedItems
  * when passing the onRenderItem to your SelectedItemsList
  */
-export const SelectedPersona = React.memo(function<TPersona extends IPersonaProps = IPersonaProps>(props: ISelectedPersonaProps<TPersona>) {
+export const SelectedPersona = React.memo(<TPersona extends IPersonaProps = IPersonaProps>(props: ISelectedPersonaProps<TPersona>) => {
   const { item, onRemoveItem, onItemChange, removeButtonAriaLabel, index, selected, isValid, canExpand, getExpandedItems } = props;
   const itemId = getId();
 
@@ -40,7 +40,7 @@ export const SelectedPersona = React.memo(function<TPersona extends IPersonaProp
     ev => {
       ev.stopPropagation();
       ev.preventDefault();
-      onRemoveItem && onRemoveItem();
+      onRemoveItem && onRemoveItem(item);
     },
     [onRemoveItem]
   );

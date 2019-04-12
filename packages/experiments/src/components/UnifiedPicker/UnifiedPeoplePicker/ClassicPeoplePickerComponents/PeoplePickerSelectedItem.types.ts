@@ -1,24 +1,35 @@
 import { IStyle } from '../../../../Styling';
 import { IStyleFunctionOrObject } from '../../../../Utilities';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
-import { ISelectedItemProps } from 'office-ui-fabric-react/lib/SelectedItemsList';
+import { ISelectedItemProps } from '../../../SelectedItemsList';
 import { CommonStylingProps, ICommonSubComponentStyles } from './CommonStylingProps.types';
 
 /** PeoplePickerSelectedItem props interface. Refers to the PeoplePicker items that have been picked already. */
-export type IPeoplePickerSelectedItemProps = ISelectedItemProps<IPersonaProps> &
+export type IClassicPeoplePickerSelectedItemProps = ISelectedItemProps<IPersonaProps> &
   Partial<CommonStylingProps> & {
-    styles?: IStyleFunctionOrObject<IPeoplePickerSelectedItemStyleProps, IPeoplePickerSelectedItemStyles>;
+    styles?: IStyleFunctionOrObject<IClassicPeoplePickerSelectedItemStyleProps, IClassicPeoplePickerSelectedItemStyles>;
+
+    /**
+     * Whether or not this persona is valid.
+     *
+     * The item list no longer has a concept of 'warning-level' valid items being inserted.
+     *
+     * If you want to use the old styles for these components, bind isValid by passing a
+     * wrapping component to the onRenderItem to your SelectedItemsList, and derive the value
+     * directly from your data model.
+     */
+    isValid?: boolean;
   };
 
 /** Input to the PeoplePickerSelectedItem's styles function */
-export type IPeoplePickerSelectedItemStyleProps = CommonStylingProps &
-  Pick<IPeoplePickerSelectedItemProps, 'selected' | 'disabled'> & {
+export type IClassicPeoplePickerSelectedItemStyleProps = CommonStylingProps &
+  Pick<IClassicPeoplePickerSelectedItemProps, 'selected' | 'disabled'> & {
     /** Whether it's invalid. */
     invalid?: boolean;
   };
 
 /** Represents the stylable areas of the PeoplePickerSelectedItem. */
-export interface IPeoplePickerSelectedItemStyles {
+export interface IClassicPeoplePickerSelectedItemStyles {
   /** Root element of picked PeoplePicker item */
   root: IStyle;
 

@@ -8,7 +8,8 @@ import { getStyles } from './SuggestionsItem.styles';
 
 const getClassNames = classNamesFunction<ISuggestionsItemStyleProps, ISuggestionsItemStyles>();
 
-export const SuggestionsItemInner = function<T>(props: ISuggestionItemProps<T>) {
+// `extends any` to trick the parser into parsing as a type decl instead of a jsx tag
+export const SuggestionsItemInner = <TSuggestion extends any>(props: ISuggestionItemProps<TSuggestion>) => {
   const {
     suggestionModel,
     onRenderSuggestion: RenderSuggestion,

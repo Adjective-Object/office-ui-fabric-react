@@ -5,12 +5,17 @@ import { PeoplePickerItemDefault } from '../../FloatingSuggestions/FloatingPeopl
 import { ComposingUnifiedPicker } from '../ComposingUnifiedPicker';
 import { SelectedPersona } from '../../SelectedItemsList';
 
-export const UnifiedPeoplePicker = <TPersona extends IPersonaProps>(props: UnifiedPeoplePickerProps<TPersona>) => {
-  return (
-    <ComposingUnifiedPicker
-      onRenderSelectedItem={props.onRenderSelectedItem || SelectedPersona}
-      onRenderSuggestionItem={props.onRenderSuggestionItem || PeoplePickerItemDefault}
-      {...props}
-    />
-  );
-};
+export const UnifiedPeoplePicker = React.forwardRef(
+  <TPersona extends IPersonaProps>(props: UnifiedPeoplePickerProps<TPersona>, ref: React.RefObject<UnifiedPeoplePicker<TPersona>>) => {
+    return (
+      <ComposingUnifiedPicker
+        ref={ref}
+        onRenderSelectedItem={props.onRenderSelectedItem || SelectedPersona}
+        onRenderSuggestionItem={props.onRenderSuggestionItem || PeoplePickerItemDefault}
+        {...props}
+      />
+    );
+  }
+);
+
+export type UnifiedPeoplePicker<TPersona extends IPersonaProps> = ComposingUnifiedPicker<TPersona>;

@@ -1,5 +1,5 @@
 import { getGlobalClassNames, getFocusStyle, HighContrastSelector, IStyle } from 'office-ui-fabric-react/lib/Styling';
-import { IPeoplePickerSelectedItemStyleProps, IPeoplePickerSelectedItemStyles } from './PeoplePickerSelectedItem.types';
+import { IClassicPeoplePickerSelectedItemStyleProps, IClassicPeoplePickerSelectedItemStyles } from './PeoplePickerSelectedItem.types';
 import { ButtonGlobalClassNames } from 'office-ui-fabric-react/lib/Button';
 
 const GlobalClassNames = {
@@ -12,7 +12,7 @@ const GlobalClassNames = {
 
 const REMOVE_BUTTON_SIZE = 24;
 
-export function getStyles(props: IPeoplePickerSelectedItemStyleProps): IPeoplePickerSelectedItemStyles {
+export function getStyles(props: IClassicPeoplePickerSelectedItemStyleProps): IClassicPeoplePickerSelectedItemStyles {
   const { className, theme, selected, invalid, disabled } = props;
 
   const { palette, semanticColors } = theme!;

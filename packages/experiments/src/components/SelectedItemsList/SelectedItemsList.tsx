@@ -173,14 +173,13 @@ export class SelectedItemsList<TItem extends BaseSelectedItem>
     const SelectedItem = this.props.onRenderItem;
 
     const { items } = this.state;
-    // tslint:disable-next-line:no-any
     return items.map((item: TItem, index: number) => (
       <SelectedItem
         item={item}
         index={index}
         key={item.key !== undefined ? item.key : index}
         selected={this.selection.isIndexSelected(index)}
-        onRemoveItem={() => this.removeItem(item)}
+        onRemoveItem={this.removeItem}
         onItemChange={this.onItemChange}
         removeButtonAriaLabel={removeButtonAriaLabel}
         onCopyItem={this._onCopyItem}

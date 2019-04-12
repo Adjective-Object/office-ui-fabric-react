@@ -10,17 +10,16 @@ import {
   IPersonaCoinStyles
 } from 'office-ui-fabric-react/lib/Persona';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
-import { ValidationState } from 'office-ui-fabric-react/lib/Pickers';
 import {
-  IPeoplePickerSelectedItemProps,
-  IPeoplePickerSelectedItemStyleProps,
-  IPeoplePickerSelectedItemStyles
+  IClassicPeoplePickerSelectedItemProps,
+  IClassicPeoplePickerSelectedItemStyleProps,
+  IClassicPeoplePickerSelectedItemStyles
 } from './PeoplePickerSelectedItem.types';
 import { getStyles } from './PeoplePickerSelectedItem.styles';
 
-const getClassNames = classNamesFunction<IPeoplePickerSelectedItemStyleProps, IPeoplePickerSelectedItemStyles>();
+const getClassNames = classNamesFunction<IClassicPeoplePickerSelectedItemStyleProps, IClassicPeoplePickerSelectedItemStyles>();
 
-export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemProps) => {
+export const PeoplePickerSelectedItemInner = (props: IClassicPeoplePickerSelectedItemProps) => {
   const { item, onRemoveItem, index, selected, removeButtonAriaLabel, styles, theme, className, disabled } = props;
 
   const itemId = getId();
@@ -30,9 +29,10 @@ export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemPr
     className,
     selected,
     disabled,
-    // TODO port validation state to selected item props
-    invalid: props.validationState === ValidationState.warning
+    invalid: props.isValid === false
   });
+
+  const removeItem = React.useCallback(() => onRemoveItem && onRemoveItem(item), [item, onRemoveItem]);
 
   const personaStyles = classNames.subComponentStyles
     ? (classNames.subComponentStyles.persona as IStyleFunctionOrObject<IPersonaStyleProps, IPersonaStyles>)
@@ -55,7 +55,7 @@ export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemPr
         <Persona size={PersonaSize.size24} styles={personaStyles} coinProps={{ styles: personaCoinStyles }} {...item} />
       </div>
       <IconButton
-        onClick={onRemoveItem}
+        onClick={removeItem}
         disabled={disabled}
         iconProps={{ iconName: 'Cancel', styles: { root: { fontSize: '12px' } } }}
         className={classNames.removeButton}
@@ -66,7 +66,7 @@ export const PeoplePickerSelectedItemInner = (props: IPeoplePickerSelectedItemPr
 };
 
 export const PeoplePickerSelectedItem = styled<
-  IPeoplePickerSelectedItemProps,
-  IPeoplePickerSelectedItemStyleProps,
-  IPeoplePickerSelectedItemStyles
+  IClassicPeoplePickerSelectedItemProps,
+  IClassicPeoplePickerSelectedItemStyleProps,
+  IClassicPeoplePickerSelectedItemStyles
 >(PeoplePickerSelectedItemInner, getStyles, undefined, { scope: 'PeoplePickerItem' });

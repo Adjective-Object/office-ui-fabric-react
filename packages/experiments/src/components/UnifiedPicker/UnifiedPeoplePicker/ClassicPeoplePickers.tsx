@@ -35,7 +35,7 @@ const wrapResolveSuggestionsAndGetBoundPickerSuggestions = <TPersona extends IPe
 
   const wrappedResolveResults = (filter: string) => {
     const resolvedSuggestions: PromiseLike<TPersona[]> | TPersona[] | null = onResolveSuggestions(filter);
-    if (resolvedSuggestions == null || Array.isArray(resolvedSuggestions)) {
+    if (resolvedSuggestions === null || Array.isArray(resolvedSuggestions)) {
       hasResults = !!(resolvedSuggestions && resolvedSuggestions.length);
       return resolvedSuggestions;
     }
@@ -58,10 +58,14 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
   props: ClassicPickerProps<TPersona>,
   ref: React.Ref<UnifiedPeoplePicker<TPersona>>
 ) => {
-  const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
-    props.onResolveSuggestions,
-    props.suggestionsHeaderText,
-    props.noResultsFooterText
+  const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = React.useMemo(
+    () =>
+      wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
+        props.onResolveSuggestions,
+        props.suggestionsHeaderText,
+        props.noResultsFooterText
+      ),
+    [props.onResolveSuggestions, props.suggestionsHeaderText, props.noResultsFooterText]
   );
 
   return (
@@ -78,6 +82,10 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
 };
 export const NormalPeoplePicker = React.forwardRef(NormalPeoplePickerInner);
 
+const CompactPeoplePickerSuggestionItem = (props: IPeoplePickerSuggestionItemProps) => (
+  <PeoplePickerSuggestionItem {...props} compact={true} />
+);
+
 /**
  * Special case of the UnifiedPeoplePicker binding custom rendering ot match
  * the classic "Compact People Picker"'s Styling
@@ -86,10 +94,14 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
   props: ClassicPickerProps<TPersona>,
   ref: React.Ref<UnifiedPeoplePicker<TPersona>>
 ) => {
-  const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
-    props.onResolveSuggestions,
-    props.suggestionsHeaderText,
-    props.noResultsFooterText
+  const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = React.useMemo(
+    () =>
+      wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
+        props.onResolveSuggestions,
+        props.suggestionsHeaderText,
+        props.noResultsFooterText
+      ),
+    [props.onResolveSuggestions, props.suggestionsHeaderText, props.noResultsFooterText]
   );
 
   return (
@@ -104,10 +116,6 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
     />
   );
 };
-
-const CompactPeoplePickerSuggestionItem = (props: IPeoplePickerSuggestionItemProps) => (
-  <PeoplePickerSuggestionItem {...props} compact={true} />
-);
 
 export const CompactPeoplePicker = React.forwardRef(CompactPeoplePickerInner);
 

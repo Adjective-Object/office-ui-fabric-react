@@ -12,7 +12,8 @@ export type EditableItemProps<T> = {
   getEditingItemText: (item: T) => string;
 };
 
-export const EditableItem = function<T>(editableItemProps: EditableItemProps<T>): Item<T> {
+// `extends any` to trick the parser into parsing as a type decl instead of a jsx tag
+export const EditableItem = <T extends any>(editableItemProps: EditableItemProps<T>): Item<T> => {
   return React.memo((selectedItemProps: ISelectedItemProps<T>) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const setEditingTrue = React.useCallback(() => {

@@ -39,6 +39,31 @@ export interface IUnifiedPicker<T> {
   focus: () => void;
 }
 
+/**
+ * Props of the unified picker that are relevant to styles.
+ *
+ * Wrapping components can just pass these props through to the UnifiedPicker.
+ */
+export interface IUnifiedPickerComponentPassthroughProps {
+  className?: string;
+
+  /**
+   * Call to provide customized styling that will layer on top of the variant rules.
+   */
+  styles?: IStyleFunctionOrObject<IUnifiedPickerStyleProps, IUnifiedPickerStyles>;
+
+  /**
+   * Theme provided by High-Order Component.
+   */
+  theme?: ITheme;
+
+  /**
+   * Flag for disabling the picker.
+   * @defaultvalue false
+   */
+  disabled?: boolean;
+}
+
 // Type T is the type of the item that is displayed
 // and searched for by the people picker. For example, if the picker is
 // displaying persona's than type T could either be of Persona or Ipersona props
@@ -140,29 +165,6 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
    * If the current query can be force resolved.
    */
   isQueryForceResolveable?: (query: string) => boolean;
-}
-
-/**
- * Props of the unified picker that are relevant to styles
- */
-export interface IUnifiedPickerComponentPassthroughProps {
-  className?: string;
-
-  /**
-   * Call to provide customized styling that will layer on top of the variant rules.
-   */
-  styles?: IStyleFunctionOrObject<IUnifiedPickerStyleProps, IUnifiedPickerStyles>;
-
-  /**
-   * Theme provided by High-Order Component.
-   */
-  theme?: ITheme;
-
-  /**
-   * Flag for disabling the picker.
-   * @defaultvalue false
-   */
-  disabled?: boolean;
 }
 
 /**

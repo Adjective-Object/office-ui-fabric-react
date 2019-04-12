@@ -22,8 +22,10 @@ describe('SelectedItemsList', () => {
   describe('SelectedItemsList', () => {
     const SelectedItemsListWithType = SelectedItemsList as new (props: ISelectedItemsListProps<ISimple>) => SelectedItemsList<ISimple>;
 
+    const renderNothing = () => <></>;
+
     it('renders SelectedItemsList correctly', () => {
-      const component = renderer.create(<SelectedItemsListWithType onRenderItem={() => <div />} />);
+      const component = renderer.create(<SelectedItemsListWithType onRenderItem={renderNothing} />);
       const tree = component.toJSON();
       expect(tree).toMatchSnapshot();
     });
