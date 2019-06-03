@@ -1,0 +1,63 @@
+import * as React from 'react';
+import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
+import { ISelectedItemProps } from '../../../SelectedItemsList';
+/* Sample Data */
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
+import { ISuggestionModel } from 'office-ui-fabric-react/lib/Pickers';
+import { people } from '../../../SelectedItemsList/SelectedPeopleList/examples/PeopleExampleData';
+import { ExampleSuggestionsModel } from '../../../SelectedItemsList/SelectedPeopleList/examples/ExampleSuggestionsModel';
+import { IconButton } from 'office-ui-fabric-react/lib/components/Button/index';
+import * as ExampleStyles from './Example.scss';
+
+/**
+ * Our custom persona type
+ */
+type CustomPersonaWithEmail = IPersonaProps & {
+  emailAddress: string;
+};
+
+/**
+ * Utility for generating test data of our custom persona type
+ */
+const addEmailToPersona = (originalPersona: IPersonaProps): CustomPersonaWithEmail => ({
+  ...originalPersona,
+  emailAddress: `${(originalPersona.text || 'email').toLocaleLowerCase().replace(/\s/g, '_')}@contoso.com`
+});
+
+/**
+ * Custom component we use to render our suggestion items in the floating picker
+ */
+const CustomSuggestionItem = (props: ISuggestionModel<CustomPersonaWithEmail>): JSX.Element => (
+  <div className={ExampleStyles.customSuggestionItem}>
+    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={ExampleStyles.customSuggestionItemImage} />
+    {props.item.emailAddress}
+  </div>
+);
+
+/**
+ * Custom component we use to render our selected in the suggestion list
+ *
+ * The specifics of this component aren't that important, but it *is* important that
+ * it binc props.onRemoveItem somewhere in its body.
+ */
+const CustomSelectedItem = (props: ISelectedItemProps<CustomPersonaWithEmail>): JSX.Element => (
+  <div className={ExampleStyles.customSelectedItem}>
+    <img src={props.item.imageUrl} alt={props.item.imageAlt} className={ExampleStyles.customSelectedItemImage} />
+    {props.item.emailAddress}
+    <IconButton iconProps={{ iconName: 'ChromeClose' }} onClick={props.onRemoveItem} />
+  </div>
+);
+
+export class UnifiedPeoplePickerWithCustomItemsExample extends React.Component {
+  private model = new ExampleSuggestionsModel<CustomPersonaWithEmail>(people.map(addEmailToPersona));
+
+  public render() {
+    return (
+      <UnifiedPeoplePicker<CustomPersonaWithEmail>
+        onResolveSuggestions={this.model.resolveSuggestions}
+        onRenderSuggestionItem={CustomSuggestionItem}
+        onRenderSelectedItem={CustomSelectedItem}
+      />
+    );
+  }
+}

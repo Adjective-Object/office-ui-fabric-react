@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IPickerItemProps, ISuggestionModel, ValidationState } from 'office-ui-fabric-react/lib/Pickers';
+import { IPickerItemProps } from 'office-ui-fabric-react/lib/Pickers';
 import { Selection } from 'office-ui-fabric-react/lib/Selection';
 import { IRefObject } from 'office-ui-fabric-react/lib/Utilities';
 
@@ -28,10 +28,13 @@ export interface ISelectedItemsList<T> {
    * Removes items from the selection
    */
   removeItems: (items: T[]) => void;
+  /**
+   * Copies the current selected items to the clipboard.
+   */
+  copyItemsInSelectionToClipboard: () => void;
 }
 
 export interface ISelectedItemProps<T> extends IPickerItemProps<T> {
-  onCopyItem: () => void;
   /**
    * Override onItemChange to support replacing an item with multiple items.
    */
@@ -68,10 +71,6 @@ export interface ISelectedItemsListProps<T> extends React.ClassAttributes<any> {
    * A callback for when the selected list of items changes.
    */
   onChange?: (items?: T[]) => void;
-  /**
-   * Function that specifies how arbitrary text entered into the well is handled.
-   */
-  createGenericItem?: (input: string, ValidationState: ValidationState) => ISuggestionModel<T>;
   /**
    * The items that the base picker should currently display as selected. If this is provided then the picker will act as a
    * controlled component.

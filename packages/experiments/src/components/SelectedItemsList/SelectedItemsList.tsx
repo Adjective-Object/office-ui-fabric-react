@@ -65,14 +65,14 @@ const _SelectedItemsList = <TItem extends BaseSelectedItem>(
     [updateItems, items]
   );
 
+  // Callbacks only used in the imperitive handle
+
   const copyItemsInSelection = React.useCallback((): void => {
     if (props.getItemCopyText && selectedIndices.length > 0) {
       const copyText = props.getItemCopyText(itemsInSelection);
       copyToClipboard(copyText);
     }
   }, [itemsInSelection, selectedIndices]);
-
-  // Callbacks only used in the imperitive handle
 
   const addItems = React.useCallback(
     (newItems: TItem[]) => {
@@ -93,7 +93,8 @@ const _SelectedItemsList = <TItem extends BaseSelectedItem>(
       itemsInSelection,
       addItems,
       unselectAll,
-      removeItems
+      removeItems,
+      copyItemsInSelection
     }),
     [items, addItems]
   );
@@ -118,7 +119,6 @@ const _SelectedItemsList = <TItem extends BaseSelectedItem>(
           removeButtonAriaLabel={props.removeButtonAriaLabel}
           onRemoveItem={onRemoveItemCallbacks[index]}
           onItemChange={replaceItem}
-          onCopyItem={copyItemsInSelection}
         />
       ))}
     </>

@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UnifiedPicker renders BaseUnifiedPicker correctly 1`] = `
+Array [
+  <div
+    className="ms-FocusZone"
+    data-focuszone-id="FocusZone0"
+    onCopy={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDownCapture={[Function]}
+    role="presentation"
+  >
+    <div
+      className="ms-SelectionZone"
+      onClick={[Function]}
+      onContextMenu={[Function]}
+      onDoubleClick={[Function]}
+      onFocusCapture={[Function]}
+      onKeyDown={[Function]}
+      onKeyDownCapture={[Function]}
+      onMouseDown={[Function]}
+      onMouseDownCapture={[Function]}
+      role="presentation"
+    >
+      <div
+        role="list"
+      >
+        <input
+          aria-expanded={false}
+          aria-haspopup="true"
+          aria-owns="suggestion-list"
+          autoCapitalize="off"
+          autoComplete="off"
+          data-lpignore={true}
+          onChange={[Function]}
+          onClick={[Function]}
+          onCompositionEnd={[Function]}
+          onCompositionStart={[Function]}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          onPaste={[Function]}
+          role="combobox"
+          value=""
+        />
+      </div>
+    </div>
+  </div>,
+  <div
+    className="ms-BasePicker ms-BaseFloatingPicker"
+  />,
+]
+`;

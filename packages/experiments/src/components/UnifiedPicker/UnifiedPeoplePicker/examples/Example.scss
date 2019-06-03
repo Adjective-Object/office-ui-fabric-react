@@ -1,0 +1,47 @@
+.headerFooterWrapper {
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+}
+
+.headerFooterSpinner {
+  padding-right: 0.5em;
+}
+
+.customSuggestionItem {
+  display: flex;
+  align-items: center;
+  padding: 0.25em;
+}
+
+.customSuggestionItemImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding-right: 0.25em;
+}
+
+.customSelectedItem {
+  display: flex;
+  align-items: center;
+  padding-left: 2px;
+  margin-right: 4;
+  height: 36px;
+  border: 1px solid #aaaaaa;
+  border-radius: 18px;
+}
+
+.customSelectedItemImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding-right: 0.25em;
+}
+
+.customSelectedItemEmoji {
+  font-size: 1.5em;
+}
+
+.customSuggestionItemEmoji {
+  font-size: 1.5em;
+}
