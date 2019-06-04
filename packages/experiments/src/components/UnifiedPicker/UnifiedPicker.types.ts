@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IFloatingSuggestionsProps } from '../FloatingSuggestions/FloatingSuggestions.types';
-import { ISelectedItemsListProps } from '../SelectedItemsList/SelectedItemsList.types';
+import { IControlledSelectedItemListProps } from '../SelectedItemsList/SelectedItemsList.types';
 import { IRefObject, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { IFocusZoneProps } from 'office-ui-fabric-react/lib/FocusZone';
 import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
@@ -13,7 +13,7 @@ import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
  */
 export type UnifiedPickerFloatingPickerProps<T> = Pick<
   IFloatingSuggestionsProps<T>,
-  'componentRef' | 'onChange' | 'inputElement' | 'suggestionItems'
+  'onSuggestionSelected' | 'inputElement' | 'isQueryForceResolveable' | 'ref'
 >;
 
 /**
@@ -21,7 +21,7 @@ export type UnifiedPickerFloatingPickerProps<T> = Pick<
  * implementing selected items component
  */
 export type UnifiedPickerSelectedItemsProps<T> = NonNullable<
-  Pick<ISelectedItemsListProps<T>, 'selection' | 'selectedItems' | 'componentRef' | 'onItemsRemoved'>
+  Pick<IControlledSelectedItemListProps<T>, 'selection' | 'selectedItems' | 'onItemsRemoved'>
 >;
 
 /**
@@ -84,6 +84,11 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
   defaultSelectedItems?: T[];
 
   /**
+   * Initial query string in the input well.
+   */
+  defaultQueryString?: string;
+
+  /**
    * A callback for when the selected list of items changes.
    */
   onChange?: (items?: T[]) => void;
@@ -106,7 +111,7 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
   /**
    * Function that specifies how the floating picker will appear.
    */
-  onRenderFloatingPicker: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
+  onRenderFloatingSuggestions: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
 
   /**
    * Function that specifies how the selected item list will appear.

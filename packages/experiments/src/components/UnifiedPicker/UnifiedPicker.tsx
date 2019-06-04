@@ -2,7 +2,7 @@ import * as React from 'react';
 import { BaseComponent, KeyCodes, classNamesFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
-import { IFloatingSuggestionsProps, FloatingSuggestions } from '../FloatingSuggestions';
+import { IFloatingSuggestionsProps, FloatingSuggestions, IFloatingSuggestions } from '../FloatingSuggestions';
 import { ISelectedItemsList } from '../SelectedItemsList';
 import { FocusZone, FocusZoneDirection, FocusZoneTabbableElements } from 'office-ui-fabric-react/lib/FocusZone';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
@@ -43,6 +43,267 @@ const DefaultUnifiedPickerFocusZone = (overriddenProps: UnifiedPickerFocusZonePr
 function isPromiseLike<T>(r: T | PromiseLike<T>): r is PromiseLike<T> {
   return !!(r && (r as { then?: Function }).then);
 }
+
+type ControlledUnifiedPickerProps<T> = Pick<
+  IUnifiedPickerProps<T>,
+  'className' | 'theme' | 'disabled' | 'styles' | 'inputProps' | 'onRenderFocusZone' | 'onRenderSelectedItems' | 'onRenderFloatingSuggestions' | 'isQueryForceResolveable'
+> & Pick<
+  Required<IUnifiedPickerProps<T>>,
+  'selectedItems'
+> & {
+  onBackspacePressedWithEmptyInput: () => void;
+  onCopy: () => void;
+  selection: Selection;
+  onSelectedItemsRemoved: (removedItems: T[]) => void;
+  canAddItems: boolean;
+  floatingSuggestionsRef: React.Ref<FloatingSuggestions<T>>,
+  onQueryStringChange: () => void,
+  onPaste: (ev: React.ClipboardEvent<Autofill | HTMLInputElement>) => void,
+  queryString: string,
+  onSuggestionSelected: (item: T) => void,
+};
+
+/**
+ * Internal controlled component for UnifiedPicker.
+ *
+ * Handles UI state for the picker. Data model is controlled by its parent, UncontrolledUnifiedPicker.
+ *
+ * Hanldes rendering and hooking up UI.
+ * @param props
+ */
+const ControlledUnifiedPicker = <T extends any>(props: ControlledUnifiedPickerProps<T>) => {
+  const {
+    className,
+    theme,
+    disabled,
+    styles,
+    inputProps,
+    onCopy,
+    selection,
+    selectedItems,
+    canAddItems,
+    onSelectedItemsRemoved,
+    onRenderFocusZone,
+    onRenderSelectedItems,
+    onRenderFloatingSuggestions,
+    queryString,
+    onQueryStringChange,
+    onPaste,
+    onSuggestionSelected,
+    isQueryForceResolveable,
+    onBackspacePressedWithEmptyInput,
+  } = props;
+  const classNames = getClassNames(styles, {
+    theme: theme!,
+    disabled,
+    className
+  });
+
+  const floatingSuggestionsRef = React.useRef<IFloatingSuggestions<T>>();
+  // create ref object as memoized value because Autofill is a class component
+  // which only accepts legacy refs. (e.g. not useRef)
+  //
+  // TODO fix this once Autofill is hookified.
+  const autofillRef = React.useMemo(() => React.createRef<Autofill>(), []);
+
+  /**
+   * Calls parent onBackspace behaviour when backspace is pressed in the focus zone
+   */
+  const callParentIfBackspacePressed = React.useCallback(
+    (ev: React.KeyboardEvent<HTMLElement>) => {
+      if (ev.which === KeyCodes.backspace && autofillRef.current && autofillRef.current.value === '') {
+        props.onBackspacePressedWithEmptyInput();
+
+        if (floatingSuggestionsRef.current) {
+          floatingSuggestionsRef.current.hidePicker();
+        }
+      }
+
+
+    },
+    [props.onBackspacePressedWithEmptyInput]
+  );
+
+  /**
+   * Show the suggestions and clear the selected items in the well when the input is clicked
+   */
+  const clearSelectionAndShowSuggestions = React.useCallback(() => {
+      selection.setAllSelected(false);
+      floatingSuggestionsRef.current && floatingSuggestionsRef.current.showPicker();
+    }, [floatingSuggestionsRef, selection]
+  );
+
+  /**
+   * Calculates the global ID of the suggestion that is "active" right now.
+   *
+   * note: depends on only one suggestion being open at a time on the page.
+   * We may need to amend SuggestionStore to support prefixed ID spaces for
+   * activeDescendant.
+   */
+  const activeDescendant = React.useMemo(() =>
+    floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex !== -1
+      ? 'sug-' + floatingSuggestionsRef.current.currentSelectedSuggestionIndex
+      : undefined, [
+      floatingSuggestionsRef,
+      floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex
+    ]);
+
+  const FocusZoneComponent = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
+  const FloatingSuggestions = onRenderFloatingSuggestions;
+  const SelectedItems = onRenderSelectedItems;
+
+  return (
+    <>
+      <FocusZoneComponent
+        className={classNames.root}
+        direction={FocusZoneDirection.bidirectional}
+        onKeyDown={callParentIfBackspacePressed}
+        onCopy={onCopy}
+      >
+        <SelectionZone selection={selection} selectionMode={SelectionMode.multiple}>
+          <div className={classNames.pickerWell} role={'list'}>
+          <SelectedItems
+              selection={selection}
+              selectedItems={selectedItems}
+              onItemsRemoved={onSelectedItemsRemoved}
+            />
+            {canAddItems && (
+              <Autofill
+                {...inputProps as IInputProps}
+                ref={autofillRef}
+                className={classNames.input}
+                value={queryString}
+                onChange={onQueryStringChange}
+                onFocus={clearSelectionAndShowSuggestions}
+                onClick={clearSelectionAndShowSuggestions}
+                onInputValueChange={onQueryStringChange}
+                aria-activedescendant={activeDescendant}
+                aria-owns="suggestion-list"
+                aria-expanded={floatingSuggestionsRef.current ? floatingSuggestionsRef.current.isSuggestionsShown : false}
+                aria-haspopup="true"
+                autoCapitalize="off"
+                autoComplete="off"
+                role="combobox"
+                disabled={disabled}
+                onPaste={onPaste}
+              />
+            )}
+          </div>
+        </SelectionZone>
+      </FocusZoneComponent>
+      {canAddItems && autofillRef && autofillRef.current && <FloatingSuggestions
+        ref={floatingSuggestionsRef}
+        inputElement={autofillRef.current.inputElement}
+        onSuggestionSelected={onSuggestionSelected}
+        isQueryForceResolveable={isQueryForceResolveable}
+      />}
+    </>
+  );
+};
+
+const UncontrolledUnifiedPicker = React.forwardRef(<T extends any>(props: IUnifiedPickerProps<T>) => {
+  const { defaultSelectedItems, defaultQueryString } = props;
+
+  const [selectedItems, setSelectedItems] = React.useState(defaultSelectedItems || []);
+  const [queryString, updateQueryString] = React.useState(defaultQueryString || '');
+  const selection = React.useMemo(() => new Selection(), []);
+
+  const removeLastItem = React.useCallback(() => {
+    if (selectedItems.length) {
+      setSelectedItems(selectedItems.slice(0, selectedItems.length - 1));
+    }
+  }, [selectedItems]);
+
+  const onSelectedItemsRemoved = React.useCallback((removedItems: T[]) => {
+    console.log('unifiedPicker onSelectedItemsRemoved called', removedItems);
+    // Update internal state if it is tracked at all
+      const nextSelectedItems = selectedItems.filter(i => removedItems.indexOf(i) === -1);
+      if (nextSelectedItems.length !== selectedItems.length - removedItems.length) {
+        console.error('UnifiedPicker onSelectedItemsRemoved called on some item not in the current state');
+      }
+      setSelectedItems(nextSelectedItems);
+  }, [selectedItems])
+
+  const onPaste = React.useCallback((ev: React.ClipboardEvent<Autofill | HTMLInputElement>) => {
+    if (this.props.onPaste) {
+      const inputText = ev.clipboardData.getData('Text');
+      ev.preventDefault();
+      this.props.onPaste(inputText);
+    }
+  })
+
+  const onCopy = React.useCallback(() => {
+    // TODO call into SelecteditemsList.
+  }, [selectedItems]);
+
+  return <ControlledUnifiedPicker
+    // state
+    selection={selection}
+    selectedItems={selectedItems}
+    queryString={queryString}
+    canAddItems={props.itemLimit === undefined || selectedItems.length < props.itemLimit}
+    // state manipulation callbacks
+    onBackspacePressedWithEmptyInput={removeLastItem}
+    onSelectedItemsRemoved={onSelectedItemsRemoved}
+    onQueryStringChange={updateQueryString}
+    onCopy={onCopy}
+    // Styling props
+    className={props.className}
+    theme={props.theme}
+    disabled={props.disabled}
+    styles={props.styles}
+    // This prop bag should be DI'd out
+    inputProps={props.inputProps}
+    // Render props
+    onRenderFocusZone={props.onRenderFocusZone}
+    onRenderSelectedItems={props.onRenderSelectedItems}
+    onRenderFloatingSuggestions={props.onRenderFloatingSuggestions}
+    // ---
+
+    onPaste={props.onPaste}
+    onSuggestionSelected={props.onSuggestionSelected}
+    isQueryForceResolveable={props.isQueryForceResolveable}
+  />
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, IUnifiedPickerState<T>> implements IUnifiedPicker<T> {
   /**
@@ -174,11 +435,11 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
   }
 
   private _renderFloatingPicker(): JSX.Element {
-    const FloatingPicker: React.ComponentType<Partial<IFloatingSuggestionsProps<T>>> = this.props.onRenderFloatingPicker;
+    const FloatingPicker: React.ComponentType<Partial<IFloatingSuggestionsProps<T>>> = this.props.onRenderFloatingSuggestions;
     return (
       <FloatingPicker
-        componentRef={this.floatingPicker}
-        onChange={this._onSuggestionSelected}
+        ref={this.floatingPicker}
+        onSuggestionSelected={this._onSuggestionSelected}
         inputElement={this.inputElement}
         suggestionItems={this.props.suggestionItems ? this.props.suggestionItems : undefined}
         isQueryForceResolveable={this.props.isQueryForceResolveable}
@@ -189,16 +450,11 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
   private _renderSelectedItemsList(): JSX.Element {
     const SelectedItems = this.props.onRenderSelectedItems;
     return (
-      <SelectedItems
-        componentRef={this.selectedItemsList}
-        selection={this.selection}
-        selectedItems={this.props.selectedItems || this.state.selectedItems || undefined}
-        onItemsRemoved={this._onSelectedItemsRemoved}
-      />
     );
   }
 
   private _onSelectedItemsRemoved = (removedItems: T[]) => {
+    console.log('unifiedPicker onSelectedItemsRemoved called', removedItems);
     // Update internal state if it is tracked at all
     if (this.state.selectedItems !== null) {
       const nextSelectedItems = this.state.selectedItems.filter(i => removedItems.indexOf(i) === -1);
@@ -270,13 +526,6 @@ export class UnifiedPickerImpl<T> extends BaseComponent<IUnifiedPickerProps<T>, 
 
     if (this.floatingPicker.current) {
       this.floatingPicker.current.hidePicker();
-    }
-  };
-
-  private onCopy = (ev: React.ClipboardEvent<HTMLElement>): void => {
-    const selectedItemsRef = this.selectedItemsList.current;
-    if (selectedItemsRef) {
-      selectedItemsRef.copyItemsInSelectionToClipboard();
     }
   };
 

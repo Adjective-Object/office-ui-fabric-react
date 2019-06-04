@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { IPickerItemProps } from 'office-ui-fabric-react/lib/Pickers';
 import { Selection } from 'office-ui-fabric-react/lib/Selection';
-import { IRefObject } from 'office-ui-fabric-react/lib/Utilities';
 
 export interface ISelectedItemsList<T> {
   /**
@@ -45,16 +44,10 @@ export type BaseSelectedItem = {
   key?: React.Key;
 };
 
-// Type T is the type of the item that is displayed
-// For example, if the picker is displaying persona's than type T could either be of Persona or Ipersona props
-// tslint:disable-next-line:no-any
-export interface ISelectedItemsListProps<T> extends React.ClassAttributes<any> {
-  componentRef?: IRefObject<ISelectedItemsList<T>>;
-
-  /**
-   * The selection
-   */
-  selection?: Selection;
+/**
+ * Props that are constant on the selected item list when used as controlled or uncontrolled.
+ */
+export interface ICommonSelectedItemListProps<T> {
   /**
    * Gets the copy text that will be set in the item.
    */
@@ -64,32 +57,56 @@ export interface ISelectedItemsListProps<T> extends React.ClassAttributes<any> {
    */
   onRenderItem: React.ComponentType<ISelectedItemProps<T>>;
   /**
-   * Initial items that have already been selected and should appear in the people picker.
-   */
-  defaultSelectedItems?: T[];
-  /**
-   * A callback for when the selected list of items changes.
-   */
-  onChange?: (items?: T[]) => void;
-  /**
-   * The items that the base picker should currently display as selected. If this is provided then the picker will act as a
-   * controlled component.
-   */
-  selectedItems?: T[];
-
-  /**
    * Aria label for the 'X' button in the selected item component.
    * @defaultvalue ''
    */
   removeButtonAriaLabel?: string;
 
   /**
-   * A callback when and item or items are removed
-   */
-  onItemsRemoved?: (removedItems: T[]) => void;
-
-  /**
    * A callback on whether this item can be removed
    */
   canRemoveItem?: (item: T) => boolean;
 }
+
+/**
+ * Legal props for the selecte items list hwen used as a controlled (managed) component.
+ */
+export interface IControlledSelectedItemListProps<T> extends ICommonSelectedItemListProps<T> {
+  /**
+   * The selection
+   */
+  selection: Selection;
+  /**
+   * The items that the base picker should currently display as selected.
+   * controlled component.
+   */
+  selectedItems: T[];
+  /**
+   * A callback when and item or items are removed
+   */
+  onItemsRemoved: (removedItems: T[]) => void;
+  /**
+   * A callback for when an item is changed
+   */
+  onItemChange: (newItem: T, index: number) => void;
+}
+
+/**
+ * Legal props for the selected items list when used as an uncontrolled (self-managing) component
+ */
+export interface IUncontrolledSelectedItemListProps<T> extends ICommonSelectedItemListProps<T> {
+  /**
+   * The selection
+   */
+  selection?: Selection;
+  /**
+   * Initial items that have already been selected and should appear in the list.
+   */
+  defaultSelectedItems?: T[];
+  /**
+   * A callback for when the selected list of items changes.
+   */
+  onChange?: (items?: T[]) => void;
+}
+
+export type ISelectedItemsListProps<T> = IUncontrolledSelectedItemListProps<T> | IControlledSelectedItemListProps<T>;

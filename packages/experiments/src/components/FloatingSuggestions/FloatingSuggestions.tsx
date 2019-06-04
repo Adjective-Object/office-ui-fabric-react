@@ -211,8 +211,8 @@ export class FloatingSuggestions<TItem> extends BaseComponent<IFloatingSuggestio
   }
 
   private _onChange(item: TItem): void {
-    if (this.props.onChange) {
-      this.props.onChange(item);
+    if (this.props.onSuggestionSelected) {
+      this.props.onSuggestionSelected(item);
     }
   }
 

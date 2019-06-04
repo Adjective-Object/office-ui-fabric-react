@@ -25,14 +25,15 @@ export interface IFloatingSuggestions<TItem> {
 
   /** Gets the input text */
   inputText: string;
+
+  /** Gets the current selected index in the suggestions box*/
+  currentSelectedSuggestionIndex: number;
 }
 
 // Type T is the type of the item that is displayed
 // and searched for by the people picker. For example, if the picker is
 // displaying persona's than type T could either be of Persona or Ipersona props
 export interface IFloatingSuggestionsProps<T> extends React.ClassAttributes<any> {
-  componentRef?: IRefObject<IFloatingSuggestions<T>>;
-
   /**
    * The suggestions store
    */
@@ -75,7 +76,7 @@ export interface IFloatingSuggestionsProps<T> extends React.ClassAttributes<any>
   /**
    * A callback for when a suggestion is clicked
    */
-  onChange?: (item: T) => void;
+  onSuggestionSelected?: (item: T) => void;
 
   /**
    * ClassName for the picker.
