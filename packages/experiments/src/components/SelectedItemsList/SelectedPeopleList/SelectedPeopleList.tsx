@@ -4,7 +4,6 @@ import * as React from 'react';
 import { SelectedItemsList } from '../SelectedItemsList';
 import { SelectedPersona } from './Items/SelectedPersona';
 import {
-  ISelectedItemsListProps,
   ISelectedItemsList,
   BaseSelectedItem,
   IUncontrolledSelectedItemListProps,
@@ -30,14 +29,6 @@ export const SelectedPeopleList = React.forwardRef(
     props: ISelectedPeopleListProps<TPersona>,
     ref: React.Ref<ISelectedPeopleList<TPersona>>
   ) => {
-    // Generics are not preserved in higher-order functions. Here we cast the component to the specific
-    // instance of the generic type we need here.
-    //
-    // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
-    // but oufr currently runs on typescript 3.3.3
-    const SelectedPersonaList = SelectedItemsList as React.ForwardRefExoticComponent<
-      React.RefAttributes<ISelectedItemsList<TPersona>> & React.PropsWithoutRef<ISelectedItemsListProps<TPersona>>
-    >;
-    return <SelectedPersonaList ref={ref} {...props} onRenderItem={props.onRenderItem || SelectedPersona} />;
+    return <SelectedItemsList<TPersona> ref={ref} {...props} onRenderItem={props.onRenderItem || SelectedPersona} />;
   }
 );

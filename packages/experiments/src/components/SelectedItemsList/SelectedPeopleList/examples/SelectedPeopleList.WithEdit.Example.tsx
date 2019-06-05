@@ -10,7 +10,7 @@ import { EditableItem } from '../../Items/EditableItem';
 import { DefaultEditingItem } from '../../Items/subcomponents/DefaultEditingItem';
 import { FloatingPeopleSuggestions } from '../../../FloatingSuggestions/FloatingPeopleSuggestions/FloatingPeopleSuggestions';
 import { SuggestionsStore } from '../../../FloatingSuggestions/Suggestions/SuggestionsStore';
-import { EditingItemInnerFloatingPickerProps } from '../../Items/subcomponents/DefaultEditingItem';
+import { EditingItemInnerFloatingSuggestionsProps } from '../../Items/subcomponents/DefaultEditingItem';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 import { TriggerOnContextMenu } from '../../Items/TriggerOnContextMenu';
 
@@ -34,7 +34,7 @@ export class SelectedPeopleListWithEditExample extends React.Component<{}, IPeop
     itemComponent: TriggerOnContextMenu(SelectedPersona),
     editingItemComponent: DefaultEditingItem({
       getEditingItemText: persona => persona.text || '',
-      onRenderFloatingPicker: (props: EditingItemInnerFloatingPickerProps<IPersonaProps>) => (
+      onRenderFloatingSuggestions: (props: EditingItemInnerFloatingSuggestionsProps<IPersonaProps>) => (
         <FloatingPeopleSuggestions
           {...props}
           suggestionsStore={this.suggestionsStore}

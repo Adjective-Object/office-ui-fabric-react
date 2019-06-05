@@ -3,7 +3,7 @@ import { Autofill } from 'office-ui-fabric-react/lib/Autofill';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IFloatingSuggestionsProps } from '../FloatingSuggestions/FloatingSuggestions.types';
 import { IControlledSelectedItemListProps } from '../SelectedItemsList/SelectedItemsList.types';
-import { IRefObject, IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
+import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 import { IFocusZoneProps } from 'office-ui-fabric-react/lib/FocusZone';
 import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
 
@@ -13,7 +13,7 @@ import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
  */
 export type UnifiedPickerFloatingPickerProps<T> = Pick<
   IFloatingSuggestionsProps<T>,
-  'onSuggestionSelected' | 'inputElement' | 'isQueryForceResolveable' | 'ref'
+  'onSuggestionSelected' | 'inputElement' | 'isQueryForceResolveable'
 >;
 
 /**
@@ -30,13 +30,24 @@ export type UnifiedPickerSelectedItemsProps<T> = NonNullable<
  */
 export type UnifiedPickerFocusZoneProps = Pick<IFocusZoneProps, 'direction' | 'onKeyDown' | 'onCopy' | 'className'>;
 
-export interface IUnifiedPicker<T> {
+/**
+ * Ref to the controlled unified picker
+ */
+export interface IControlledUnifiedPicker<TSelectedItem, TSuggestedItem> {
+  /** Sets focus to the input. */
+  focusInput: () => void;
+}
+
+/**
+ * Ref to the uncontrolled unified picker
+ */
+export interface IUncontrolledUnifiedPicker<TSelectedItem, TSuggestedItem> {
+  /** Sets focus to the input. */
+  focusInput: () => void;
   /** Forces the picker to resolve */
   forceResolve?: () => void;
   /** Gets the current value of the input. */
-  value: T[] | undefined;
-  /** Sets focus to the input. */
-  focus: () => void;
+  value: TSelectedItem[];
 }
 
 /**
@@ -64,24 +75,123 @@ export interface IUnifiedPickerComponentPassthroughProps {
   disabled?: boolean;
 }
 
-// Type T is the type of the item that is displayed
-// and searched for by the people picker. For example, if the picker is
-// displaying persona's than type T could either be of Persona or Ipersona props
-export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthroughProps {
+/**
+ * Props common to the ControlledUnifiedPicker and UncontrolledUnifiedPicker
+ */
+export interface IUnifiedPickerCommonProps<TSelectedItem, TSuggestedItem = TSelectedItem> extends IUnifiedPickerComponentPassthroughProps {
   /**
-   * Ref of the component
+   * Autofill input native props
+   * @defaultvalue undefined
    */
-  componentRef?: IRefObject<IUnifiedPicker<T>>;
+  inputProps?: IInputProps;
 
   /**
-   * Header/title element for the picker
+   * Function that specifies how the focus zone wrapping the whole component should render.
    */
-  headerComponent?: JSX.Element;
+  onRenderFocusZone?: React.ComponentType<UnifiedPickerFocusZoneProps>;
 
+  /**
+   * Function that specifies how the selected item list will appear.
+   */
+  onRenderSelectedItems: React.ComponentType<UnifiedPickerSelectedItemsProps<TSelectedItem>>;
+
+  /**
+   * Function that specifies how the floating picker will appear.
+   */
+  onRenderFloatingSuggestions: React.ComponentType<UnifiedPickerFloatingPickerProps<TSuggestedItem>>;
+
+  /**
+   * If the current query can be force resolved.
+   *
+   * TODO this should probably be a boolean on the controlled component.
+   */
+  isQueryForceResolveable?: (query: string) => boolean;
+}
+
+type ProcessSelectedItem<TSelectedItem, TSuggestedItem> = {
+  /**
+   * A callback to process a selection after the user selects a suggestion from the picker.
+   * The returned item will be added to the selected items list
+   *
+   * @default identity
+   */
+  processSelectedItem?: (selectedItem?: TSuggestedItem) => TSelectedItem | PromiseLike<TSelectedItem>;
+};
+
+export interface IControlledUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem>
+  extends IUnifiedPickerCommonProps<TSelectedItem, TSuggestedItem> {
+  /**
+   * The current query string
+   */
+  queryString: string;
+
+  /**
+   * The list of items that has been selected so far
+   */
+  selectedItems: TSelectedItem[];
+
+  /**
+   * Whether or not items can be added to the well.
+   *
+   * Dictates if the input field and floating suggestions will be rendered
+   */
+  canAddItems: boolean;
+
+  /**
+   * Callback for when a selected item is removed from the well
+   */
+  onSelectedItemsRemoved: (removedItems: TSelectedItem[]) => void;
+
+  /**
+   * Callback for when the query string is updated
+   */
+  onQueryStringChange: (newValue: string) => void;
+
+  /**
+   * Callback for when something is pasted into the input well of the picker
+   */
+  onPaste: (ev: React.ClipboardEvent<Autofill | HTMLInputElement>) => void;
+
+  /**
+   * Callback for when an item is selected from the suggestions in the picker
+   */
+  onSuggestionSelected: (item: TSuggestedItem) => void;
+
+  /**
+   * If the current query can be force resolved.
+   */
+  isQueryForceResolveable?: (query: string) => boolean;
+
+  /**
+   * Autofill input native props
+   * @defaultvalue undefined
+   */
+  inputProps?: IInputProps;
+
+  /**
+   * Function that specifies how the focus zone wrapping the whole component should render.
+   */
+  onRenderFocusZone?: React.ComponentType<UnifiedPickerFocusZoneProps>;
+
+  /**
+   * Function that specifies how the selected item list will appear.
+   */
+  onRenderSelectedItems: React.ComponentType<UnifiedPickerSelectedItemsProps<TSelectedItem>>;
+
+  /**
+   * Function that specifies how the floating picker will appear.
+   */
+  onRenderFloatingSuggestions: React.ComponentType<UnifiedPickerFloatingPickerProps<TSuggestedItem>>;
+}
+
+export type IUncontrolledUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem> = IUnifiedPickerCommonProps<
+  TSelectedItem,
+  TSuggestedItem
+> & {
   /**
    * Initial items that have already been selected and should appear in the people picker.
    */
-  defaultSelectedItems?: T[];
+  defaultSelectedItems?: TSelectedItem[];
 
   /**
    * Initial query string in the input well.
@@ -91,86 +201,28 @@ export interface IUnifiedPickerProps<T> extends IUnifiedPickerComponentPassthrou
   /**
    * A callback for when the selected list of items changes.
    */
-  onChange?: (items?: T[]) => void;
+  onChange?: (items?: TSelectedItem[]) => void;
 
   /**
-   * A callback for when text is pasted into the input
+   * Convert a pasted item to a new value
    */
-  onPaste?: (pastedText: string) => T[];
-
-  /**
-   * A callback for when the user put focus on the picker
-   */
-  onFocus?: React.FocusEventHandler<HTMLInputElement | Autofill>;
-
-  /**
-   * A callback for when the user moves the focus away from the picker
-   */
-  onBlur?: React.FocusEventHandler<HTMLInputElement | Autofill>;
-
-  /**
-   * Function that specifies how the floating picker will appear.
-   */
-  onRenderFloatingSuggestions: React.ComponentType<UnifiedPickerFloatingPickerProps<T>>;
-
-  /**
-   * Function that specifies how the selected item list will appear.
-   */
-  onRenderSelectedItems: React.ComponentType<UnifiedPickerSelectedItemsProps<T>>;
-
-  /**
-   * Autofill input native props
-   * @defaultvalue undefined
-   */
-  inputProps?: IInputProps;
+  createItemFromPasteData?: (pasteData: DataTransfer) => TSelectedItem | PromiseLike<TSelectedItem>;
 
   /**
    * Restrict the amount of selectable items.
    * @defaultvalue undefined
    */
   itemLimit?: number;
+  // ProcessSelectedItem is optional if the consumer
+  // has a suggested item type that is assignable to
+  // the selected item type.
+} & (TSelectedItem extends TSuggestedItem
+    ? ProcessSelectedItem<TSelectedItem, TSuggestedItem>
+    : Required<ProcessSelectedItem<TSelectedItem, TSuggestedItem>>);
 
-  /**
-   * A callback to process a selection after the user selects a suggestion from the picker.
-   * The returned item will be added to the selected items list
-   */
-  onItemSelected?: (selectedItem?: T) => T | PromiseLike<T>;
-
-  /**
-   * A callback on when an item was added to the selected item list
-   */
-  onItemAdded?: (addedItem: T) => void;
-
-  /**
-   * A callback on when an item or items were removed from the selected item list
-   */
-  onItemsRemoved?: (removedItems: T[]) => void;
-
-  /**
-   * If using as a controlled component use selectedItems here instead of the SelectedItemsList
-   */
-  selectedItems?: T[];
-
-  /**
-   * If using as a controlled component use suggestionItems here instead of FloatingPicker
-   */
-  suggestionItems?: T[];
-
-  /**
-   * Focus zone props
-   */
-  onRenderFocusZone?: React.ComponentType<UnifiedPickerFocusZoneProps>;
-
-  /**
-   * Current rendered query string that's corealte to current rendered result
-   **/
-  currentRenderedQueryString?: string;
-
-  /**
-   * If the current query can be force resolved.
-   */
-  isQueryForceResolveable?: (query: string) => boolean;
-}
+export type IUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem> =
+  | IUncontrolledUnifiedPickerProps<TSelectedItem, TSuggestedItem>
+  | IControlledUnifiedPickerProps<TSelectedItem, TSuggestedItem>;
 
 /**
  * Input to generate styles for a unified picker

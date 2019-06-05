@@ -7,14 +7,14 @@ import { SelectedPeopleList, ISelectedPeopleList } from '../SelectedPeopleList';
 import { Selection } from 'office-ui-fabric-react/lib/Selection';
 import { SelectedPersona } from '../Items/SelectedPersona';
 import { ItemWithContextMenu } from '../../Items/ItemWithContextMenu';
-import { copyToClipboard } from '../../utils/copyToClipboard';
 import { EditableItem } from '../../Items/EditableItem';
 import { DefaultEditingItem } from '../../Items/subcomponents/DefaultEditingItem';
-import { EditingItemInnerFloatingPickerProps } from '../../Items/subcomponents/DefaultEditingItem';
+import { EditingItemInnerFloatingSuggestionsProps } from '../../Items/subcomponents/DefaultEditingItem';
 import { FloatingPeopleSuggestions } from '../../../FloatingSuggestions/FloatingPeopleSuggestions/FloatingPeopleSuggestions';
 import { SuggestionsStore } from '../../../FloatingSuggestions/Suggestions/SuggestionsStore';
 import { ExampleSuggestionsModel } from './ExampleSuggestionsModel';
 import { TriggerOnContextMenu } from '../../Items/TriggerOnContextMenu';
+import { copyToClipboard } from '@uifabric/experiments/lib/utilities/copyToClipboard';
 
 export interface IPeopleSelectedItemsListExampleState {
   currentSelectedItems: IPersonaProps[];
@@ -35,7 +35,7 @@ export class SelectedPeopleListWithEditInContextMenuExample extends React.Compon
   private EditableItemWithContextMenu = EditableItem({
     editingItemComponent: DefaultEditingItem({
       getEditingItemText: (persona: IPersonaProps) => persona.text || '',
-      onRenderFloatingPicker: (props: EditingItemInnerFloatingPickerProps<IPersonaProps>) => (
+      onRenderFloatingSuggestions: (props: EditingItemInnerFloatingSuggestionsProps<IPersonaProps>) => (
         <FloatingPeopleSuggestions
           {...props}
           suggestionsStore={this.suggestionsStore}

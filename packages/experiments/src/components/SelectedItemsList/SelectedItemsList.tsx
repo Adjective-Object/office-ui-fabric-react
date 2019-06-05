@@ -3,6 +3,7 @@ import { Selection, SELECTION_CHANGE } from 'office-ui-fabric-react/lib/Selectio
 
 import {
   ISelectedItemsList,
+  IControlledSelectedItemsList,
   IControlledSelectedItemListProps,
   IUncontrolledSelectedItemListProps,
   ISelectedItemsListProps,
@@ -10,6 +11,7 @@ import {
 } from './SelectedItemsList.types';
 import { copyToClipboard } from '../../utilities/copyToClipboard';
 import { EventGroup } from '@uifabric/utilities/lib/EventGroup';
+import { PropsOf } from '../UnifiedPicker/ComposingUnifiedPicker.types';
 
 /**
  * Uses selection indeces as its own thing
@@ -42,39 +44,64 @@ const useSelectionIndeces = (selection: Selection): number[] => {
 /**
  * An externally-managed selected item list.
  */
-const ControlledSelectedItemsList = <TItem extends BaseSelectedItem>(props: IControlledSelectedItemListProps<TItem>) => {
-  const selectedIndeces = useSelectionIndeces(props.selection);
-  // Synchronize the selection against the items in the selection
-  React.useEffect(() => {
-    props.selection.setItems(props.selectedItems);
-  });
+const ControlledSelectedItemsList = React.forwardRef(
+  <TItem extends BaseSelectedItem>(props: IControlledSelectedItemListProps<TItem>, ref: React.Ref<IControlledSelectedItemsList>) => {
+    const selectedIndices = useSelectionIndeces(props.selection);
+    // Synchronize the selection against the items in the selection
+    React.useEffect(() => {
+      props.selection.setItems(props.selectedItems);
+    });
 
-  const onRemoveItemCallbacks = React.useMemo(
-    () =>
-      // create callbacks ahead of time with memo.
-      // (hooks have to be called in the same order)
-      props.selectedItems.map((item: TItem) => () => props.onItemsRemoved([item])),
-    [props.selectedItems]
-  );
+    const onRemoveItemCallbacks = React.useMemo(
+      () =>
+        // create callbacks ahead of time with memo.
+        // (hooks have to be called in the same order)
+        props.selectedItems.map((item: TItem) => () => props.onItemsRemoved([item])),
+      [props.selectedItems]
+    );
 
-  const SelectedItem = props.onRenderItem;
-  return (
-    <>
-      {props.selectedItems.map((item: TItem, index: number) => (
-        <SelectedItem
-          item={item}
-          index={index}
-          key={item.key !== undefined ? item.key : index}
-          selected={selectedIndeces.indexOf(index) !== -1}
-          removeButtonAriaLabel={props.removeButtonAriaLabel}
-          onRemoveItem={onRemoveItemCallbacks[index]}
-          onItemChange={props.onItemChange}
-        />
-      ))}
-    </>
-  );
-};
+    // only used in the imperitive handle
+    const copyItemsInSelectionToClipboard = React.useCallback((): void => {
+      if (props.getItemCopyText && selectedIndices.length > 0) {
+        const itemsInSelection = selectedIndices.map(itemIndex => props.selectedItems[itemIndex]);
+        const copyText = props.getItemCopyText(itemsInSelection);
+        copyToClipboard(copyText);
+      }
+    }, [props.selectedItems, selectedIndices]);
 
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        copyItemsInSelectionToClipboard
+      }),
+      [copyItemsInSelectionToClipboard]
+    );
+
+    const SelectedItem = props.onRenderItem;
+    return (
+      <>
+        {props.selectedItems.map((item: TItem, index: number) => (
+          <SelectedItem
+            item={item}
+            index={index}
+            key={item.key !== undefined ? item.key : index}
+            selected={selectedIndices.indexOf(index) !== -1}
+            removeButtonAriaLabel={props.removeButtonAriaLabel}
+            onRemoveItem={onRemoveItemCallbacks[index]}
+            onItemChange={props.onItemChange}
+          />
+        ))}
+      </>
+    );
+  }
+  // Cast back to a generic function type, since typescript <3.4 collapses generics on higher-order functions
+  // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
+) as <TItem extends BaseSelectedItem>(
+  props: IControlledSelectedItemListProps<TItem> & React.RefAttributes<IControlledSelectedItemsList>
+) => React.ReactElement;
+export type ControlledSelectedItemsList<TItem extends BaseSelectedItem> = (
+  props: IControlledSelectedItemListProps<TItem> & React.RefAttributes<IControlledSelectedItemsList>
+) => React.ReactElement;
 /**
  * A self-managed selected item list.
  */
@@ -113,13 +140,6 @@ const UncontrolledSelectedItemsList = React.forwardRef(
     );
 
     // Callbacks only used in the imperative handle
-    const copyItemsInSelectionToClipboard = React.useCallback((): void => {
-      if (props.getItemCopyText && selectedIndices.length > 0) {
-        const copyText = props.getItemCopyText(itemsInSelection);
-        copyToClipboard(copyText);
-      }
-    }, [itemsInSelection, selectedIndices]);
-
     const addItems = React.useCallback(
       (newItems: TItem[]) => {
         updateItems(items.concat(newItems));
@@ -130,6 +150,11 @@ const UncontrolledSelectedItemsList = React.forwardRef(
     const unselectAll = React.useCallback(() => {
       selection.setAllSelected(false);
     }, [items]);
+
+    const controlledRef = React.useRef<IControlledSelectedItemsList>(null);
+    const copyItemsInSelectionToClipboard = React.useCallback(() => {
+      controlledRef.current && controlledRef.current.copyItemsInSelectionToClipboard();
+    }, [controlledRef]);
 
     // For usage as a controlled component with a ref
     React.useImperativeHandle(
@@ -142,11 +167,12 @@ const UncontrolledSelectedItemsList = React.forwardRef(
         removeItems,
         copyItemsInSelectionToClipboard
       }),
-      [items, addItems]
+      [items, itemsInSelection, addItems, unselectAll, removeItems, copyItemsInSelectionToClipboard]
     );
 
     return (
       <ControlledSelectedItemsList<TItem>
+        ref={controlledRef}
         // passthrough props
         getItemCopyText={props.getItemCopyText}
         onRenderItem={props.onRenderItem}
@@ -160,40 +186,28 @@ const UncontrolledSelectedItemsList = React.forwardRef(
       />
     );
   }
-);
-
-type UncontrolledSelectedItemsList<T extends BaseSelectedItem> = React.RefForwardingComponent<
-  ISelectedItemsList<T>,
-  IUncontrolledSelectedItemListProps<T>
->;
+  // Cast back to a generic function type, since typescript <3.4 collapses generics on higher-order functions
+  // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
+) as <TItem extends BaseSelectedItem>(
+  props: IUncontrolledSelectedItemListProps<TItem> & React.RefAttributes<ISelectedItemsList<TItem>>
+) => React.ReactElement;
+export type UncontrolledSelectedItemsList<TItem extends BaseSelectedItem> = (
+  props: IUncontrolledSelectedItemListProps<TItem> & React.RefAttributes<ISelectedItemsList<TItem>>
+) => React.ReactElement;
 
 const isControlledSelectedItemList = <T extends BaseSelectedItem>(
   props: IControlledSelectedItemListProps<T> | IUncontrolledSelectedItemListProps<T>
 ): props is IControlledSelectedItemListProps<T> => (props as any).selectedItems !== undefined;
 
-const _SelectedItemsList = <TItem extends BaseSelectedItem>(
-  props: ISelectedItemsListProps<TItem>,
-  ref: React.Ref<ISelectedItemsList<TItem>>
-) => {
-  // Generics are not preserved in higher-order functions. Here we cast the component to the specific
-  // instance of the generic type we need here.
-  //
-  // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
-  // but oufr currently runs on typescript 3.3.3
-  const TypedUncontrolledSelectedItemsList = UncontrolledSelectedItemsList as React.ForwardRefExoticComponent<
-    React.RefAttributes<ISelectedItemsList<TItem>> & React.PropsWithoutRef<IUncontrolledSelectedItemListProps<TItem>>
-  >;
-
-  if (isControlledSelectedItemList<TItem>(props)) {
-    return <ControlledSelectedItemsList<TItem> {...props} />;
-  } else {
-    return <TypedUncontrolledSelectedItemsList ref={ref} {...props} />;
+export const SelectedItemsList = React.forwardRef(
+  <TItem extends BaseSelectedItem>(props: ISelectedItemsListProps<TItem>, ref: React.Ref<ISelectedItemsList<TItem>>) => {
+    if (isControlledSelectedItemList<TItem>(props)) {
+      return <ControlledSelectedItemsList<TItem> ref={ref} {...props} />;
+    } else {
+      return <UncontrolledSelectedItemsList<TItem> ref={ref} {...props} />;
+    }
   }
-};
-
-// Typescript only respects unifying a generic type with a generic const _function_ of the same name for function types.
-// In order to satisfy the type checker, here we lie about the type of the const so that it is still a generic function.
-//
-// This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4, but oufr currnetly runs on typescript 3.3.3
-export type SelectedItemsList<TItem extends BaseSelectedItem> = React.Component<ISelectedItemsListProps<TItem>>;
-export const SelectedItemsList = React.forwardRef(_SelectedItemsList) as (typeof _SelectedItemsList);
+  // Cast back to a generic function type, since typescript <3.4 collapses generics on higher-order functions
+  // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
+) as <T>(props: PropsOf<UncontrolledSelectedItemsList<T>> | PropsOf<ControlledSelectedItemsList<T>>) => React.ReactElement;
+export type SelectedItemsList<TItem extends BaseSelectedItem> = ControlledSelectedItemsList<TItem> | UncontrolledSelectedItemsList<TItem>;

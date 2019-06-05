@@ -2,6 +2,9 @@ import * as React from 'react';
 import { IPickerItemProps } from 'office-ui-fabric-react/lib/Pickers';
 import { Selection } from 'office-ui-fabric-react/lib/Selection';
 
+/**
+ * Ref type of the UncontrolledSelectedItemList
+ */
 export interface ISelectedItemsList<T> {
   /**
    * Current value of the input
@@ -27,6 +30,16 @@ export interface ISelectedItemsList<T> {
    * Removes items from the selection
    */
   removeItems: (items: T[]) => void;
+  /**
+   * Copies the current selected items to the clipboard.
+   */
+  copyItemsInSelectionToClipboard: () => void;
+}
+
+/**
+ * Ref type of the ControlledSelectedItemList
+ */
+export interface IControlledSelectedItemsList {
   /**
    * Copies the current selected items to the clipboard.
    */

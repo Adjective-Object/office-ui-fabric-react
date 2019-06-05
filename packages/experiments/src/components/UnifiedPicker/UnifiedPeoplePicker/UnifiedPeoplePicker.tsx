@@ -5,19 +5,17 @@ import { DefaultPeopleSuggestionsItem } from '../../FloatingSuggestions/Floating
 import { ComposingUnifiedPicker } from '../ComposingUnifiedPicker';
 import { SelectedPersona } from '../../SelectedItemsList';
 
-const UnifiedPeoplePickerInner = <TPersona extends IPersonaProps>(
-  props: UnifiedPeoplePickerProps<TPersona>,
-  ref: React.RefObject<UnifiedPeoplePicker<TPersona>>
-) => {
-  return (
-    <ComposingUnifiedPicker<TPersona>
-      ref={ref}
-      onRenderSelectedItem={props.onRenderSelectedItem || SelectedPersona}
-      onRenderSuggestionItem={props.onRenderSuggestionItem || DefaultPeopleSuggestionsItem}
-      {...props}
-    />
-  );
-};
+const UnifiedPeoplePickerInner = <TSelectedPersona extends IPersonaProps, TSuggestedPersona extends IPersonaProps = TSelectedPersona>(
+  props: UnifiedPeoplePickerProps<TSelectedPersona>,
+  ref: React.RefObject<UnifiedPeoplePicker<TSelectedPersona>>
+) => (
+  <ComposingUnifiedPicker<TSelectedPersona, TSuggestedPersona>
+    ref={ref}
+    onRenderSelectedItem={props.onRenderSelectedItem || SelectedPersona}
+    onRenderSuggestionItem={props.onRenderSuggestionItem || DefaultPeopleSuggestionsItem}
+    {...props}
+  />
+);
 
 // Separate signature export only works when the value being overridden is a function value,
 // and it doens't pick up on React.forwardRef

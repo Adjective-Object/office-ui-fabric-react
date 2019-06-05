@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { DefaultPickerFooterItems } from './DefaultPickerFooterItems';
-import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps } from './UnifiedPicker.types';
+import { UnifiedPickerSelectedItemsProps, UnifiedPickerFloatingPickerProps, IUncontrolledUnifiedPicker } from './UnifiedPicker.types';
 import { FloatingSuggestions, SuggestionsStore, IFloatingSuggestionsInnerSuggestionProps } from './../FloatingSuggestions';
 import { SelectedItemsList } from '../SelectedItemsList';
 import { SuggestionsControl } from '../FloatingSuggestions';
-import { UnifiedPicker, UnifiedPickerImpl } from '../UnifiedPicker';
+import { UnifiedPicker } from '../UnifiedPicker';
 import {
   ComposingUnifiedPickerProps,
   ComposableSuggestionControl,
@@ -15,26 +15,27 @@ import {
 /**
  * Attep
  */
-export class ComposingUnifiedPicker<T> extends React.PureComponent<ComposingUnifiedPickerProps<T>> {
-  private _picker: UnifiedPickerImpl<T>;
+export class ComposingUnifiedPicker<TSelectedItem, TSuggestedItem = TSelectedItem> extends React.PureComponent<
+  ComposingUnifiedPickerProps<TSelectedItem, TSuggestedItem>
+> {
+  private _picker: IUncontrolledUnifiedPicker<TSelectedItem, TSuggestedItem>;
   // Custom footer items that reflect the state of the picker.
   private _defaultFooterItems: DefaultPickerFooterItems = new DefaultPickerFooterItems();
 
-  constructor(props: ComposingUnifiedPickerProps<T>) {
+  constructor(props: ComposingUnifiedPickerProps<TSelectedItem, TSuggestedItem>) {
     super(props);
   }
 
   public render(): JSX.Element {
     return (
-      <UnifiedPicker
-        onRenderFloatingPicker={this.MainFloatingPicker}
+      <UnifiedPicker<TSelectedItem, TSuggestedItem>
+        ref={this._setComponentRef}
+        onRenderFloatingSuggestions={this.MainFloatingSuggestions}
         onRenderSelectedItems={this.DefaultSelectedItemsList}
         onRenderFocusZone={this.props.onRenderFocusZone}
-        key={'normal'}
         inputProps={{
           'aria-label': 'People Picker'
         }}
-        componentRef={this._setComponentRef}
         // Styling props pasthrough
         className={this.props.className}
         styles={this.props.styles}
@@ -46,7 +47,9 @@ export class ComposingUnifiedPicker<T> extends React.PureComponent<ComposingUnif
   /**
    * the default selected items list
    */
-  private DefaultSuggestionControlInner: ComposableSuggestionControl<T> = (overriddenProps: PropsOf<ComposableSuggestionControl<T>>) => (
+  private DefaultSuggestionControlInner: ComposableSuggestionControl<TSelectedItem, TSuggestedItem> = (
+    overriddenProps: PropsOf<ComposableSuggestionControl<TSelectedItem, TSuggestedItem>>
+  ) => (
     <SuggestionsControl
       showRemoveButtons={this._shouldShowSuggestionRemoveButtons()}
       headerItemsProps={[]}
@@ -62,8 +65,9 @@ export class ComposingUnifiedPicker<T> extends React.PureComponent<ComposingUnif
    *
    * Uses the default suggestion control if none is provided.
    */
-  private SuggestionControl = (overriddenProps: IFloatingSuggestionsInnerSuggestionProps<T>) => {
-    const Inner: ComposableSuggestionControl<T> = this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
+  private SuggestionControl = (overriddenProps: IFloatingSuggestionsInnerSuggestionProps<TSuggestedItem>) => {
+    const Inner: ComposableSuggestionControl<TSelectedItem, TSuggestedItem> =
+      this.props.onRenderSuggestionControl || this.DefaultSuggestionControlInner;
     return <Inner onRenderSuggestion={this.props.onRenderSuggestionItem} {...overriddenProps} />;
   };
 
@@ -71,9 +75,11 @@ export class ComposingUnifiedPicker<T> extends React.PureComponent<ComposingUnif
    * The floating picker that is used by default for both the
    * floating picker suggestion dropdown and the suggestion well floating picker.
    */
-  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<T> = (overriddenProps: PropsOf<ComposableMainFloatingPicker<T>>) => (
-    <FloatingSuggestions
-      suggestionsStore={new SuggestionsStore<T>()}
+  private DefaultFloatingPickerInner: ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem> = (
+    overriddenProps: PropsOf<ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem>>
+  ) => (
+    <FloatingSuggestions<TSuggestedItem>
+      suggestionsStore={new SuggestionsStore<TSuggestedItem>()}
       onResolveSuggestions={this.props.onResolveSuggestions}
       onRemoveSuggestion={this.props.onRemoveSuggestion}
       onZeroQuerySuggestion={this.props.onZeroQuerySuggestion}
@@ -87,19 +93,20 @@ export class ComposingUnifiedPicker<T> extends React.PureComponent<ComposingUnif
    * Renders the floating picker for the main input.
    * Uses the default picker if none is provided.
    */
-  private MainFloatingPicker = (overriddenProps: UnifiedPickerFloatingPickerProps<T>) => {
-    const Inner: ComposableMainFloatingPicker<T> = this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
+  private MainFloatingSuggestions = (overriddenProps: UnifiedPickerFloatingPickerProps<TSuggestedItem>) => {
+    const Inner: ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem> =
+      this.props.onRenderMainFloatingPicker || this.DefaultFloatingPickerInner;
     return <Inner onRenderSuggestionControl={this.SuggestionControl} {...overriddenProps} />;
   };
 
   /**
    * the default selected items list
    */
-  private DefaultSelectedItemsList = (overriddenProps: UnifiedPickerSelectedItemsProps<T>) => (
-    <SelectedItemsList<T> onRenderItem={this.props.onRenderSelectedItem} {...overriddenProps} />
+  private DefaultSelectedItemsList = (overriddenProps: UnifiedPickerSelectedItemsProps<TSelectedItem>) => (
+    <SelectedItemsList<TSelectedItem> onRenderItem={this.props.onRenderSelectedItem} {...overriddenProps} />
   );
 
-  private _setComponentRef = (component: UnifiedPickerImpl<T>): void => {
+  private _setComponentRef = (component: IUncontrolledUnifiedPicker<TSelectedItem, TSuggestedItem>): void => {
     this._picker = component;
     if (this.props.onRenderSuggestionControl === undefined) {
       // Only bind the default footer items to the component

@@ -6,7 +6,7 @@ type PartiallyOptional<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Pi
 /**
  * The PeoplePicker is just a picker with bound default rendering
  */
-export type UnifiedPeoplePickerProps<TPersona extends IPersonaProps> = PartiallyOptional<
-  ComposingUnifiedPickerProps<TPersona>,
-  'onRenderSelectedItem' | 'onRenderSuggestionItem'
->;
+export type UnifiedPeoplePickerProps<
+  TSelectedPersona extends IPersonaProps,
+  TSuggestedPersona extends IPersonaProps = TSelectedPersona
+> = PartiallyOptional<ComposingUnifiedPickerProps<TSelectedPersona, TSuggestedPersona>, 'onRenderSelectedItem' | 'onRenderSuggestionItem'>;
