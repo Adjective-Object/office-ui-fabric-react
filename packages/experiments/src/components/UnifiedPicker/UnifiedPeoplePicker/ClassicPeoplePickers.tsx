@@ -7,6 +7,8 @@ import { PeoplePickerSuggestionItem } from './ClassicPeoplePickerComponents/Peop
 import { IPeoplePickerSuggestionItemProps } from './ClassicPeoplePickerComponents/PeoplePickerSuggestionItem.types';
 import { classicPickerStyleOverride } from './ClassicPeoplePickerComponents/ClassicPickerStyleOverride';
 import { classicPickerSuggestions } from './ClassicPeoplePickerComponents/ClassicPickerSuggestions';
+import { IFloatingSuggestionsProps } from '../../FloatingSuggestions';
+import { ComposableSuggestionControl } from '../DefaultUnifiedPickerView/Composing/useDefaultComposedUnifiedPickerView.types';
 
 type ClassicPickerProps<TPersona extends IPersonaProps = IPersonaProps> = UnifiedPeoplePickerProps<TPersona> & {
   suggestionsHeaderText: string;
@@ -20,10 +22,10 @@ type ClassicPickerProps<TPersona extends IPersonaProps = IPersonaProps> = Unifie
  * This seems like a good motivating example to tear that out and replace it.
  */
 const wrapResolveSuggestionsAndGetBoundPickerSuggestions = <TPersona extends IPersonaProps>(
-  onResolveSuggestions: UnifiedPeoplePickerProps<TPersona>['onResolveSuggestions'],
+  onResolveSuggestions: (filter: string) => PromiseLike<TPersona[]> | TPersona[] | null,
   suggestionsHeaderText: string,
   noResultsFooterText: string
-): [UnifiedPeoplePickerProps<TPersona>['onResolveSuggestions'], UnifiedPeoplePickerProps<TPersona>['onRenderSuggestionControl']] => {
+): [IFloatingSuggestionsProps<TPersona>['onResolveSuggestions'], ComposableSuggestionControl<TPersona>] => {
   // HACK: maintian state in this function scope as to whether or not the
   // "no results footer" should be shown
   let hasResults = true;
@@ -54,10 +56,7 @@ const wrapResolveSuggestionsAndGetBoundPickerSuggestions = <TPersona extends IPe
  * Special case of the UnifiedPeoplePicker binding custom rendering to match
  * the classic "Normal People Picker" styling
  */
-const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>(
-  props: ClassicPickerProps<TPersona>,
-  ref: React.Ref<UnifiedPeoplePicker<TPersona>>
-) => {
+export const NormalPeoplePicker = <TPersona extends IPersonaProps = IPersonaProps>(props: ClassicPickerProps<TPersona>) => {
   const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = React.useMemo(
     () =>
       wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
@@ -70,7 +69,6 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
 
   return (
     <UnifiedPeoplePicker<TPersona>
-      ref={ref}
       styles={classicPickerStyleOverride}
       onRenderSelectedItem={PeoplePickerSelectedItem}
       onRenderSuggestionControl={BoundClassicPickerSuggestionControl}
@@ -80,20 +78,16 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
     />
   );
 };
-export const NormalPeoplePicker = React.forwardRef(NormalPeoplePickerInner);
 
-const CompactPeoplePickerSuggestionItem = (props: IPeoplePickerSuggestionItemProps) => (
-  <PeoplePickerSuggestionItem {...props} compact={true} />
-);
+const CompactPeoplePickerSuggestionItem = <TPersona extends IPersonaProps = IPersonaProps>(
+  props: IPeoplePickerSuggestionItemProps<TPersona>
+) => <PeoplePickerSuggestionItem {...props} compact={true} />;
 
 /**
  * Special case of the UnifiedPeoplePicker binding custom rendering ot match
  * the classic "Compact People Picker"'s Styling
  */
-const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>(
-  props: ClassicPickerProps<TPersona>,
-  ref: React.Ref<UnifiedPeoplePicker<TPersona>>
-) => {
+export const CompactPeoplePicker = <TPersona extends IPersonaProps = IPersonaProps>(props: ClassicPickerProps<TPersona>) => {
   const [wrappedResolveSuggestions, BoundClassicPickerSuggestionControl] = React.useMemo(
     () =>
       wrapResolveSuggestionsAndGetBoundPickerSuggestions<TPersona>(
@@ -105,8 +99,7 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
   );
 
   return (
-    <UnifiedPeoplePicker
-      ref={ref}
+    <UnifiedPeoplePicker<TPersona>
       styles={classicPickerStyleOverride}
       onRenderSelectedItem={PeoplePickerSelectedItem}
       onRenderSuggestionControl={BoundClassicPickerSuggestionControl}
@@ -116,8 +109,6 @@ const CompactPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps
     />
   );
 };
-
-export const CompactPeoplePicker = React.forwardRef(CompactPeoplePickerInner);
 
 // /**
 //  * Special case of the UnifiedPeoplePicker binding custom rendering ot match

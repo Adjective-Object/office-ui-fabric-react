@@ -10,28 +10,22 @@ import { UnifiedPicker } from '../UnifiedPicker';
 
 type PickerRef<A, B> = IUnifiedPicker<A, B, IDefaultUnifiedPickerView<A, B>>;
 
-export const UnifiedPeoplePicker = React.forwardRef(
-  <TSelectedPersona extends IPersonaProps, TSuggestedPersona extends IPersonaProps = TSelectedPersona>(
-    props: UnifiedPeoplePickerProps<TSelectedPersona, TSuggestedPersona>,
-    ref: React.Ref<PickerRef<TSelectedPersona, TSuggestedPersona>>
-  ) => {
-    type ViewRefType = IDefaultUnifiedPickerView<TSelectedPersona, TSuggestedPersona>;
-    type ViewComponentType = React.ComponentType<
-      IUnifiedPickerViewProps<TSelectedPersona, TSuggestedPersona> & React.RefAttributes<ViewRefType>
-    >;
+export const UnifiedPeoplePicker = <TSelectedPersona extends IPersonaProps, TSuggestedPersona extends IPersonaProps = TSelectedPersona>(
+  props: UnifiedPeoplePickerProps<TSelectedPersona, TSuggestedPersona>
+) => {
+  type ViewRefType = IDefaultUnifiedPickerView<TSelectedPersona, TSuggestedPersona>;
+  type ViewComponentType = React.ComponentType<
+    IUnifiedPickerViewProps<TSelectedPersona, TSuggestedPersona> & React.RefAttributes<ViewRefType>
+  >;
 
-    const PickerView: ViewComponentType = useDefaultComposedUnifiedPickerView<TSelectedPersona, TSuggestedPersona>({
-      ...props,
-      onRenderSuggestionItem: props.onRenderSuggestionItem || DefaultPeopleSuggestionsItem,
-      onRenderSelectedItem: props.onRenderSelectedItem || SelectedPersona
-    });
+  const PickerView: ViewComponentType = useDefaultComposedUnifiedPickerView<TSelectedPersona, TSuggestedPersona>({
+    ...props,
+    onRenderSuggestionItem: props.onRenderSuggestionItem || DefaultPeopleSuggestionsItem,
+    onRenderSelectedItem: props.onRenderSelectedItem || SelectedPersona
+  });
 
-    return <UnifiedPicker<TSelectedPersona, TSuggestedPersona, ViewRefType> {...props} ref={ref} view={PickerView} />;
-  }
-) as <T1 extends IPersonaProps, T2 extends IPersonaProps = T1>(
-  props: UnifiedPeoplePickerProps<T1, T2>,
-  ref: React.Ref<PickerRef<T1, T2>>
-) => React.ReactElement;
+  return <UnifiedPicker<TSelectedPersona, TSuggestedPersona, ViewRefType> {...props} view={PickerView} />;
+};
 export type UnifiedPeoplePicker<T1 extends IPersonaProps, T2 extends IPersonaProps = T1> = React.ComponentType<
   UnifiedPeoplePickerProps<T1, T2> & React.RefAttributes<PickerRef<T1, T2>>
 >;

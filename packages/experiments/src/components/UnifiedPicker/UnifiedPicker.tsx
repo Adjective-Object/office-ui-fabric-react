@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { IUnifiedPickerProps, IUnifiedPicker } from './UnifiedPicker.types';
+import { useSelectedItemListState } from '../SelectedItemsList';
 
 function isPromiseLike<T>(r: T | PromiseLike<T>): r is PromiseLike<T> {
   return !!(r && (r as { then?: Function }).then);
@@ -22,41 +23,14 @@ const maybeAwait = <T extends any>(inputValue: T | PromiseLike<T>): PromiseLike<
  *
  * Renders the view that is passed into it.
  */
-export const UnifiedPicker = React.forwardRef(
-  <TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any>(
-    props: IUnifiedPickerProps<TSelectedItem, TSuggestedItem>,
-    ref: React.Ref<IUnifiedPicker<TSelectedItem, TSuggestedItem, TViewRefTarget>>
-  ) => {
-    const { defaultSelectedItems, defaultQueryString, processSelectedItem, createItemFromPasteData } = props;
-
-    const [selectedItems, setSelectedItems] = React.useState(defaultSelectedItems || []);
+export const UnifiedPicker = React.memo(
+  <TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any>(props: IUnifiedPickerProps<TSelectedItem, TSuggestedItem>) => {
+    const { defaultSelectedItems, defaultQueryString, processSelectedItem, createItemFromPasteData, disabled } = props;
+    const { selectedItems, setSelectedItems, appendSelectedItems, removeSelectedItems, replaceSelectedItem } = useSelectedItemListState(
+      defaultSelectedItems
+    );
     const [queryString, updateQueryString] = React.useState(defaultQueryString || '');
 
-    const onSelectedItemsRemoved = React.useCallback(
-      (removedItems: TSelectedItem[]) => {
-        console.log('unifiedPicker onSelectedItemsRemoved called', removedItems);
-        // Update internal state if it is tracked at all
-        const nextSelectedItems = selectedItems.filter(i => removedItems.indexOf(i) === -1);
-        if (nextSelectedItems.length !== selectedItems.length - removedItems.length) {
-          console.error('UnifiedPicker onSelectedItemsRemoved called on some item not in the current state');
-        }
-        setSelectedItems(nextSelectedItems);
-      },
-      [selectedItems]
-    );
-
-    const onSelectedItemChanged = React.useCallback(
-      (newItem: TSelectedItem | TSelectedItem[], index: number): void => {
-        const newItemsArray = !Array.isArray(newItem) ? [newItem] : newItem;
-
-        if (index >= 0) {
-          const newItems: TSelectedItem[] = [...selectedItems];
-          newItems.splice(index, 1, ...newItemsArray);
-          setSelectedItems(newItems);
-        }
-      },
-      [setSelectedItems, selectedItems]
-    );
     const onSuggestionSelected = React.useCallback(
       (item: TSuggestedItem): void => {
         const initialQueryString = queryString;
@@ -74,7 +48,9 @@ export const UnifiedPicker = React.forwardRef(
             // This is to handle the case where a user types quickly and presses enter
             // before updating the query string
             if (initialQueryString === queryString) {
-              setSelectedItems(selectedItems.concat([newItem]));
+              console.log('insert. Clear qstring?');
+              appendSelectedItems([newItem]);
+              updateQueryString('');
             }
           });
         if (processedItem === null) {
@@ -103,7 +79,7 @@ export const UnifiedPicker = React.forwardRef(
 
     // Imperative Handle
     React.useImperativeHandle(
-      ref,
+      props.componentRef,
       () => ({
         view: viewRef,
         get value() {
@@ -120,13 +96,15 @@ export const UnifiedPicker = React.forwardRef(
     return (
       <View
         componentRef={viewRef}
+        // parent state
+        disabled={disabled}
         // state
         selectedItems={selectedItems}
         queryString={queryString}
         canAddItems={props.itemLimit === undefined || selectedItems.length < props.itemLimit}
         // state manipulation callbacks
-        onSelectedItemsRemoved={onSelectedItemsRemoved}
-        onSelectedItemChanged={onSelectedItemChanged}
+        onSelectedItemsRemoved={removeSelectedItems}
+        onSelectedItemChanged={replaceSelectedItem}
         onQueryStringChange={updateQueryString}
         onPaste={onPaste}
         onSuggestionSelected={onSuggestionSelected}
@@ -136,8 +114,7 @@ export const UnifiedPicker = React.forwardRef(
   // Cast back to a generic function type, since typescript <3.4 collapses generics on higher-order functions
   // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
 ) as <TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any>(
-  props: IUnifiedPickerProps<TSelectedItem, TSuggestedItem> &
-    React.RefAttributes<IUnifiedPicker<TSelectedItem, TSuggestedItem, TViewRefTarget>>
+  props: IUnifiedPickerProps<TSelectedItem, TSuggestedItem>
 ) => React.ReactElement;
 export type UnifiedPicker<TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any> = (
   props: IUnifiedPickerProps<TSelectedItem, TSuggestedItem> &

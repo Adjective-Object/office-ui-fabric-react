@@ -15,20 +15,11 @@ export interface IUnifiedPicker<TSelectedItem, TSuggestedItem, TViewRefTarget> {
   view: React.RefObject<TViewRefTarget>;
 }
 
-type ProcessSelectedItem<TSelectedItem, TSuggestedItem> = {
-  /**
-   * A callback to process a selection after the user selects a suggestion from the picker.
-   * The returned item will be added to the selected items list
-   *
-   * @default identity
-   */
-  processSelectedItem?: (selectedItem?: TSuggestedItem) => TSelectedItem | PromiseLike<TSelectedItem>;
-};
-
 /**
  * Props passed to the unified picker
  */
-export type IUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any> = {
+export interface IUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any> {
+  componentRef?: React.Ref<IUnifiedPicker<TSelectedItem, TSuggestedItem, TViewRefTarget>>;
   /**
    * Renders the current state of the unified picker
    */
@@ -59,12 +50,20 @@ export type IUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem, T
    * @defaultvalue undefined
    */
   itemLimit?: number;
-  // ProcessSelectedItem is optional if the consumer
-  // has a suggested item type that is assignable to
-  // the selected item type.
-} & (TSelectedItem extends TSuggestedItem
-  ? ProcessSelectedItem<TSelectedItem, TSuggestedItem>
-  : Required<ProcessSelectedItem<TSelectedItem, TSuggestedItem>>);
+
+  /**
+   * A callback to process a selection after the user selects a suggestion from the picker.
+   * The returned item will be added to the selected items list
+   *
+   * @default identity
+   */
+  processSelectedItem?: (selectedItem?: TSuggestedItem) => TSelectedItem | PromiseLike<TSelectedItem>;
+
+  /**
+   * True if the well is currently disabled.
+   */
+  disabled?: boolean;
+}
 
 /**
  * Props passed to the unified picker's view.
@@ -112,4 +111,9 @@ export interface IUnifiedPickerViewProps<TSelectedItem, TSuggestedItem = TSelect
    * Callback for when an item is selected from the suggestions in the picker
    */
   onSuggestionSelected: (item: TSuggestedItem) => void;
+
+  /**
+   * True if the well is currently disabled.
+   */
+  disabled?: boolean;
 }
