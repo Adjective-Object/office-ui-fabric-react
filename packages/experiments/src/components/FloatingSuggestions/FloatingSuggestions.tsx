@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as styles from './FloatingSuggestions.scss';
-import { BaseComponent, css, KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
+import { css, KeyCodes, Async } from 'office-ui-fabric-react/lib/Utilities';
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { IFloatingSuggestions, IFloatingSuggestionsProps, IFloatingSuggestionsInnerSuggestionProps } from './FloatingSuggestions.types';
 import { ISuggestionModel } from 'office-ui-fabric-react/lib/Pickers';
@@ -20,6 +20,7 @@ export class FloatingSuggestions<TItem> extends React.Component<IFloatingSuggest
   private suggestionsControl: React.RefObject<SuggestionsControl<TItem>> = React.createRef();
   private currentPromise: PromiseLike<TItem[]>;
   private isComponentMounted: boolean = false;
+  private _async: Async = new Async();
 
   constructor(basePickerProps: IFloatingSuggestionsProps<TItem>) {
     super(basePickerProps);
@@ -110,6 +111,7 @@ export class FloatingSuggestions<TItem> extends React.Component<IFloatingSuggest
 
   public componentWillUnmount(): void {
     this._unbindFromInputElement();
+    this._async.dispose();
     this.isComponentMounted = false;
   }
 
@@ -198,11 +200,11 @@ export class FloatingSuggestions<TItem> extends React.Component<IFloatingSuggest
         calloutWidth={this.props.calloutWidth ? this.props.calloutWidth : 0}
       >
         <TypedSuggestionsControl
+          componentRef={this.suggestionsControl}
           onRenderSuggestion={this.props.onRenderSuggestionsItem}
           onSuggestionClick={this._onSuggestionClick}
           onSuggestionRemove={this._onSuggestionRemove}
           suggestions={this.suggestionStore.getSuggestions()}
-          componentRef={this.suggestionsControl}
           onCurrentlySelectedSuggestionChosen={this.onCurrentlySelectedSuggestionChosen}
           shouldLoopSelection={false}
         />

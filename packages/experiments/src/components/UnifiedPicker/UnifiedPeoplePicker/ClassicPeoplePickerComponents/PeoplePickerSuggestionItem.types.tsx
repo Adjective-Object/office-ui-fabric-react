@@ -5,17 +5,19 @@ import { CommonStylingProps, ICommonSubComponentStyles } from './CommonStylingPr
 import { ISuggestionModel, IBasePickerSuggestionsProps } from 'office-ui-fabric-react/lib/Pickers';
 
 /** PeoplePickerItemSuggestion props interface. Refers to the PeoplePicker items that are suggested for picking. */
-export type IPeoplePickerSuggestionItemProps = ISuggestionModel<IPersonaProps> &
+export type IPeoplePickerSuggestionItemProps<TPersona extends IPersonaProps> = ISuggestionModel<TPersona> &
   Partial<CommonStylingProps> & {
-    styles?: IStyleFunctionOrObject<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>;
+    styles?: IStyleFunctionOrObject<IPeoplePickerSuggestionItemStyleProps<TPersona>, IPeoplePickerSuggestionItemStyles>;
     compact?: boolean;
     /** General common props for all PeoplePicker items suggestions. */
     suggestionsProps?: IBasePickerSuggestionsProps;
   };
 
 /** Props needed to construct PeoplePickerItemSuggestion styles. */
-export type IPeoplePickerSuggestionItemStyleProps = Required<Pick<IPeoplePickerSuggestionItemProps, 'theme'>> &
-  Pick<IPeoplePickerSuggestionItemProps, 'className'> & {};
+export type IPeoplePickerSuggestionItemStyleProps<TPersona extends IPersonaProps = IPersonaProps> = Required<
+  Pick<IPeoplePickerSuggestionItemProps<TPersona>, 'theme'>
+> &
+  Pick<IPeoplePickerSuggestionItemProps<TPersona>, 'className'> & {};
 
 /** Represents the stylable areas of the PeoplePickerItemSuggestion. */
 export interface IPeoplePickerSuggestionItemStyles {

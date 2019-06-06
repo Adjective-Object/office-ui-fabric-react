@@ -1,12 +1,15 @@
 import { getGlobalClassNames, HighContrastSelector, IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IPeoplePickerSuggestionItemStyles, IPeoplePickerSuggestionItemStyleProps } from './PeoplePickerSuggestionItem.types';
+import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 
 const GlobalClassNames = {
   root: 'ms-PeoplePicker-personaContent',
   personaWrapper: 'ms-PeoplePicker-Persona'
 };
 
-export function getStyles(props: IPeoplePickerSuggestionItemStyleProps): IPeoplePickerSuggestionItemStyles {
+export function getStyles<TPersona = IPersonaProps>(
+  props: IPeoplePickerSuggestionItemStyleProps<TPersona>
+): IPeoplePickerSuggestionItemStyles {
   const { className, theme } = props;
   const classNames = getGlobalClassNames(GlobalClassNames, theme);
 

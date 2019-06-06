@@ -69,7 +69,7 @@ const NormalPeoplePickerInner = <TPersona extends IPersonaProps = IPersonaProps>
   );
 
   return (
-    <UnifiedPeoplePicker
+    <UnifiedPeoplePicker<TPersona>
       ref={ref}
       styles={classicPickerStyleOverride}
       onRenderSelectedItem={PeoplePickerSelectedItem}

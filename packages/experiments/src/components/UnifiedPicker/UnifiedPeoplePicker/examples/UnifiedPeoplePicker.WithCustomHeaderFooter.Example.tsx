@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ISuggestionsHeaderFooterProps } from '../../../FloatingSuggestions/Suggestions/Suggestions.types';
 import { SuggestionsControl } from '../../../FloatingSuggestions/Suggestions/SuggestionsControl';
 import { UnifiedPeoplePicker } from '../UnifiedPeoplePicker';
-import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
+import { ComposableSuggestionControl } from '../../DefaultUnifiedPickerView/Composing/useDefaultComposedUnifiedPickerView.types';
 /* Sample Data */
 import * as ExampleStyles from './Example.scss';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';

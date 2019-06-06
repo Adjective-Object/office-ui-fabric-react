@@ -11,35 +11,37 @@ import { getStyles } from './PeoplePickerSuggestionItem.styles';
 
 const getClassNames = classNamesFunction<IPeoplePickerSuggestionItemStyleProps, IPeoplePickerSuggestionItemStyles>();
 
-export const PeoplePickerSuggestionItemInner = (props: IPeoplePickerSuggestionItemProps) => {
-  const { suggestionsProps, compact, styles, theme, className } = props;
-  const personaProps: IPersonaProps = props.item;
+export const PeoplePickerSuggestionItem = styled(
+  <TPersona extends IPersonaProps>(props: IPeoplePickerSuggestionItemProps<TPersona>) => {
+    const { suggestionsProps, compact, styles, theme, className } = props;
+    const personaProps: IPersonaProps = props.item;
 
-  const classNames = getClassNames(styles, {
-    theme: theme!,
-    className: (suggestionsProps && suggestionsProps.suggestionsItemClassName) || className
-  });
+    const classNames = getClassNames(styles, {
+      theme: theme!,
+      className: (suggestionsProps && suggestionsProps.suggestionsItemClassName) || className
+    });
 
-  const personaStyles =
-    classNames.subComponentStyles && classNames.subComponentStyles.persona
-      ? (classNames.subComponentStyles.persona as IStyleFunctionOrObject<IPersonaStyleProps, IPersonaStyles>)
-      : undefined;
+    const personaStyles =
+      classNames.subComponentStyles && classNames.subComponentStyles.persona
+        ? (classNames.subComponentStyles.persona as IStyleFunctionOrObject<IPersonaStyleProps, IPersonaStyles>)
+        : undefined;
 
-  return (
-    <div className={classNames.root}>
-      <Persona
-        size={PersonaSize.size24}
-        styles={personaStyles}
-        className={classNames.personaWrapper}
-        showSecondaryText={!compact}
-        {...personaProps}
-      />
-    </div>
-  );
-};
-
-export const PeoplePickerSuggestionItem = styled<
-  IPeoplePickerSuggestionItemProps,
-  IPeoplePickerSuggestionItemStyleProps,
-  IPeoplePickerSuggestionItemStyles
->(PeoplePickerSuggestionItemInner, getStyles, undefined, { scope: 'PeoplePickerSuggestionItem' });
+    return (
+      <div className={classNames.root}>
+        <Persona
+          size={PersonaSize.size24}
+          styles={personaStyles}
+          className={classNames.personaWrapper}
+          showSecondaryText={!compact}
+          {...personaProps}
+        />
+      </div>
+    );
+  },
+  getStyles,
+  undefined,
+  { scope: 'PeoplePickerSuggestionItem' }
+) as <TPersona extends IPersonaProps>(props: IPeoplePickerSuggestionItemProps<TPersona>) => React.ReactElement;
+export type PeoplePickerSuggestionItemInner<TPersona extends IPersonaProps> = (
+  props: IPeoplePickerSuggestionItemProps<TPersona>
+) => React.ReactElement;

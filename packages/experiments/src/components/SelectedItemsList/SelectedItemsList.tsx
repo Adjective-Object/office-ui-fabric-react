@@ -11,7 +11,7 @@ import {
 } from './SelectedItemsList.types';
 import { copyToClipboard } from '../../utilities/copyToClipboard';
 import { EventGroup } from '@uifabric/utilities/lib/EventGroup';
-import { PropsOf } from '../UnifiedPicker/ComposingUnifiedPicker.types';
+import { PropsOf } from '../UnifiedPicker/DefaultUnifiedPickerView/Composing/useDefaultComposedUnifiedPickerView.types';
 
 /**
  * Uses selection indeces as its own thing
@@ -102,6 +102,8 @@ const ControlledSelectedItemsList = React.forwardRef(
 export type ControlledSelectedItemsList<TItem extends BaseSelectedItem> = (
   props: IControlledSelectedItemListProps<TItem> & React.RefAttributes<IControlledSelectedItemsList>
 ) => React.ReactElement;
+(ControlledSelectedItemsList as any).displayName = 'ControlledSelectedItemsList';
+
 /**
  * A self-managed selected item list.
  */
@@ -194,6 +196,7 @@ const UncontrolledSelectedItemsList = React.forwardRef(
 export type UncontrolledSelectedItemsList<TItem extends BaseSelectedItem> = (
   props: IUncontrolledSelectedItemListProps<TItem> & React.RefAttributes<ISelectedItemsList<TItem>>
 ) => React.ReactElement;
+(UncontrolledSelectedItemsList as any).displayName = 'UncontrolledSelectedItemsList';
 
 const isControlledSelectedItemList = <T extends BaseSelectedItem>(
   props: IControlledSelectedItemListProps<T> | IUncontrolledSelectedItemListProps<T>

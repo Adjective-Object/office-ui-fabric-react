@@ -1,6 +1,5 @@
 import { getGlobalClassNames, getFocusStyle, HighContrastSelector, IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IClassicPeoplePickerSelectedItemStyleProps, IClassicPeoplePickerSelectedItemStyles } from './PeoplePickerSelectedItem.types';
-import { ButtonGlobalClassNames } from 'office-ui-fabric-react/lib/Button';
 
 const GlobalClassNames = {
   root: 'ms-PickerPersona-container',
@@ -154,7 +153,7 @@ export function getStyles(props: IClassicPeoplePickerSelectedItemStyleProps): IC
       ],
       disabled && {
         selectors: {
-          [`.${ButtonGlobalClassNames.msButtonIcon}`]: {
+          '.ms-Button-icon': {
             color: semanticColors.buttonText
           }
         }

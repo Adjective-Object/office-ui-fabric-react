@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { SuggestionsControl, ISuggestionsHeaderFooterProps } from '../../../FloatingSuggestions';
 import { UnifiedTagPicker } from '../UnifiedTagPicker';
-import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
 /* Sample Data */
 import * as ExampleStyles from './Example.scss';
 import { ITag } from 'office-ui-fabric-react/lib/Pickers';
 import { tags } from './TagExampleData';
 import { ExampleSuggestionsModel } from '../../../SelectedItemsList/SelectedPeopleList/examples/ExampleSuggestionsModel';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
+import { ComposableSuggestionControl } from '../../DefaultUnifiedPickerView/Composing/useDefaultComposedUnifiedPickerView.types';
 
 export type ExampleProps = {};
 export type ExampleState = { isSearching: boolean; isResultEmpty: boolean };

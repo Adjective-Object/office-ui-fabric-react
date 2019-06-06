@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { IFloatingSuggestionsInnerSuggestionProps, IFloatingSuggestionsProps } from '../FloatingSuggestions/FloatingSuggestions.types';
-import { ISuggestionsControlProps } from '../FloatingSuggestions/Suggestions/Suggestions.types';
-import { ISelectedItemsListProps } from '../SelectedItemsList';
-import { IUnifiedPickerProps, IUnifiedPickerComponentPassthroughProps, IUnifiedPickerCommonProps } from './UnifiedPicker.types';
+import {
+  IFloatingSuggestionsInnerSuggestionProps,
+  IFloatingSuggestionsProps
+} from '../../../FloatingSuggestions/FloatingSuggestions.types';
+import { ISuggestionsCoreProps } from '../../../FloatingSuggestions/Suggestions/Suggestions.types';
+import { ISelectedItemsListProps } from '../../../SelectedItemsList';
+import { IDefaultUnifiedPickerViewProps, IDefaultUnifiedPickerViewPassthroughProps } from '../DefaultUnifiedPickerView.types';
 
 export type PropsOf<T> = T extends React.ComponentType<infer P> ? P : never;
 export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = React.ComponentType<PropsOf<TComponent> & TMoreProps>;
@@ -12,8 +15,8 @@ export type WithMoreProps<TComponent extends React.ComponentType, TMoreProps> = 
  * so that if FloatingPicker is overridden, the consumer does not need to override the full
  * component subtree (e.g. the separately specified or default component)
  */
-export type ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem = TSelectedItem> = WithMoreProps<
-  IUnifiedPickerCommonProps<TSelectedItem, TSuggestedItem>['onRenderFloatingSuggestions'],
+export type ComposableMainFloatingSuggestions<TSelectedItem, TSuggestedItem = TSelectedItem> = WithMoreProps<
+  IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem>['onRenderFloatingSuggestions'],
   Pick<IFloatingSuggestionsProps<TSuggestedItem>, 'onRenderSuggestionControl'>
 >;
 
@@ -23,7 +26,7 @@ export type ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem = TSelect
  * component subtree (e.g. the separately specified or default component)
  */
 export type ComposableSuggestionControl<TSelectedItem, TSuggestedItem = TSelectedItem> = React.ComponentType<
-  IFloatingSuggestionsInnerSuggestionProps<TSuggestedItem> & Pick<ISuggestionsControlProps<TSuggestedItem>, 'onRenderSuggestion'>
+  IFloatingSuggestionsInnerSuggestionProps<TSuggestedItem> & Pick<ISuggestionsCoreProps<TSuggestedItem>, 'onRenderSuggestion'>
 >;
 
 export type ComposingUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem> = {
@@ -35,10 +38,10 @@ export type ComposingUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelecte
   /////////////////////////////////////
   // Coordinated Internal Components //
   /////////////////////////////////////
-  onRenderFocusZone?: IUnifiedPickerProps<TSelectedItem, TSuggestedItem>['onRenderFocusZone'];
-  onRenderMainFloatingPicker?: ComposableMainFloatingPicker<TSelectedItem, TSuggestedItem>;
+  onRenderFocusZone?: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem>['onRenderFocusZone'];
+  onRenderMainFloatingPicker?: ComposableMainFloatingSuggestions<TSelectedItem, TSuggestedItem>;
   onRenderSuggestionControl?: ComposableSuggestionControl<TSelectedItem, TSuggestedItem>;
-  onRenderSuggestionItem: ISuggestionsControlProps<TSuggestedItem>['onRenderSuggestion'];
+  onRenderSuggestionItem: ISuggestionsCoreProps<TSuggestedItem>['onRenderSuggestion'];
   onRenderSelectedItem: ISelectedItemsListProps<TSelectedItem>['onRenderItem'];
 
   ///////////////////////////
@@ -58,4 +61,4 @@ export type ComposingUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelecte
   // manages state for use as uncontrolled   //
   /////////////////////////////////////////////
   onRemoveSuggestion?: IFloatingSuggestionsProps<TSuggestedItem>['onRemoveSuggestion'];
-} & IUnifiedPickerComponentPassthroughProps;
+} & IDefaultUnifiedPickerViewPassthroughProps;

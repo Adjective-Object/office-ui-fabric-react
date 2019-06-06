@@ -32,3 +32,4 @@ export const SelectedPeopleList = React.forwardRef(
     return <SelectedItemsList<TPersona> ref={ref} {...props} onRenderItem={props.onRenderItem || SelectedPersona} />;
   }
 );
+(SelectedPeopleList as any).displayName = 'SelectedPeopleList';

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { SuggestionsControl } from '../../../FloatingSuggestions';
-import { ComposableSuggestionControl } from '../../ComposingUnifiedPicker.types';
 import { IPersonaProps } from 'office-ui-fabric-react/lib/Persona';
 import { ClassicPickerHeader } from './ClassicPickerHeader';
 import { ClassicPickerFooter } from './ClassicPickerFooter';
+import { ComposableSuggestionControl } from '../../DefaultUnifiedPickerView/Composing/useDefaultComposedUnifiedPickerView.types';
 
 type HeaderFooterInfo = {
   noResultsFooterText: string;

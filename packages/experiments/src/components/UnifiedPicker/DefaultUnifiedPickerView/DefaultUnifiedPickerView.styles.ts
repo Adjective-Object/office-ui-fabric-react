@@ -1,5 +1,5 @@
-import { getGlobalClassNames, hiddenContentStyle, HighContrastSelector } from '../../Styling';
-import { IUnifiedPickerStyleProps, IUnifiedPickerStyles } from './UnifiedPicker.types';
+import { getGlobalClassNames, hiddenContentStyle, HighContrastSelector } from '../../../Styling';
+import { IDefaultUnifiedPickerViewStyleProps, IDefaultUnifiedPickerViewStyles } from './DefaultUnifiedPickerView.types';
 
 const GlobalClassNames = {
   root: 'ms-BasePicker',
@@ -7,7 +7,7 @@ const GlobalClassNames = {
   input: 'ms-BasePicker-input'
 };
 
-export function getStyles(props: IUnifiedPickerStyleProps): IUnifiedPickerStyles {
+export function getStyles(props: IDefaultUnifiedPickerViewStyleProps): IDefaultUnifiedPickerViewStyles {
   const { className, theme, disabled } = props;
 
   if (!theme) {

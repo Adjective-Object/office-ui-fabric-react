@@ -5,9 +5,9 @@ import { ISelectedItemProps } from '../../../SelectedItemsList';
 import { CommonStylingProps, ICommonSubComponentStyles } from './CommonStylingProps.types';
 
 /** PeoplePickerSelectedItem props interface. Refers to the PeoplePicker items that have been picked already. */
-export type IClassicPeoplePickerSelectedItemProps = ISelectedItemProps<IPersonaProps> &
+export type IClassicPeoplePickerSelectedItemProps<TPersona extends IPersonaProps> = ISelectedItemProps<TPersona> &
   Partial<CommonStylingProps> & {
-    styles?: IStyleFunctionOrObject<IClassicPeoplePickerSelectedItemStyleProps, IClassicPeoplePickerSelectedItemStyles>;
+    styles?: IStyleFunctionOrObject<IClassicPeoplePickerSelectedItemStyleProps<TPersona>, IClassicPeoplePickerSelectedItemStyles>;
 
     /**
      * Whether or not this persona is valid.
@@ -22,8 +22,8 @@ export type IClassicPeoplePickerSelectedItemProps = ISelectedItemProps<IPersonaP
   };
 
 /** Input to the PeoplePickerSelectedItem's styles function */
-export type IClassicPeoplePickerSelectedItemStyleProps = CommonStylingProps &
-  Pick<IClassicPeoplePickerSelectedItemProps, 'selected' | 'disabled'> & {
+export type IClassicPeoplePickerSelectedItemStyleProps<TPersona = IPersonaProps> = CommonStylingProps &
+  Pick<IClassicPeoplePickerSelectedItemProps<TPersona>, 'selected' | 'disabled'> & {
     /** Whether it's invalid. */
     invalid?: boolean;
   };

@@ -1,5 +1,5 @@
-import { IUnifiedPickerStyles } from '../../UnifiedPicker.types';
-export const classicPickerStyleOverride: Partial<IUnifiedPickerStyles> = {
+import { IDefaultUnifiedPickerViewStyles } from '../../DefaultUnifiedPickerView/DefaultUnifiedPickerView.types';
+export const classicPickerStyleOverride: Partial<IDefaultUnifiedPickerViewStyles> = {
   pickerWell: [
     {
       padding: 0,

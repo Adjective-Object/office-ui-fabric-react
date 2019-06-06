@@ -27,6 +27,9 @@ export interface IFloatingSuggestions<TItem> {
 
   /** Gets the current selected index in the suggestions box*/
   currentSelectedSuggestionIndex: number;
+
+  /** Forces the current selection to resolve, if it is valid */
+  forceResolveSuggestion: () => void;
 }
 
 // Type T is the type of the item that is displayed
@@ -141,7 +144,7 @@ export type IFloatingSuggestionsInnerSuggestionProps<T> = Pick<
   | 'onSuggestionClick'
   | 'onSuggestionRemove'
   | 'suggestions'
-  | 'componentRef'
+  | 'ref'
   | 'onCurrentlySelectedSuggestionChosen'
   | 'shouldLoopSelection'
   | 'onRenderSuggestion'

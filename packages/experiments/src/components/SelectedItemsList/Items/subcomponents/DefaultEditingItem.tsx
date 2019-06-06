@@ -56,7 +56,7 @@ export type EditingItemInnerFloatingSuggestionsProps<T> = Pick<
  */
 export class DefaultEditingItemInner<TItem> extends React.PureComponent<IDefaultEditingItemInnerProps<TItem>> {
   private _editingInput: HTMLInputElement;
-  private _editingFloatingSuggestions = React.createRef<FloatingSuggestions<TItem>>();
+  private _editingFloatingSuggestions = React.createRef<IFloatingSuggestions<TItem>>();
 
   constructor(props: IDefaultEditingItemInnerProps<TItem>) {
     super(props);
