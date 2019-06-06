@@ -34,6 +34,7 @@ export class SelectedPeopleListWithEditInContextMenuExample extends React.Compon
    */
   private EditableItemWithContextMenu = EditableItem({
     editingItemComponent: DefaultEditingItem({
+      onRemoveItem: persona => this._selectionList.removeItems([persona]),
       getEditingItemText: (persona: IPersonaProps) => persona.text || '',
       onRenderFloatingSuggestions: (props: EditingItemInnerFloatingSuggestionsProps<IPersonaProps>) => (
         <FloatingPeopleSuggestions
@@ -84,7 +85,7 @@ export class SelectedPeopleListWithEditInContextMenuExample extends React.Compon
           key={'normal'}
           removeButtonAriaLabel={'Remove'}
           defaultSelectedItems={[people[40]]}
-          ref={this._setComponentRef}
+          componentRef={this._setComponentRef}
           selection={this.selection}
           onRenderItem={this.EditableItemWithContextMenu}
         />

@@ -24,12 +24,7 @@ export type ISelectedPeopleListProps<TPersona> =
 
 export type ISelectedPeopleList<TPersona extends IPersonaProps & BaseSelectedItem = IPersonaProps> = ISelectedItemsList<TPersona>;
 export type SelectedPeopleList<TPersona extends IPersonaProps & BaseSelectedItem = IPersonaProps> = SelectedItemsList<TPersona>;
-export const SelectedPeopleList = React.forwardRef(
-  <TPersona extends IPersonaProps & BaseSelectedItem = IPersonaProps>(
-    props: ISelectedPeopleListProps<TPersona>,
-    ref: React.Ref<ISelectedPeopleList<TPersona>>
-  ) => {
-    return <SelectedItemsList<TPersona> ref={ref} {...props} onRenderItem={props.onRenderItem || SelectedPersona} />;
-  }
-);
+export const SelectedPeopleList = <TPersona extends IPersonaProps & BaseSelectedItem = IPersonaProps>(
+  props: ISelectedPeopleListProps<TPersona>
+) => <SelectedItemsList<TPersona> {...props} onRenderItem={props.onRenderItem || SelectedPersona} />;
 (SelectedPeopleList as any).displayName = 'SelectedPeopleList';

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { IInputProps } from 'office-ui-fabric-react/lib/Pickers';
 import { IFloatingSuggestionsProps, IFloatingSuggestions } from '../../FloatingSuggestions/FloatingSuggestions.types';
-import { IControlledSelectedItemListProps, ISelectedItemsList } from '../../SelectedItemsList/SelectedItemsList.types';
+import { IControlledSelectedItemListProps } from '../../SelectedItemsList/SelectedItemsList.types';
 import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
-import { IFocusZoneProps, IFocusZone } from 'office-ui-fabric-react/lib/FocusZone';
+import { IFocusZoneProps } from 'office-ui-fabric-react/lib/FocusZone';
 import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
 import { IUnifiedPickerViewProps } from '../UnifiedPicker.types';
 
@@ -13,7 +13,7 @@ import { IUnifiedPickerViewProps } from '../UnifiedPicker.types';
  */
 export type DefaultUnifiedPickerViewFloatingPickerProps<T> = Pick<
   IFloatingSuggestionsProps<T> & React.RefAttributes<IFloatingSuggestions<T>>,
-  'onSuggestionSelected' | 'inputElement' | 'isQueryForceResolveable'
+  'onSuggestionSelected' | 'inputElement' | 'isQueryForceResolveable' | 'componentRef'
 >;
 
 /**
@@ -21,14 +21,17 @@ export type DefaultUnifiedPickerViewFloatingPickerProps<T> = Pick<
  * implementing selected items component
  */
 export type DefaultUnifiedPickerViewSelectedItemsProps<T> = NonNullable<
-  Pick<IControlledSelectedItemListProps<T>, 'selection' | 'selectedItems' | 'onItemsRemoved'>
+  Pick<IControlledSelectedItemListProps<T>, 'selection' | 'selectedItems' | 'onItemsRemoved' | 'onItemChange' | 'componentRef'>
 >;
 
 /**
  * tge slice of props that the unified picker will pass to the
  * implementing focusZone component
  */
-export type DefaultUnifiedPickerViewFocusZoneProps = Pick<IFocusZoneProps, 'direction' | 'onKeyDown' | 'onCopy' | 'className'>;
+export type DefaultUnifiedPickerViewFocusZoneProps = Pick<
+  IFocusZoneProps,
+  'direction' | 'onKeyDown' | 'onCopy' | 'className' | 'componentRef'
+>;
 
 /**
  * Ref to the controlled unified picker
@@ -77,21 +80,17 @@ export type IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem> = IDef
     /**
      * Function that specifies how the focus zone wrapping the whole component should render.
      */
-    onRenderFocusZone?: React.ComponentType<DefaultUnifiedPickerViewFocusZoneProps & React.RefAttributes<IFocusZone>>;
+    onRenderFocusZone?: React.ComponentType<DefaultUnifiedPickerViewFocusZoneProps>;
 
     /**
      * Function that specifies how the selected item list will appear.
      */
-    onRenderSelectedItems: React.ComponentType<
-      DefaultUnifiedPickerViewSelectedItemsProps<TSelectedItem> & React.RefAttributes<ISelectedItemsList<TSelectedItem>>
-    >;
+    onRenderSelectedItems: React.ComponentType<DefaultUnifiedPickerViewSelectedItemsProps<TSelectedItem>>;
 
     /**
      * Function that specifies how the floating picker will appear.
      */
-    onRenderFloatingSuggestions: React.ComponentType<
-      DefaultUnifiedPickerViewFloatingPickerProps<TSuggestedItem> & React.RefAttributes<IFloatingSuggestions<TSuggestedItem>>
-    >;
+    onRenderFloatingSuggestions: React.ComponentType<DefaultUnifiedPickerViewFloatingPickerProps<TSuggestedItem>>;
 
     /**
      * If the current query can be force resolved.

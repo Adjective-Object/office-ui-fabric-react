@@ -33,6 +33,7 @@ export class SelectedPeopleListWithEditExample extends React.Component<{}, IPeop
   private SelectedItem = EditableItem({
     itemComponent: TriggerOnContextMenu(SelectedPersona),
     editingItemComponent: DefaultEditingItem({
+      onRemoveItem: persona => this._selectionList.removeItems([persona]),
       getEditingItemText: persona => persona.text || '',
       onRenderFloatingSuggestions: (props: EditingItemInnerFloatingSuggestionsProps<IPersonaProps>) => (
         <FloatingPeopleSuggestions
@@ -60,7 +61,7 @@ export class SelectedPeopleListWithEditExample extends React.Component<{}, IPeop
       <div>
         <SelectedPeopleList
           key={'normal'}
-          ref={this._setComponentRef}
+          componentRef={this._setComponentRef}
           removeButtonAriaLabel={'Remove'}
           defaultSelectedItems={[people[40]]}
           selection={this.selection}

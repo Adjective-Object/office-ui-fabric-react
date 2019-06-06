@@ -70,6 +70,7 @@ export type IUnifiedPickerProps<TSelectedItem, TSuggestedItem = TSelectedItem, T
  * Props passed to the unified picker's view.
  */
 export interface IUnifiedPickerViewProps<TSelectedItem, TSuggestedItem = TSelectedItem, TViewRefTarget = any> {
+  componentRef?: React.Ref<TViewRefTarget>;
   /**
    * The current query string
    */
@@ -91,6 +92,11 @@ export interface IUnifiedPickerViewProps<TSelectedItem, TSuggestedItem = TSelect
    * Callback for when a selected item is removed from the well
    */
   onSelectedItemsRemoved: (removedItems: TSelectedItem[]) => void;
+
+  /**
+   * Callback for when a selected item is removed from the well
+   */
+  onSelectedItemChanged: (newItem: TSelectedItem | TSelectedItem[], index: number) => void;
 
   /**
    * Callback for when the query string is updated

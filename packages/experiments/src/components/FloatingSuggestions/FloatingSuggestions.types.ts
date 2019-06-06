@@ -3,6 +3,7 @@ import { ISuggestionModel } from 'office-ui-fabric-react/lib/Pickers';
 import { ISuggestionsControlProps } from './Suggestions/Suggestions.types';
 import { SuggestionsStore } from './Suggestions/SuggestionsStore';
 import { ISuggestionsCoreProps } from './Suggestions/Suggestions.types';
+import { IBaseProps } from '../../../../utilities/lib';
 
 export interface IFloatingSuggestions<TItem> {
   /** Whether the suggestions are shown */
@@ -35,7 +36,8 @@ export interface IFloatingSuggestions<TItem> {
 // Type T is the type of the item that is displayed
 // and searched for by the people picker. For example, if the picker is
 // displaying persona's than type T could either be of Persona or Ipersona props
-export interface IFloatingSuggestionsProps<T> {
+export interface IFloatingSuggestionsProps<T> extends IBaseProps {
+  componentRef?: React.RefObject<IFloatingSuggestions<T>>;
   /**
    * The suggestions store
    */
@@ -144,7 +146,7 @@ export type IFloatingSuggestionsInnerSuggestionProps<T> = Pick<
   | 'onSuggestionClick'
   | 'onSuggestionRemove'
   | 'suggestions'
-  | 'ref'
+  | 'componentRef'
   | 'onCurrentlySelectedSuggestionChosen'
   | 'shouldLoopSelection'
   | 'onRenderSuggestion'

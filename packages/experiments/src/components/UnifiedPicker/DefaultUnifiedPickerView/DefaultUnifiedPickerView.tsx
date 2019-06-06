@@ -12,7 +12,6 @@ import { styled } from 'office-ui-fabric-react/lib/Utilities';
 
 import {
   IDefaultUnifiedPickerViewProps,
-  IDefaultUnifiedPickerView,
   DefaultUnifiedPickerViewFocusZoneProps,
   IDefaultUnifiedPickerViewStyleProps,
   IDefaultUnifiedPickerViewStyles
@@ -37,164 +36,161 @@ const getClassNames = classNamesFunction<IDefaultUnifiedPickerViewStyleProps, ID
  *
  * Handles UI state for the picker. Data model is controlled by its parent, UncontrolledUnifiedPicker.
  */
-export const DefaultUnifiedPickerView = React.forwardRef(
-  <TSelectedItem extends any, TSuggestedItem = TSelectedItem>(
-    props: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem>,
-    ref: React.Ref<IDefaultUnifiedPickerView<TSelectedItem, TSuggestedItem>>
-  ) => {
-    const {
-      className,
-      styles,
-      theme,
-      disabled,
-      queryString,
-      selectedItems,
-      canAddItems,
-      onSelectedItemsRemoved,
-      onQueryStringChange,
-      onPaste,
-      onSuggestionSelected,
-      isQueryForceResolveable,
-      inputProps,
-      onRenderFocusZone,
-      onRenderSelectedItems,
-      onRenderFloatingSuggestions
-    } = props;
-    const classNames = getClassNames(styles, {
-      theme: theme!,
-      disabled,
-      className
-    });
+export const DefaultUnifiedPickerView = <TSelectedItem extends any, TSuggestedItem = TSelectedItem>(
+  props: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem>
+) => {
+  const {
+    className,
+    styles,
+    theme,
+    disabled,
+    queryString,
+    selectedItems,
+    canAddItems,
+    onSelectedItemsRemoved,
+    onSelectedItemChanged,
+    onQueryStringChange,
+    onPaste,
+    onSuggestionSelected,
+    isQueryForceResolveable,
+    inputProps,
+    onRenderFocusZone,
+    onRenderSelectedItems,
+    onRenderFloatingSuggestions
+  } = props;
+  const classNames = getClassNames(styles, {
+    theme: theme!,
+    disabled,
+    className
+  });
 
-    const floatingSuggestionsRef = React.useRef<IFloatingSuggestions<TSuggestedItem>>(null);
-    const autofillRef = React.useRef<Autofill>(null);
-    const selectedItemsRef = React.useRef<IControlledSelectedItemsList>(null);
+  const floatingSuggestionsRef = React.useRef<IFloatingSuggestions<TSuggestedItem>>(null);
+  const autofillRef = React.useRef<Autofill>(null);
+  const selectedItemsRef = React.useRef<IControlledSelectedItemsList>(null);
 
-    const selection = React.useMemo(() => new Selection(), []);
+  const selection = React.useMemo(() => new Selection(), []);
 
-    /**
-     * Calls parent onBackspace behaviour when backspace is pressed in the focus zone
-     */
-    const removeLastSelectedElementOnEmptyInputBackspace = React.useCallback(
-      (ev: React.KeyboardEvent<HTMLElement>) => {
-        if (ev.which === KeyCodes.backspace && autofillRef.current && autofillRef.current.value === '') {
-          if (selectedItems.length) {
-            onSelectedItemsRemoved([selectedItems[selectedItems.length - 1]]);
-          }
-
-          if (floatingSuggestionsRef.current) {
-            floatingSuggestionsRef.current.hidePicker();
-          }
+  /**
+   * Calls parent onBackspace behaviour when backspace is pressed in the focus zone
+   */
+  const removeLastSelectedElementOnEmptyInputBackspace = React.useCallback(
+    (ev: React.KeyboardEvent<HTMLElement>) => {
+      if (ev.which === KeyCodes.backspace && autofillRef.current && autofillRef.current.value === '') {
+        if (selectedItems.length) {
+          onSelectedItemsRemoved([selectedItems[selectedItems.length - 1]]);
         }
-      },
-      [props.onSelectedItemsRemoved]
-    );
 
-    /**
-     * Show the suggestions and clear the selected items in the well when the input is clicked
-     */
-    const clearSelectionAndShowSuggestions = React.useCallback(() => {
-      selection.setAllSelected(false);
-      floatingSuggestionsRef.current && floatingSuggestionsRef.current.showPicker();
-    }, [floatingSuggestionsRef, selection]);
-
-    const copySelectedItems = React.useCallback(() => {
-      selectedItemsRef.current && selectedItemsRef.current.copyItemsInSelectionToClipboard();
-    }, [selectedItemsRef]);
-
-    const onAutofillUpdated = React.useCallback(
-      (ev: React.ChangeEvent<HTMLInputElement>) => {
-        onQueryStringChange(ev.target.value);
-      },
-      [onQueryStringChange]
-    );
-
-    /**
-     * Calculates the global ID of the suggestion that is "active" right now.
-     *
-     * note: depends on only one suggestion being open at a time on the page.
-     * We may need to amend SuggestionStore to support prefixed ID spaces for
-     * activeDescendant.
-     */
-    const activeDescendant = React.useMemo(
-      () =>
-        floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex !== -1
-          ? 'sug-' + floatingSuggestionsRef.current.currentSelectedSuggestionIndex
-          : undefined,
-      [floatingSuggestionsRef, floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex]
-    );
-
-    /**
-     * Imperative handle to this component
-     */
-    React.useImperativeHandle(
-      ref,
-      () => ({
-        focusInput: () => {
-          autofillRef.current && autofillRef.current.focus();
+        if (floatingSuggestionsRef.current) {
+          floatingSuggestionsRef.current.hidePicker();
         }
-      }),
-      [autofillRef]
-    );
+      }
+    },
+    [props.onSelectedItemsRemoved]
+  );
 
-    const FocusZoneComponent = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
-    const FloatingSuggestions = onRenderFloatingSuggestions;
-    const SelectedItems = onRenderSelectedItems;
+  /**
+   * Show the suggestions and clear the selected items in the well when the input is clicked
+   */
+  const clearSelectionAndShowSuggestions = React.useCallback(() => {
+    selection.setAllSelected(false);
+    floatingSuggestionsRef.current && floatingSuggestionsRef.current.showPicker();
+  }, [floatingSuggestionsRef, selection]);
 
-    return (
-      <>
-        <FocusZoneComponent
-          className={classNames.root}
-          direction={FocusZoneDirection.bidirectional}
-          onKeyDown={removeLastSelectedElementOnEmptyInputBackspace}
-          onCopy={copySelectedItems}
-        >
-          <SelectionZone selection={selection} selectionMode={SelectionMode.multiple}>
-            <div className={classNames.pickerWell} role={'list'}>
-              <SelectedItems selection={selection} selectedItems={selectedItems} onItemsRemoved={onSelectedItemsRemoved} />
-              {canAddItems && (
-                <Autofill
-                  {...inputProps as IInputProps}
-                  ref={autofillRef}
-                  className={classNames.input}
-                  value={queryString}
-                  onChange={onAutofillUpdated}
-                  onFocus={clearSelectionAndShowSuggestions}
-                  onClick={clearSelectionAndShowSuggestions}
-                  onInputValueChange={onQueryStringChange}
-                  aria-activedescendant={activeDescendant}
-                  aria-owns="suggestion-list"
-                  aria-expanded={floatingSuggestionsRef.current ? floatingSuggestionsRef.current.isSuggestionsShown : false}
-                  aria-haspopup="true"
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  role="combobox"
-                  disabled={disabled}
-                  onPaste={onPaste}
-                />
-              )}
-            </div>
-          </SelectionZone>
-        </FocusZoneComponent>
-        {canAddItems && autofillRef && autofillRef.current && (
-          <FloatingSuggestions
-            ref={floatingSuggestionsRef}
-            inputElement={autofillRef.current.inputElement}
-            onSuggestionSelected={onSuggestionSelected}
-            isQueryForceResolveable={isQueryForceResolveable}
-          />
-        )}
-      </>
-    );
-  }
-  // Cast back to a generic function type, since typescript <3.4 collapses generics on higher-order functions
-  // This was solved by https://github.com/microsoft/TypeScript/pull/30215 in typescript@3.4,
-) as <TSelectedItem extends any, TSuggestedItem = TSelectedItem>(
-  props: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem> &
-    React.RefAttributes<IDefaultUnifiedPickerView<TSelectedItem, TSuggestedItem>>
-) => React.ReactElement;
+  const copySelectedItems = React.useCallback(() => {
+    selectedItemsRef.current && selectedItemsRef.current.copyItemsInSelectionToClipboard();
+  }, [selectedItemsRef]);
+
+  const onAutofillUpdated = React.useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      onQueryStringChange(ev.target.value);
+    },
+    [onQueryStringChange]
+  );
+
+  /**
+   * Calculates the global ID of the suggestion that is "active" right now.
+   *
+   * note: depends on only one suggestion being open at a time on the page.
+   * We may need to amend SuggestionStore to support prefixed ID spaces for
+   * activeDescendant.
+   */
+  const activeDescendant = React.useMemo(
+    () =>
+      floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex !== -1
+        ? 'sug-' + floatingSuggestionsRef.current.currentSelectedSuggestionIndex
+        : undefined,
+    [floatingSuggestionsRef, floatingSuggestionsRef.current && floatingSuggestionsRef.current.currentSelectedSuggestionIndex]
+  );
+
+  /**
+   * Imperative handle to this component
+   */
+  React.useImperativeHandle(
+    props.componentRef,
+    () => ({
+      focusInput: () => {
+        autofillRef.current && autofillRef.current.focus();
+      }
+    }),
+    [autofillRef]
+  );
+
+  const FocusZoneComponent = onRenderFocusZone || DefaultUnifiedPickerFocusZone;
+  const FloatingSuggestions = onRenderFloatingSuggestions;
+  const SelectedItems = onRenderSelectedItems;
+
+  return (
+    <>
+      <FocusZoneComponent
+        className={classNames.root}
+        direction={FocusZoneDirection.bidirectional}
+        onKeyDown={removeLastSelectedElementOnEmptyInputBackspace}
+        onCopy={copySelectedItems}
+      >
+        <SelectionZone selection={selection} selectionMode={SelectionMode.multiple}>
+          <div className={classNames.pickerWell} role={'list'}>
+            <SelectedItems
+              selection={selection}
+              selectedItems={selectedItems}
+              onItemsRemoved={onSelectedItemsRemoved}
+              onItemChange={onSelectedItemChanged}
+            />
+            {canAddItems && (
+              <Autofill
+                {...inputProps as IInputProps}
+                ref={autofillRef}
+                className={classNames.input}
+                value={queryString}
+                onChange={onAutofillUpdated}
+                onFocus={clearSelectionAndShowSuggestions}
+                onClick={clearSelectionAndShowSuggestions}
+                onInputValueChange={onQueryStringChange}
+                aria-activedescendant={activeDescendant}
+                aria-owns="suggestion-list"
+                aria-expanded={floatingSuggestionsRef.current ? floatingSuggestionsRef.current.isSuggestionsShown : false}
+                aria-haspopup="true"
+                autoCapitalize="off"
+                autoComplete="off"
+                role="combobox"
+                disabled={disabled}
+                onPaste={onPaste}
+              />
+            )}
+          </div>
+        </SelectionZone>
+      </FocusZoneComponent>
+      {canAddItems && autofillRef && autofillRef.current && (
+        <FloatingSuggestions
+          componentRef={floatingSuggestionsRef}
+          inputElement={autofillRef.current.inputElement}
+          onSuggestionSelected={onSuggestionSelected}
+          isQueryForceResolveable={isQueryForceResolveable}
+        />
+      )}
+    </>
+  );
+};
 export type DefaultUnifiedPickerView<TSelectedItem, TSuggestedItem> = (
-  props: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem> &
-    React.RefAttributes<IDefaultUnifiedPickerView<TSelectedItem, TSuggestedItem>>
+  props: IDefaultUnifiedPickerViewProps<TSelectedItem, TSuggestedItem>
 ) => React.ReactElement;
 (DefaultUnifiedPickerView as any).displayName = 'DefaultUnifiedPickerView';

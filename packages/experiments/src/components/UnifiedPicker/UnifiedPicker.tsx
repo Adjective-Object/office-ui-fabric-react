@@ -45,6 +45,18 @@ export const UnifiedPicker = React.forwardRef(
       [selectedItems]
     );
 
+    const onSelectedItemChanged = React.useCallback(
+      (newItem: TSelectedItem | TSelectedItem[], index: number): void => {
+        const newItemsArray = !Array.isArray(newItem) ? [newItem] : newItem;
+
+        if (index >= 0) {
+          const newItems: TSelectedItem[] = [...selectedItems];
+          newItems.splice(index, 1, ...newItemsArray);
+          setSelectedItems(newItems);
+        }
+      },
+      [setSelectedItems, selectedItems]
+    );
     const onSuggestionSelected = React.useCallback(
       (item: TSuggestedItem): void => {
         const initialQueryString = queryString;
@@ -107,13 +119,14 @@ export const UnifiedPicker = React.forwardRef(
     const View = props.view;
     return (
       <View
-        ref={viewRef}
+        componentRef={viewRef}
         // state
         selectedItems={selectedItems}
         queryString={queryString}
         canAddItems={props.itemLimit === undefined || selectedItems.length < props.itemLimit}
         // state manipulation callbacks
         onSelectedItemsRemoved={onSelectedItemsRemoved}
+        onSelectedItemChanged={onSelectedItemChanged}
         onQueryStringChange={updateQueryString}
         onPaste={onPaste}
         onSuggestionSelected={onSuggestionSelected}

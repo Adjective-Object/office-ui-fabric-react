@@ -85,6 +85,7 @@ export interface ICommonSelectedItemListProps<T> {
  * Legal props for the selecte items list hwen used as a controlled (managed) component.
  */
 export interface IControlledSelectedItemListProps<T> extends ICommonSelectedItemListProps<T> {
+  componentRef?: React.Ref<IControlledSelectedItemsList>;
   /**
    * The selection
    */
@@ -99,15 +100,16 @@ export interface IControlledSelectedItemListProps<T> extends ICommonSelectedItem
    */
   onItemsRemoved: (removedItems: T[]) => void;
   /**
-   * A callback for when an item is changed
+   * Override onItemChange to support replacing an item with multiple items.
    */
-  onItemChange: (newItem: T, index: number) => void;
+  onItemChange: (newItem: T | T[], index: number) => void;
 }
 
 /**
  * Legal props for the selected items list when used as an uncontrolled (self-managing) component
  */
 export interface IUncontrolledSelectedItemListProps<T> extends ICommonSelectedItemListProps<T> {
+  componentRef?: React.Ref<ISelectedItemsList<T>>;
   /**
    * The selection
    */
