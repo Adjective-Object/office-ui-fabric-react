@@ -33,7 +33,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
     this.selection = new Selection({ onSelectionChanged: () => this.onSelectionChange() });
 
     this.state = {
-      queryString: '',
+      queryString: typeof this.props.defaultQueryString === 'string' ? this.props.defaultQueryString : null,
       suggestionItems: this.props.suggestionItems ? (this.props.suggestionItems as T[]) : null
     };
 
@@ -49,6 +49,12 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
   public componentDidMount(): void {
     super.componentDidMount();
     this.forceUpdate();
+    this._updateFloatingPickerInputTextIfOutOfSync();
+  }
+
+  public componentDidUpdate(prevProps: P, prevState: IBaseExtendedPickerState<T>): void {
+    super.componentDidUpdate(prevProps, prevState);
+    this._updateFloatingPickerInputTextIfOutOfSync();
   }
 
   public componentWillReceiveProps(newProps: P): void {
@@ -102,7 +108,8 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
               {this.renderSelectedItemsList()}
               {this.canAddItems() && (
                 <Autofill
-                  {...inputProps as IInputProps}
+                  defaultVisibleValue={this.props.defaultQueryString}
+                  {...(inputProps as IInputProps)}
                   className={css('ms-BasePicker-input', styles.pickerInput)}
                   ref={this.input}
                   onFocus={this.onInputFocus}
@@ -156,6 +163,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
       <SelectedItems
         componentRef={this.selectedItemsList}
         selection={this.selection}
+        defaultSelectedItems={this.props.defaultSelectedItems}
         selectedItems={this.props.selectedItems ? this.props.selectedItems : undefined}
         onItemsDeleted={this.props.selectedItems ? this.props.onItemsRemoved : undefined}
         {...this.selectedItemsListProps}
@@ -165,9 +173,7 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
 
   protected onInputChange = (value: string): void => {
     this.setState({ queryString: value });
-    if (this.floatingPicker.current) {
-      this.floatingPicker.current.onQueryStringChanged(value);
-    }
+    this._updateFloatingPickerInputTextIfOutOfSync();
   };
 
   protected onInputFocus = (ev: React.FocusEvent<HTMLInputElement | Autofill>): void => {
@@ -266,6 +272,16 @@ export class BaseExtendedPicker<T, P extends IBaseExtendedPickerProps<T>> extend
 
   protected _onSelectedItemsChanged = (): void => {
     this.focus();
+  };
+
+  /**
+   * Updates the queryString in the floating picker if it is out of sync with the current
+   * query string in the state of the component.
+   */
+  private _updateFloatingPickerInputTextIfOutOfSync = (): void => {
+    if (this.floatingPicker.current && this.state.queryString !== this.floatingPicker.current.inputText) {
+      this.floatingPicker.current.onQueryStringChanged(this.state.queryString || '');
+    }
   };
 
   private _addProcessedItem(newItem: T) {

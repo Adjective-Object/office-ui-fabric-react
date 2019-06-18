@@ -252,5 +252,48 @@ describe('Pickers', () => {
         })
       ]);
     });
+
+    describe('populating initial querystring', () => {
+      let pickerRef: React.RefObject<TypedBaseExtendedPicker> = React.createRef();
+      beforeEach(() => {
+        pickerRef = React.createRef();
+        create(
+          <BaseExtendedPickerWithType
+            ref={pickerRef}
+            defaultSelectedItems={[]}
+            defaultQueryString={'test-initial-value'}
+            floatingPickerProps={floatingPickerProps}
+            selectedItemsListProps={selectedItemsListProps}
+            onRenderSelectedItems={basicRenderSelectedItemsList}
+            onRenderFloatingPicker={basicRenderFloatingPicker}
+          />
+        );
+      });
+
+      it('precondition: initializes the floatingPicker ref', () => {
+        expect(pickerRef.current).not.toBeFalsy();
+        expect(pickerRef.current!.floatingPicker.current).not.toBeFalsy();
+      });
+
+      it('precondition: initializes the input element ref', () => {
+        expect(pickerRef.current).not.toBeFalsy();
+        expect(pickerRef.current!.inputElement).not.toBeFalsy();
+      });
+
+      it('populates initial value of internal autofill component from defaultQueryString', () => {
+        expect(pickerRef.current).not.toBeFalsy();
+        expect(pickerRef.current!.inputElement!.value).toEqual('test-initial-value');
+      });
+
+      it('populates initial value of internal state from defaultQueryString', () => {
+        expect(pickerRef.current).not.toBeFalsy();
+        expect(pickerRef.current!.state.queryString).toEqual('test-initial-value');
+      });
+
+      it('populates initial value of floatingPicker state from defaultQueryString', () => {
+        expect(pickerRef.current).not.toBeFalsy();
+        expect(pickerRef.current!.floatingPicker.current!.inputText).toEqual('test-initial-value');
+      });
+    });
   });
 });

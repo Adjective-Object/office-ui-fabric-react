@@ -35,6 +35,11 @@ export interface IBaseExtendedPickerProps<T> {
   defaultSelectedItems?: T[];
 
   /**
+   * Initial items that have already been selected and should appear in the people picker.
+   */
+  defaultQueryString?: string;
+
+  /**
    * A callback for when the selected list of items changes.
    */
   onChange?: (items?: T[]) => void;
